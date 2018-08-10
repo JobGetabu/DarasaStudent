@@ -49,8 +49,14 @@ dependencies {
     // FirebaseUI for Cloud Firestore
     implementation 'com.firebaseui:firebase-ui-firestore:4.1.0'
 
-    //rating bar
-    implementation 'me.zhanghai.android.materialratingbar:library:1.2.0'
+    //location access
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
+
+    //smart location
+    implementation 'io.nlopez.smartlocation:library:3.3.3'
+
+    //qr scanner
+    implementation 'com.budiyev.android:code-scanner:1.9.4'
 
     //architecture components
     // ViewModel and LiveData

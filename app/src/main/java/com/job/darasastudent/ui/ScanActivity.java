@@ -1,16 +1,17 @@
 package com.job.darasastudent.ui;
 
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.budiyev.android.codescanner.CodeScanner;
+import com.budiyev.android.codescanner.CodeScannerView;
+import com.budiyev.android.codescanner.DecodeCallback;
+import com.google.zxing.Result;
 import com.job.darasastudent.R;
 
 import butterknife.BindView;
@@ -20,16 +21,15 @@ public class ScanActivity extends AppCompatActivity {
 
     //TODO create layout for different size phones :activity_viewfinder
 
-    @BindView(R.id.cameraView)
-    SurfaceView cameraView;
-    @BindView(R.id.scannerBar)
-    View scannerBar;
-    @BindView(R.id.scannerLayout)
-    LinearLayout scannerLayout;
+
     @BindView(R.id.scan_toolbar)
     Toolbar scanToolbar;
+    @BindView(R.id.scanner_view)
+    CodeScannerView scannerView;
+
 
     private ObjectAnimator animator;
+    private CodeScanner mCodeScanner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +40,44 @@ public class ScanActivity extends AppCompatActivity {
         setSupportActionBar(scanToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_back));
-        animateLine();
+        //animateLine();
+
+
+        mCodeScanner = new CodeScanner(this, scannerView);
+        mCodeScanner.setDecodeCallback(new DecodeCallback() {
+            @Override
+            public void onDecoded(@NonNull final Result result) {
+                ScanActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(ScanActivity.this, result.getText(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        scannerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCodeScanner.startPreview();
+            }
+        });
+
     }
 
-    private void animateLine() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mCodeScanner.startPreview();
+    }
+
+    @Override
+    protected void onPause() {
+        mCodeScanner.releaseResources();
+        super.onPause();
+    }
+
+   /* private void animateLine() {
 
         animator = null;
 
@@ -56,12 +90,10 @@ public class ScanActivity extends AppCompatActivity {
                 scannerLayout.getViewTreeObserver().
                         removeOnGlobalLayoutListener(this);
 
-                float destination = (float) (scannerLayout.getY() +
+                float destination2 = (float) (0f +
                         scannerLayout.getHeight());
 
-                animator = ObjectAnimator.ofFloat(scannerBar, "translationY",
-                        scannerLayout.getY(),
-                        destination);
+                animator = ObjectAnimator.ofFloat(scannerBar, "translationY", 0f, destination2);
 
                 animator.setRepeatMode(ValueAnimator.REVERSE);
                 animator.setRepeatCount(ValueAnimator.INFINITE);
@@ -71,5 +103,6 @@ public class ScanActivity extends AppCompatActivity {
 
             }
         });
-    }
+    } */
+
 }
