@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "3641612382",
+    "firebase_url": "https://showcase-3debf.firebaseio.com",
+    "project_id": "showcase-3debf",
+    "storage_bucket": "showcase-3debf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:3641612382:android:c1f51502c8e0de61",
+        "android_client_info": {
+          "package_name": "com.job.darasastudent"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "3641612382-i9h2tcuctmqs9ln6abg8napig4v0hcbc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.job.darasastudent",
+            "certificate_hash": "08707c39ce53fa034d11722ba7cd4fd155e54ec8"
+          }
+        },
+        {
+          "client_id": "3641612382-u21ma7m29i1c98as67iuseu7pr0o1p3l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMu5NAQRU1j1xRbOGN3v85M-CN9FP5rys"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "3641612382-u21ma7m29i1c98as67iuseu7pr0o1p3l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

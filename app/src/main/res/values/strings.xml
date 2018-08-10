@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DarasaStudent</string>
+    <string name="confirm_attendance">To register your class attendance scan the QR code on <b>Darasa Lec App</b></string>
 </resources>
