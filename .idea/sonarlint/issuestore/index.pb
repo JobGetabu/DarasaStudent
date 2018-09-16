@@ -42,5 +42,29 @@ A
 gradlew.bat,2\a\2a45a911a8f1836b0b6c5b758962572012d8f8c3
 ?
 settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
-i
-9app/src/main/java/com/job/darasastudent/MainActivity.java,e\3\e375487c677b36645bb6870a53f12b13451a2cf8
+L
+.idea/codeStyles/Project.xml,6\e\6ecd6000a7b6f4a2884412ff19f74193ed089648
+H
+app/google-services.json,f\d\fd8d34b142d02ec743a8efefefd2c097961666e9
+U
+%app/src/main/res/drawable/ic_back.xml,0\3\038479b72a34d99d1c27091171c6e567e8906fe8
+P
+ app/src/main/res/font/nunito.xml,8\e\8e61438d63ac8df3edceb5899e763bf4b1ac004e
+[
++app/src/main/res/layout/scan_top_layout.xml,f\1\f13d76029067ce5b64dd9f50ed4889d19d7cf0e4
+V
+&app/src/main/res/values/font_certs.xml,8\7\8721b09acc6dcb831485a758e527a36efbbce1ff
+[
++app/src/main/res/values/preloaded_fonts.xml,1\a\1ac4bbe3e597dbb591474f97b69d35c8d7401efe
+j
+:app/src/main/java/com/job/darasastudent/DarasaStudent.java,c\2\c2952b6ab9d6240221663b3616b5de36081f69c0
+[
++app/src/main/res/drawable/ic_viewfinder.xml,5\5\55e5a4ae0b98569ace077fbff8aa272ecdddcfaa
+l
+<app/src/main/java/com/job/darasastudent/ui/MainActivity.java,5\a\5aebd35a6e11e14446ee982754b3d8a4f0e8345b
+l
+<app/src/main/java/com/job/darasastudent/ui/ScanActivity.java,5\2\52e5155a5acbe602d01387b7b409ff560892893a
+_
+/app/src/main/res/layout/activity_viewfinder.xml,8\e\8ecb53cbe213c84b64f65ab317a20bd5fd6cbe10
+]
+-app/src/main/res/layout/viewfinder_layout.xml,1\c\1c0be21f600f4e9a57c1a85ca21827eed73b83ea
