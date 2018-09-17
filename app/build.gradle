@@ -61,6 +61,9 @@ dependencies {
     //sweet alert dialogue
     implementation 'com.github.f0ris.sweetalert:library:1.5.1'
 
+    //custom action button
+    implementation 'com.robertlevonyan.view:CustomFloatingActionButton:2.1.0'
+
     //architecture components
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:1.1.1"
