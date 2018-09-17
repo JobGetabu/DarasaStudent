@@ -1,6 +1,7 @@
 package com.job.darasastudent.ui;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -107,5 +108,11 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
 
     private void sendToInviteScreen() {
 
+        Intent sendIntent = new Intent();
+        String msg = "Hey, check this out: " + getResources().getString(R.string.share_url);
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, msg);
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
     }
 }
