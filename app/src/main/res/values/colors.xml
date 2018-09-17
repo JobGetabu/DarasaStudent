@@ -3,5 +3,10 @@
     <color name="colorPrimary">#673BB7</color>
     <color name="colorPrimaryDark">#512DA7</color>
     <color name="colorAccent">#FF5521</color>
+
     <color name="semitransparent">#9A000000</color>
+
+    <color name="colorwhitish">#FFFFFF</color>
+    <color name="colorgreyish">#d7d7d7</color>
+    <color name="darkgreyish">#1e1e1e</color>
 </resources>
