@@ -23,7 +23,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.ScanActivity"></activity>
+        <activity android:name=".ui.ScanActivity"
+            android:parentActivityName=".ui.MainActivity"/>
 
         <meta-data
             android:name="preloaded_fonts"

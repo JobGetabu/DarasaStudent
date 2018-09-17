@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">DarasaStudent</string>
     <string name="confirm_attendance">To confirm your class attendance scan the QR code on <b>Darasa Lec App</b></string>
+    <string name="home">Home</string>
+    <string name="settings">Settings</string>
+    <string name="invite_share">Share with Classmates</string>
+    <string name="logout">Logout</string>
 </resources>
