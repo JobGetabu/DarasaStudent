@@ -29,6 +29,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/main_toolbartitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Showing: Thur,Sep 27, '18"
