@@ -38,6 +38,14 @@
                 android:background="@color/colorPrimary"
                 />
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/main_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                tools:listitem="@layout/single_lesson"
+                android:visibility="visible"
+                />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
