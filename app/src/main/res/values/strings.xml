@@ -6,6 +6,8 @@
     <string name="invite_share">Share with Classmates</string>
     <string name="logout">Logout</string>
 
+    <string name="dot">&#8226;</string>
+
     <string name="share_url">https://darasastudent.page.link/get</string>
     <string name="select_date">Select date</string>
     <string name="no_class_text">You\'ve no classes today. Take \na second to recharge</string>

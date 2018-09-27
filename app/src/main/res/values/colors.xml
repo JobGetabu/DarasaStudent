@@ -9,4 +9,7 @@
     <color name="colorwhitish">#FFFFFF</color>
     <color name="colorgreyish">#d7d7d7</color>
     <color name="darkgreyish">#1e1e1e</color>
+    <color name="bluish">#1212fa</color>
+
+    <color name="contentDividerLine">#e0e0e0</color>
 </resources>
