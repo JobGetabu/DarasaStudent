@@ -3,53 +3,53 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.job.darasastudent">
 
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
-        android:hardwareAccelerated="true"
         android:name=".DarasaStudent"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:icon"
-        >
+        tools:replace="android:icon">
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="http"
-                    android:host="darasastudent.page.link" />
+                    android:host="darasastudent.page.link"
+                    android:scheme="http" />
                 <data
-                    android:scheme="https"
-                    android:host="darasastudent.page.link" />
+                    android:host="darasastudent.page.link"
+                    android:scheme="https" />
             </intent-filter>
-
         </activity>
         <activity android:name=".ui.WelcomeActivity" />
-
-        <activity android:name=".ui.ScanActivity"
-            android:parentActivityName=".ui.MainActivity"/>
+        <activity
+            android:name=".ui.ScanActivity"
+            android:parentActivityName=".ui.MainActivity" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
         <meta-data
-            tools:replace="android:value"
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:value="@integer/google_play_services_version"
+            tools:replace="android:value" />
+
+        <activity android:name=".ui.LoginActivity" />
+        <activity android:name=".ui.SignupActivity"></activity>
     </application>
 
 </manifest>
