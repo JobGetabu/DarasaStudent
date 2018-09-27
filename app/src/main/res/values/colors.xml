@@ -14,4 +14,7 @@
     <color name="contentDividerLine">#e0e0e0</color>
     <color name="greyish">#646464</color>
     <color name="darkbluish">#4b4bfd</color>
+
+    <color name="colortext">#100b20</color>
+    <color name="colorhint">#a9aaac</color>
 </resources>

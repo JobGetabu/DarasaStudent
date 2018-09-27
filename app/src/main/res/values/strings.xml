@@ -18,4 +18,6 @@
     <string name="dev_email">developer.getabujob@gmai.com</string>
     <string name="dev_subject">Support Darasa Lecturer App</string>
     <string name="save_class">Save Class</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="sign_in">Sign in</string>
 </resources>

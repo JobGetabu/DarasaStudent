@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -81,10 +80,10 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
                             return true;
 
                         case R.id.nav_logout:
-                            Toast.makeText(getContext(), "Signing you out", Toast.LENGTH_SHORT).show();
 
                             // user is now signed out
                             auth.signOut();
+                            sendToLogin();
                             dismiss();
                             return true;
 
@@ -114,5 +113,13 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
         sendIntent.putExtra(Intent.EXTRA_TEXT, msg);
         sendIntent.setType("text/plain");
         startActivity(sendIntent);
+    }
+
+    private void sendToLogin() {
+        Intent loginIntent = new Intent(getContext(), WelcomeActivity.class);
+        loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(loginIntent);
+
     }
 }
