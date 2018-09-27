@@ -48,8 +48,13 @@
             android:value="@integer/google_play_services_version"
             tools:replace="android:value" />
 
-        <activity android:name=".ui.LoginActivity" />
-        <activity android:name=".ui.SignupActivity"></activity>
+        <activity android:name=".ui.LoginActivity"
+            android:parentActivityName=".ui.WelcomeActivity"
+
+            />
+        <activity android:name=".ui.SignupActivity"
+            android:parentActivityName=".ui.WelcomeActivity"
+            />
     </application>
 
 </manifest>
