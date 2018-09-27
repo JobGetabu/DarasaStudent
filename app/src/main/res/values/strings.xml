@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">DarasaStudent</string>
+    <string name="app_name">Darasa Student</string>
+    <string name="content_decription">Default content description</string>
+    <string name="need_a_new_account">Need a new account ?</string>
+    <string name="already_have_account">Already have account</string>
     <string name="confirm_attendance">To confirm your class attendance scan the QR code on <b>Darasa Lec App</b></string>
     <string name="home">Home</string>
     <string name="settings">Settings</string>

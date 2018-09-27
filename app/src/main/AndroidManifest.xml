@@ -37,6 +37,8 @@
             </intent-filter>
 
         </activity>
+        <activity android:name=".ui.WelcomeActivity" />
+
         <activity android:name=".ui.ScanActivity"
             android:parentActivityName=".ui.MainActivity"/>
 
