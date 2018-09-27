@@ -42,4 +42,9 @@
     <string name="semester_i_e_1">Semester i.e 1</string>
     <string name="academy_year">Academic Year</string>
     <string name="save">Save</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="regno">Registration Number</string>
+    <string name="school">School</string>
+    <string name="department">Department</string>
 </resources>
