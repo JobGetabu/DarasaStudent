@@ -26,4 +26,17 @@
     <string name="student_login">Student Login</string>
     <string name="student_signup">Student Registration</string>
     <string name="register">Register</string>
+
+    <string name="content_desc_icon">password icon</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="email_us">Email us</string>
+    <string name="huh_no_classes">Huh! No Classes</string>
+    <string name="set_current_semester">Set current semester</string>
+    <string name="select">Select</string>
+    <string name="select_course">Select your course</string>
+    <string name="manage_account">Manage Account</string>
+    <string name="manage_your_account">Manage your Account</string>
+    <string name="sign_out">Sign out</string>
+    <string name="manage_your_classes">Manage your classes</string>
 </resources>

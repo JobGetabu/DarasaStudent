@@ -103,8 +103,6 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
         unbinder.unbind();
     }
 
-    //Todo share intent with any app
-
     private void sendToInviteScreen() {
 
         Intent sendIntent = new Intent();
