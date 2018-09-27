@@ -79,6 +79,7 @@ public class SignupActivity extends AppCompatActivity {
     public void onSignupViaGoogleClicked() {
     }
 
+
     private void writingToStudUsers(final SweetAlertDialog pDialog, String device_token, FirebaseUser user, String mCurrentUserid) {
 
         StudentDetails studentDetails = new StudentDetails();
@@ -109,5 +110,32 @@ public class SignupActivity extends AppCompatActivity {
         aIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(aIntent);
         finish();
+    }
+
+    private boolean validate() {
+        boolean valid = true;
+
+        String email = signupEmail.getEditText().getText().toString();
+        String password = signupPassword.getEditText().getText().toString();
+
+        if (email.isEmpty() || !isEmailValid(email)) {
+            signupEmail.setError("enter valid email");
+            valid = false;
+        } else {
+            signupEmail.setError(null);
+        }
+
+        if (password.isEmpty() || password.length() < 6) {
+            signupPassword.setError("at least 6 characters");
+            valid = false;
+        } else {
+            signupPassword.setError(null);
+        }
+
+        return valid;
+    }
+
+    private boolean isEmailValid(CharSequence email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 }
