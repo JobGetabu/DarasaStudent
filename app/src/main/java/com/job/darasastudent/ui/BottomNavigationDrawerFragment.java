@@ -117,9 +117,7 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
 
     private void sendToLogin() {
         Intent loginIntent = new Intent(getContext(), WelcomeActivity.class);
-        loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(loginIntent);
-
+        getActivity().finish();
     }
 }

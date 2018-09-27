@@ -24,4 +24,6 @@
     <string name="email">Email</string>
     <string name="or">or</string>
     <string name="student_login">Student Login</string>
+    <string name="student_signup">Student Registration</string>
+    <string name="register">Register</string>
 </resources>
