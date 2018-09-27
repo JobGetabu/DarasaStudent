@@ -45,12 +45,14 @@ public class LoginActivity extends AppCompatActivity {
     LinearLayout loginViaGoogle;
 
     private static final String TAG = "login";
+    public static final int RC_SIGN_IN = 1001;
 
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
 
     private DoSnack doSnack;
+    private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

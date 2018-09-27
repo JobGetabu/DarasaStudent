@@ -1,5 +1,18 @@
 
-lsquid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(Ò“ÿšùÿÿÿÿ8ÒæÈÂŞ,
-Esquid:S1068")Remove this unused "mDate" private field.(Ûè¼ä8ÒæÈÂŞ,
-Ssquid:S1135"2Complete the task associated to this TODO comment.(» æÿÿÿÿÿ8ÒæÈÂŞ,
-Z"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(Ò“ÿšùÿÿÿÿ8ÒæÈÂŞ,
+]"squid:SwitchLastCaseIsDefaultCheck“""Add a default case to this switch.(Ò“ÿšùÿÿÿÿ8æ’‡êá,
+Gsquid:S1068-")Remove this unused "mDate" private field.(Ûè¼ä8æ’‡êá,
+Jsquid:S1068/"'Remove this unused "TAG" private field.(ğ»ßüÿÿÿÿ8æ’‡êá,
+Gsquid:S10682")Remove this unused "mUser" private field.(çÎùÜ8æ’‡êá,
+Gsquid:S10683"*Remove this unused "userId" private field.(íÃË8æ’‡êá,
+Qsquid:S10684".Remove this unused "mFirestore" private field.(‘Üÿÿÿÿÿÿ8æ’‡êá,
+Msquid:S10687"*Remove this unused "mQuery" private field.(µœëµşÿÿÿÿ8æ’‡êá,
+Nsquid:S10689"+Remove this unused "doSnack" private field.(¯¨ÓÍûÿÿÿÿ8æ’‡êá,
+rsquid:S14502"TRemove the "mUser" field and declare it as a local variable in the relevant methods.(çÎùÜ8æ’‡êá,
+|squid:S14504"YRemove the "mFirestore" field and declare it as a local variable in the relevant methods.(‘Üÿÿÿÿÿÿ8æ’‡êá,
+ysquid:S14509"VRemove the "doSnack" field and declare it as a local variable in the relevant methods.(¯¨ÓÍûÿÿÿÿ8æ’‡êá,
+osquid:S1301“"KReplace this "switch" statement by "if" statements to increase readability.(Ò“ÿšùÿÿÿÿ8æ’‡êá,
+Vsquid:S1135¡"2Complete the task associated to this TODO comment.(» æÿÿÿÿÿ8æ’‡êá,
+Lsquid:S1481Ç"(Remove this unused "day" local variable.(Îšìÿÿÿÿÿ8æ’‡êá,
+Psquid:S1481È",Remove this unused "daydate" local variable.(‚İ»âøÿÿÿÿ8æ’‡êá,
+_squid:S1854È";Remove this useless assignment to local variable "daydate".(‚İ»âøÿÿÿÿ8æ’‡êá,
+[squid:S1854Ç"7Remove this useless assignment to local variable "day".(Îšìÿÿÿÿÿ8æ’‡êá,

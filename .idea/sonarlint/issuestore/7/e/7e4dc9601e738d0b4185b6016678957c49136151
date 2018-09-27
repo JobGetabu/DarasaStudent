@@ -1,8 +1,6 @@
 
-Z"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(Ò“ÿšùÿÿÿÿ8öçŠ¿Þ,
-_squid:S3398">Move this method into the anonymous class declared at line 73.(ƒ¥Òºÿÿÿÿÿ8öçŠ¿Þ,
-Nsquid:S1068"2Remove this unused "REQUEST_INVITE" private field.(ë Ñ´8öçŠ¿Þ,
-Osquid:S1068".Remove this unused "mFirestore" private field.(Ž‘Üÿÿÿÿÿÿ8öçŠ¿Þ,
-Ssquid:S1068"2Remove this unused "progressDialog" private field.(·á…Çùÿÿÿÿ8öçŠ¿Þ,
-zsquid:S1450"YRemove the "mFirestore" field and declare it as a local variable in the relevant methods.(Ž‘Üÿÿÿÿÿÿ8öçŠ¿Þ,
-Ssquid:S1135"2Complete the task associated to this TODO comment.(Ú‰Ý‘úÿÿÿÿ8öçŠ¿Þ,
+Z"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(Ò“ÿšùÿÿÿÿ8âè€Ûá,
+Nsquid:S1068"2Remove this unused "REQUEST_INVITE" private field.(ë Ñ´8âè€Ûá,
+Osquid:S1068".Remove this unused "mFirestore" private field.(Ž‘Üÿÿÿÿÿÿ8âè€Ûá,
+Ssquid:S1068"2Remove this unused "progressDialog" private field.(·á…Çùÿÿÿÿ8âè€Ûá,
+zsquid:S1450"YRemove the "mFirestore" field and declare it as a local variable in the relevant methods.(Ž‘Üÿÿÿÿÿÿ8âè€Ûá,
