@@ -6,6 +6,9 @@ import android.support.design.button.MaterialButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.job.darasastudent.R;
 import com.job.darasastudent.util.Constants;
@@ -31,6 +34,7 @@ public class SettingsActivity extends AppCompatActivity {
     MaterialButton settingsFaq;
 
     private FirebaseAuth mAuth;
+    private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,14 @@ public class SettingsActivity extends AppCompatActivity {
         //firebase
         mAuth = FirebaseAuth.getInstance();
 
+        //login credentials
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
     @OnClick(R.id.settings_manage_account)
@@ -59,7 +71,7 @@ public class SettingsActivity extends AppCompatActivity {
     @OnClick(R.id.settings_logout)
     public void onSettingsLogoutClicked() {
         mAuth.signOut();
-
+        mGoogleSignInClient.signOut();
         sendToLogin();
     }
 

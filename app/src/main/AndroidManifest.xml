@@ -55,9 +55,15 @@
         <activity android:name=".ui.SignupActivity"
             android:parentActivityName=".ui.WelcomeActivity"
             />
-        <activity android:name=".ui.SettingsActivity" />
-        <activity android:name=".ui.CurrentSetupActivity" />
-        <activity android:name=".ui.AccountSetupActivity" />
+        <activity android:name=".ui.SettingsActivity"
+            android:parentActivityName=".ui.MainActivity"
+            />
+        <activity android:name=".ui.CurrentSetupActivity"
+            android:parentActivityName=".ui.SettingsActivity"
+            />
+        <activity android:name=".ui.AccountSetupActivity"
+            android:parentActivityName=".ui.SettingsActivity"
+            />
     </application>
 
 </manifest>

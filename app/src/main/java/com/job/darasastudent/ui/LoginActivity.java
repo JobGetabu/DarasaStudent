@@ -124,11 +124,13 @@ public class LoginActivity extends AppCompatActivity {
                                     Intent intent = new Intent(Intent.ACTION_MAIN);
                                     intent.addCategory(Intent.CATEGORY_APP_EMAIL);
                                     try {
-                                        startActivity(intent);
+                                        //startActivity(intent);
                                         startActivity(Intent.createChooser(intent, getString(R.string.chooseEmailClient)));
                                     } catch (ActivityNotFoundException e) { }
                                 }
                             });
+                        }else {
+                            doSnack.showShortSnackbar("You're not registered :(");
                         }
                     }
                 });

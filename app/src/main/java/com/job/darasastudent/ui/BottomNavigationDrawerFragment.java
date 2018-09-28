@@ -1,6 +1,5 @@
 package com.job.darasastudent.ui;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -36,7 +35,7 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
     private FirebaseAuth auth;
     private FirebaseFirestore mFirestore;
 
-    private ProgressDialog progressDialog;
+
     //private MainViewModel mViewModel;
 
     @Nullable
@@ -66,6 +65,7 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
 
         */
         navigationView.setNavigationItemSelectedListener(onNavigationItemSelectedListener);
+
     }
 
     NavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener =
@@ -83,7 +83,9 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
 
                             // user is now signed out
                             auth.signOut();
+
                             sendToLogin();
+
                             dismiss();
                             return true;
 
