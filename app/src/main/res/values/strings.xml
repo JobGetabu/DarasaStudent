@@ -47,4 +47,5 @@
     <string name="regno">Registration Number</string>
     <string name="school">School</string>
     <string name="department">Department</string>
+    <string name="chooseEmailClient">Check Email</string>
 </resources>

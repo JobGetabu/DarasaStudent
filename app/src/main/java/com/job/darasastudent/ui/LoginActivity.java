@@ -1,5 +1,6 @@
 package com.job.darasastudent.ui;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -99,6 +100,38 @@ public class LoginActivity extends AppCompatActivity {
 
     @OnClick(R.id.forgotpass)
     public void onForgotpassClicked() {
+
+        final String email = loginEmail.getEditText().getText().toString();
+
+
+        if (email.isEmpty() || !isEmailValid(email)) {
+            loginEmail.setError("enter valid email to reset password");
+            return;
+        } else {
+            loginEmail.setError(null);
+        }
+
+        mAuth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "Email sent.");
+                            doSnack.showSnackbar("Email sent to " + email, "Check", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                                    intent.addCategory(Intent.CATEGORY_APP_EMAIL);
+                                    try {
+                                        startActivity(intent);
+                                        startActivity(Intent.createChooser(intent, getString(R.string.chooseEmailClient)));
+                                    } catch (ActivityNotFoundException e) { }
+                                }
+                            });
+                        }
+                    }
+                });
     }
 
     @OnClick(R.id.login_button)
