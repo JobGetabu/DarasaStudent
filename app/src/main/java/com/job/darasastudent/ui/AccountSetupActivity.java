@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.button.MaterialButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -51,6 +52,10 @@ public class AccountSetupActivity extends AppCompatActivity {
     TextView setupBtn;
     @BindView(R.id.setup_regno)
     TextInputLayout setupRegno;
+    @BindView(R.id.setup_course_btn)
+    MaterialButton setupCourseBtn;
+    @BindView(R.id.setup_course)
+    TextInputLayout setupCourse;
 
     private DoSnack doSnack;
 
@@ -89,14 +94,14 @@ public class AccountSetupActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.setup_btn)
-    public void onViewClicked() {
+    public void onViewSetupClicked() {
 
         if (!AppStatus.getInstance(getApplicationContext()).isOnline()) {
 
             doSnack.showSnackbar("You're offline", "Retry", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onViewClicked();
+                    onViewSetupClicked();
                 }
             });
 
@@ -170,6 +175,7 @@ public class AccountSetupActivity extends AppCompatActivity {
         String school = setupSchool.getEditText().getText().toString();
         String dept = setupDepartment.getEditText().getText().toString();
         String regno = setupRegno.getEditText().getText().toString();
+        String course = setupCourse.getEditText().getText().toString();
 
         if (fname.isEmpty()) {
             setupFirstname.setError("enter name");
@@ -206,6 +212,13 @@ public class AccountSetupActivity extends AppCompatActivity {
             setupDepartment.setError(null);
         }
 
+        if (course.isEmpty()) {
+            setupCourse.setError("enter course");
+            valid = false;
+        } else {
+            setupCourse.setError(null);
+        }
+
         return valid;
     }
 
@@ -219,8 +232,14 @@ public class AccountSetupActivity extends AppCompatActivity {
                     setupSchool.getEditText().setText(studUser.getSchool());
                     setupDepartment.getEditText().setText(studUser.getDepartment());
                     setupRegno.getEditText().setText(studUser.getDepartment());
+                    setupCourse.setVisibility(View.VISIBLE);
+                    setupCourse.getEditText().setText(studUser.getCourse());
                 }
             }
         });
+    }
+
+    @OnClick(R.id.setup_course_btn)
+    public void onViewClicked() {
     }
 }
