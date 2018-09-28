@@ -133,14 +133,16 @@ public class AccountSetupActivity extends AppCompatActivity {
             String lname = setupLastname.getEditText().getText().toString();
             String school = setupSchool.getEditText().getText().toString();
             String dept = setupDepartment.getEditText().getText().toString();
-            String regno = setupRegno.getEditText().getText().toString();
+            String regno = setupRegno.getEditText().getText().toString().trim();
+            String course = setupCourse.getEditText().getText().toString().trim();
 
             Map<String, Object> studMap = new HashMap<>();
             studMap.put("firstname", fname);
             studMap.put("lastname", lname);
             studMap.put("school", school);
             studMap.put("department", dept);
-            studMap.put("regnumber", regno);
+            studMap.put("course", course);
+            studMap.put("regnumber", regno.toUpperCase());
 
             // Set the value of 'Users'
             DocumentReference usersRef = mFirestore.collection(STUDENTDETAILSCOL).document(mAuth.getCurrentUser().getUid());
