@@ -64,6 +64,9 @@
         <activity android:name=".ui.AccountSetupActivity"
             android:parentActivityName=".ui.SettingsActivity"
             />
+        <activity android:name=".ui.FaqActivity"
+            android:parentActivityName=".ui.SettingsActivity"
+            />
     </application>
 
 </manifest>
