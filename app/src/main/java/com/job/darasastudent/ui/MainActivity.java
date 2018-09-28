@@ -5,31 +5,48 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.bottomappbar.BottomAppBar;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.job.darasastudent.R;
+import com.job.darasastudent.model.LecTeachTime;
+import com.job.darasastudent.util.Constants;
 import com.job.darasastudent.util.DoSnack;
+import com.job.darasastudent.util.LessonViewHolder;
 import com.robertlevonyan.views.customfloatingactionbutton.FloatingActionButton;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.job.darasastudent.util.Constants.LECTEACHTIMECOL;
+import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
     View noClassView;
     @BindView(R.id.main_toolbartitle)
     TextView mainToolbartitle;
-
-    private Date mDate;
+    @BindView(R.id.main_list)
+    RecyclerView mainList;
 
     private static final String TAG = "main";
 
@@ -84,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
                     userId = mAuth.getCurrentUser().getUid();
 
-                    //classListQuery(Calendar.getInstance());
+                    classListQuery(Calendar.getInstance());
 
                 }
             }
@@ -163,13 +180,12 @@ public class MainActivity extends AppCompatActivity {
                         myCalendar.set(Calendar.MONTH, monthOfYear);
                         myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-
-                        mDate = myCalendar.getTime();
                         String myFormat = "MM/dd/yy"; //In which you need put here
                         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
 
 
-                        Toast.makeText(MainActivity.this, sdf.format(myCalendar.getTime()), Toast.LENGTH_SHORT).show();
+                        showDateOfClasses(myCalendar);
+                        classListQuery(myCalendar);
                     }
                 };
 
@@ -199,4 +215,125 @@ public class MainActivity extends AppCompatActivity {
         int day = c.get(Calendar.DAY_OF_WEEK);
         int daydate = c.get(Calendar.DAY_OF_MONTH);
     }
+
+    private Query classListQuery(Calendar c) {
+
+
+        final int day = c.get(Calendar.DAY_OF_WEEK);
+        final String sDay = Constants.getDay(day);
+
+
+        mFirestore.collection(LECTEACHTIMECOL)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(final QuerySnapshot queryDocumentSnapshots) {
+
+
+                        mFirestore.collection(STUDENTDETAILSCOL).document(userId)
+                                .get()
+                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        String currentsemester = documentSnapshot.getString("currentsemester");
+                                        String currentyear = documentSnapshot.getString("currentyear");
+                                        String course = documentSnapshot.getString("course");
+
+                                        // form query
+
+                                        mQuery = queryDocumentSnapshots
+                                                .getQuery()
+                                                .whereArrayContains("courses", course)
+                                                .whereEqualTo("day", sDay)
+                                                .whereEqualTo("semester", currentsemester)
+                                                .whereEqualTo("studyyear", currentyear)
+                                                .orderBy("time", Query.Direction.ASCENDING);
+
+                                        setUpList(mQuery);
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                                // Show a snackbar on errors
+                                Snackbar.make(findViewById(android.R.id.content),
+                                        "Update Settings or check connection.", Snackbar.LENGTH_INDEFINITE).show();
+                            }
+                        });
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+                // Show a snackbar on errors
+                Snackbar.make(findViewById(android.R.id.content),
+                        "Update Settings or check connection.", Snackbar.LENGTH_INDEFINITE).show();
+            }
+        });
+
+        return mQuery;
+    }
+
+    private void initList() {
+        LinearLayoutManager linearLayoutManager = new
+                LinearLayoutManager(this.getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        mainList.setLayoutManager(linearLayoutManager);
+        mainList.setHasFixedSize(true);
+    }
+
+    private void setUpList(Query mQuery) {
+
+        initList();
+
+        FirestoreRecyclerOptions<LecTeachTime> options = new FirestoreRecyclerOptions.Builder<LecTeachTime>()
+                .setQuery(mQuery, LecTeachTime.class)
+                .build();
+
+        adapter = new FirestoreRecyclerAdapter<LecTeachTime, LessonViewHolder>(options) {
+
+            @NonNull
+            @Override
+            public LessonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.single_lesson, parent, false);
+
+                return new LessonViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull final LessonViewHolder holder, int position, @NonNull LecTeachTime model) {
+
+                holder.init(MainActivity.this, mFirestore, mAuth, model);
+                holder.setUpUi(model);
+            }
+
+            @Override
+            public void onError(FirebaseFirestoreException e) {
+                // Show a snackbar on errors
+                Snackbar.make(findViewById(android.R.id.content),
+                        "Error: check logs for info.", Snackbar.LENGTH_LONG).show();
+
+                Log.d(TAG, "onError: ", e);
+            }
+
+            @Override
+            public void onDataChanged() {
+                // Show/hide content if the query returns empty.
+                if (getItemCount() == 0) {
+                    mainList.setVisibility(View.GONE);
+                    noClassView.setVisibility(View.VISIBLE);
+                } else {
+                    mainList.setVisibility(View.VISIBLE);
+                    noClassView.setVisibility(View.GONE);
+                }
+            }
+
+        };
+
+        adapter.startListening();
+        adapter.notifyDataSetChanged();
+        mainList.setAdapter(adapter);
+    }
+
 }

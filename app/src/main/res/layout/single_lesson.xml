@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="4dp"
-    app:cardUseCompatPadding="true"
-
+    app:cardElevation="4dp"
     >
 
     <android.support.constraint.ConstraintLayout
@@ -15,137 +14,80 @@
         android:layout_height="match_parent">
 
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
-            android:text="Unit Name : "
+        <com.hbb20.GThumb
+            android:id="@+id/attn_gthumb"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            app:gtTextSize="28sp"
+            app:gtUseBoldText="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/ls_unit_name"
+            android:id="@+id/ls_unit_nm"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:fontFamily="@font/nunito_bold"
+            android:fontFamily="@font/nunito"
             android:singleLine="false"
-            android:text="Introduction to Databases"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/textView"
+            android:text="TextView"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/ls_time"
+            app:layout_constraintStart_toEndOf="@+id/attn_gthumb"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="Unit Code : "
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ls_unit_name" />
 
         <TextView
-            android:id="@+id/ls_unit_code"
+            android:id="@+id/ls_unit_cd"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:fontFamily="@font/nunito"
             android:singleLine="false"
             android:text="TextView"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/textView3"
-            app:layout_constraintTop_toTopOf="@+id/textView3" />
-
-        <!-- divider line -->
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:src="@color/contentDividerLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ls_unit_code" />
-
-        <TextView
-            android:id="@+id/ls_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/nunito_bold"
-            android:text="8:30 PM"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView3" />
-
-        <android.support.design.button.MaterialButton
-            android:id="@+id/ls_btn_status"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:layout_marginTop="8dp"
-            android:text="Done"
-            android:textColor="@color/bluish"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView3" />
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/dot"
-            app:layout_constraintStart_toEndOf="@+id/ls_time"
-            app:layout_constraintTop_toBottomOf="@+id/imageView3" />
-
-        <ImageView
-            android:id="@+id/ls_loc_img"
-            android:layout_width="16dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintStart_toEndOf="@+id/textView6"
-            app:layout_constraintTop_toBottomOf="@+id/imageView3"
-            app:srcCompat="@drawable/ic_location_on" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/dot"
-            app:layout_constraintStart_toEndOf="@+id/ls_loc_img"
-            app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+            app:layout_constraintStart_toEndOf="@+id/attn_gthumb"
+            app:layout_constraintTop_toBottomOf="@+id/ls_unit_nm" />
 
         <TextView
             android:id="@+id/ls_venue"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="4dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/nunito_light"
             android:text="School of Business Room 8"
-            app:layout_constraintEnd_toStartOf="@+id/ls_btn_status"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/textView2"
-            app:layout_constraintTop_toBottomOf="@+id/imageView3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/attn_gthumb"
+            app:layout_constraintTop_toBottomOf="@+id/ls_unit_cd"
             tools:text="School of Business Room 8" />
 
+        <TextView
+            android:id="@+id/ls_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/nunito"
+            android:text="8:00AM"
+            android:textAllCaps="true"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="8:00AM" />
+
+
     </android.support.constraint.ConstraintLayout>
+
 </android.support.design.card.MaterialCardView>

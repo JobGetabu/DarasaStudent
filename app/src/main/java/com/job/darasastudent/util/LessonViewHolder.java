@@ -3,18 +3,16 @@ package com.job.darasastudent.util;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.button.MaterialButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.hbb20.GThumb;
 import com.job.darasastudent.R;
 import com.job.darasastudent.appexecutor.DefaultExecutorSupplier;
 import com.job.darasastudent.model.LecTeachTime;
-import com.job.darasastudent.model.QRParser;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -32,20 +30,19 @@ import butterknife.OnClick;
 public class LessonViewHolder extends RecyclerView.ViewHolder {
 
 
-    @BindView(R.id.ls_unit_code)
+    @BindView(R.id.ls_unit_cd)
     TextView lsUnitcode;
-    @BindView(R.id.ls_unit_name)
+    @BindView(R.id.ls_unit_nm)
     TextView lsUnitname;
     @BindView(R.id.ls_time)
     TextView lsTime;
-    @BindView(R.id.ls_btn_status)
-    MaterialButton lsBtnStatus;
-    @BindView(R.id.ls_loc_img)
-    ImageView lsLocImg;
     @BindView(R.id.ls_card)
     ConstraintLayout lsCard;
     @BindView(R.id.ls_venue)
     TextView lsVenue;
+    @BindView(R.id.attn_gthumb)
+    GThumb gThumb;
+
 
     private Context mContext;
     private FirebaseFirestore mFirestore;
@@ -60,14 +57,14 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    public void init(Context mContext, FirebaseFirestore mFirestore,FirebaseAuth mAuth,LecTeachTime lecTeachTime) {
+    public void init(Context mContext, FirebaseFirestore mFirestore, FirebaseAuth mAuth, LecTeachTime lecTeachTime) {
         this.mContext = mContext;
         this.mFirestore = mFirestore;
         this.mAuth = mAuth;
         this.lecTeachTime = lecTeachTime;
     }
 
-
+    /*
     @OnClick(R.id.ls_btn_status)
     public void onLsBtnClicked() {
 
@@ -79,10 +76,9 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
 
         //change status when class is recorded
     }
+    */
 
-    @OnClick(R.id.ls_loc_img)
-    public void onLsLocImgClicked() {
-    }
+
 
     @OnClick(R.id.ls_card)
     public void onLsCardClicked() {
@@ -96,17 +92,20 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
                     @Override
                     public void run() {
 
-                        lsUnitcode.setText(lecTeachTime.getUnitcode());
-                        lsUnitname.setText(lecTeachTime.getUnitname());
-                        lsVenue.setText(lecTeachTime.getVenue());
+                        lsUnitcode.setText("Unit code: "+lecTeachTime.getUnitcode());
+                        lsUnitname.setText("Unit :"+lecTeachTime.getUnitname());
+                        lsVenue.setText("Venue : "+lecTeachTime.getVenue());
                         lessonTime(lecTeachTime.getTime());
-                        locationViewer(lecTeachTime);
+                        gThumb.applyMultiColor();
+                        gThumb.setBackgroundShape(GThumb.BACKGROUND_SHAPE.ROUND);
+                        gThumb.loadThumbForName("", lecTeachTime.getUnitname());
+                        //locationViewer(lecTeachTime);
 
                     }
                 });
     }
 
-    private void locationViewer(LecTeachTime lecTeachTime) {
+   /* private void locationViewer(LecTeachTime lecTeachTime) {
         if (lecTeachTime.getVenue().isEmpty()) {
 
             DrawableHelper
@@ -123,7 +122,7 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
                     .tint()
                     .applyTo(lsLocImg);
         }
-    }
+    }*/
 
 
     private void lessonTime(Date timestamp) {
