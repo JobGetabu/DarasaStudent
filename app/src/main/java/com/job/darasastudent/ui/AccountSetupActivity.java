@@ -11,20 +11,28 @@ import android.support.design.button.MaterialButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.abdeveloper.library.MultiSelectDialog;
+import com.abdeveloper.library.MultiSelectModel;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Source;
 import com.job.darasastudent.R;
 import com.job.darasastudent.model.StudentDetails;
 import com.job.darasastudent.util.AppStatus;
 import com.job.darasastudent.util.DoSnack;
 import com.job.darasastudent.viewmodel.AccountSetupViewModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,6 +41,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.job.darasastudent.util.Constants.DKUTCOURSES;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
 
 
@@ -56,6 +65,8 @@ public class AccountSetupActivity extends AppCompatActivity {
     MaterialButton setupCourseBtn;
     @BindView(R.id.setup_course)
     TextInputLayout setupCourse;
+
+    private static final String TAG = "acSetup";
 
     private DoSnack doSnack;
 
@@ -88,6 +99,8 @@ public class AccountSetupActivity extends AppCompatActivity {
 
         model = ViewModelProviders.of(AccountSetupActivity.this, factory)
                 .get(AccountSetupViewModel.class);
+
+        setupCourse.setVisibility(View.GONE);
 
         //ui observer
         uiObserver();
@@ -240,6 +253,63 @@ public class AccountSetupActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.setup_course_btn)
-    public void onViewClicked() {
+    public void onViewCourseClicked() {
+
+        mFirestore.collection(DKUTCOURSES).document("dkut")
+                .get(Source.DEFAULT)
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            Map<String, Object> mapdata = task.getResult().getData();
+
+                            if (mapdata != null) {
+
+                                //List of courses with Name and Id
+                                ArrayList<MultiSelectModel> listOfCourses = new ArrayList<>();
+
+                                int i = 1;
+                                for (Map.Entry<String, Object> entry : mapdata.entrySet()) {
+                                    //System.out.println(entry.getKey() + "/" + entry.getValue());
+
+                                    listOfCourses.add(new MultiSelectModel(i, entry.getValue().toString()));
+                                    i++;
+                                }
+
+                                promptCourseList(listOfCourses);
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void promptCourseList(ArrayList<MultiSelectModel> listOfCourses) {
+        //MultiSelectModel
+        MultiSelectDialog multiSelectDialog = new MultiSelectDialog()
+                .title(getResources().getString(R.string.select_course)) //setting title for dialog
+                .titleSize(20)
+                .positiveText("Done")
+                .negativeText("Cancel")
+                .setMaxSelectionLimit(1)
+                .setMinSelectionLimit(1) //you can set minimum checkbox selection limit (Optional)
+                //.preSelectIDsList() //List of ids that you need to be selected
+                .multiSelectList(listOfCourses) // the multi select model list with ids and name
+                .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
+                    @Override
+                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+
+                        setupCourse.setVisibility(View.VISIBLE);
+                        setupCourse.getEditText().setText(selectedNames.get(0).trim());
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Log.d(TAG, "Dialog cancelled");
+                    }
+
+
+                });
+        multiSelectDialog.show(this.getSupportFragmentManager(), "multiSelectDialog");
     }
 }

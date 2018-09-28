@@ -64,6 +64,9 @@ dependencies {
     //custom action button
     implementation 'com.robertlevonyan.view:CustomFloatingActionButton:2.1.0'
 
+    //multiselect dialogue
+    implementation 'com.github.abumoallim:Android-Multi-Select-Dialog:v1.9'
+
     //architecture components
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:1.1.1"
