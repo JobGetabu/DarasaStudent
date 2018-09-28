@@ -135,7 +135,7 @@ public class SignupActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick({R.id.signup_via_google,R.id.signup_via_google})
+    @OnClick({R.id.signup_via_google,R.id.signup_via_google_image})
     public void onSignupViaGoogleClicked() {
 
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();

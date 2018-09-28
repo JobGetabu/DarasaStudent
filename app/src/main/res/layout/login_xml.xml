@@ -74,6 +74,8 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="@color/colorAccent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -85,7 +87,7 @@
                     android:drawableStart="@drawable/pass"
                     android:drawablePadding="12dp"
                     android:hint="@string/password"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="textPassword" />
 
             </android.support.design.widget.TextInputLayout>
 
