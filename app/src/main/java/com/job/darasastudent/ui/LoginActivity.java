@@ -307,6 +307,10 @@ public class LoginActivity extends AppCompatActivity {
 
         StudentDetails studentDetails = new StudentDetails();
         studentDetails.setDevicetoken(device_token);
+        studentDetails.setPhotourl(user.getPhotoUrl().toString());
+        studentDetails.setFirstname(user.getDisplayName());
+        studentDetails.setStudentid(mCurrentUserid);
+
         // Set the value of 'Users'
         DocumentReference usersRef = mFirestore.collection(STUDENTDETAILSCOL).document(mCurrentUserid);
 

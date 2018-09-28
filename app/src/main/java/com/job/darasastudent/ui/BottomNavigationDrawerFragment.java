@@ -92,6 +92,11 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
                             sendToInviteScreen();
                             dismiss();
                             return true;
+
+                        case R.id.nav_settings:
+                            startActivity(new Intent(getContext(),SettingsActivity.class));
+                            dismiss();
+                            return true;
                     }
                     return false;
                 }
