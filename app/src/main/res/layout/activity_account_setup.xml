@@ -86,6 +86,40 @@
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
+            <android.support.design.button.MaterialButton
+                android:id="@+id/setup_course_btn"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/material_blue_grey_80"
+                android:fontFamily="@font/nunito_bold"
+                android:text="@string/select_course"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/darkgreyish"
+                android:textSize="16sp" />
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/setup_course"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="true"
+                    android:focusable="false"
+                    android:hint="@string/select_course"
+                    android:inputType="time"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/setup_school"
                 android:layout_width="match_parent"
