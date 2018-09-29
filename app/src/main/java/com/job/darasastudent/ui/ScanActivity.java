@@ -1,35 +1,28 @@
 package com.job.darasastudent.ui;
 
-import android.animation.ObjectAnimator;
+import android.graphics.Color;
+import android.graphics.PointF;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.Toast;
 
-import com.budiyev.android.codescanner.CodeScanner;
-import com.budiyev.android.codescanner.CodeScannerView;
-import com.budiyev.android.codescanner.DecodeCallback;
-import com.google.zxing.Result;
+import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
+import com.google.gson.Gson;
 import com.job.darasastudent.R;
+import com.job.darasastudent.model.QRParser;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class ScanActivity extends AppCompatActivity {
-
-    //TODO create layout for different size phones :activity_viewfinder
-
+public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {
 
     @BindView(R.id.scan_toolbar)
     Toolbar scanToolbar;
-    @BindView(R.id.scanner_view)
-    CodeScannerView scannerView;
+    @BindView(R.id.qrdecoderview)
+    QRCodeReaderView qrCodeReaderView;
 
-
-    private ObjectAnimator animator;
-    private CodeScanner mCodeScanner;
+    private Gson gson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,69 +33,119 @@ public class ScanActivity extends AppCompatActivity {
         setSupportActionBar(scanToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_back));
-        //animateLine();
+
+        gson = new Gson();
+
+        qrCodeReaderView.setOnQRCodeReadListener(this);
+
+        // Use this function to enable/disable decoding
+        qrCodeReaderView.setQRDecodingEnabled(true);
+
+        // Use this function to change the autofocus interval (default is 5 secs)
+        qrCodeReaderView.setAutofocusInterval(2000L);
+
+        // Use this function to enable/disable Torch
+        qrCodeReaderView.setTorchEnabled(true);
+
+        // Use this function to set front camera preview
+        //qrCodeReaderView.setFrontCamera();
+
+        // Use this function to set back camera preview
+        qrCodeReaderView.setBackCamera();
+
+    }
 
 
-        mCodeScanner = new CodeScanner(this, scannerView);
-        mCodeScanner.setDecodeCallback(new DecodeCallback() {
+    // Called when a QR is decoded
+    // "text" : the text encoded in QR
+    // "points" : points where QR control points are placed in View
+    @Override
+    public void onQRCodeRead(String text, PointF[] points) {
+
+        QRParser qrParser = new QRParser().gsonToQRParser(gson, text);
+
+        final SweetAlertDialog pDialog = new SweetAlertDialog(ScanActivity.this, SweetAlertDialog.SUCCESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+
+       failScanLocation(pDialog, qrParser);
+    }
+
+    private void successScan(final SweetAlertDialog pDialog,QRParser qrParser){
+        pDialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+        pDialog.setTitleText("Confirmed :"+qrParser.getUnitname()+" \n"+ qrParser.getUnitcode()+"\n Location: proximity ON");
+        pDialog.setCancelable(false);
+        pDialog.show();
+
+        qrCodeReaderView.stopCamera();
+
+        pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
             @Override
-            public void onDecoded(@NonNull final Result result) {
-                ScanActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(ScanActivity.this, result.getText(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+            public void onClick(SweetAlertDialog sDialog) {
+                sDialog.dismissWithAnimation();
+
+                finish();
             }
         });
+    }
 
-        scannerView.setOnClickListener(new View.OnClickListener() {
+    private void failScanLocation(final SweetAlertDialog pDialog,QRParser qrParser){
+
+        pDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+
+        pDialog.setTitleText("Failed : RESCAN !"+" \n"+"\nYou're not in class!"+"\n Location: proximity OFF");
+        pDialog.setCancelable(false);
+        pDialog.show();
+
+        qrCodeReaderView.stopCamera();
+
+        pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
             @Override
-            public void onClick(View view) {
-                mCodeScanner.startPreview();
+            public void onClick(SweetAlertDialog sDialog) {
+                sDialog.dismissWithAnimation();
+
+                finish();
             }
         });
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mCodeScanner.startPreview();
+        qrCodeReaderView.startCamera();
     }
 
     @Override
     protected void onPause() {
-        mCodeScanner.releaseResources();
         super.onPause();
+        qrCodeReaderView.stopCamera();
     }
 
-   /* private void animateLine() {
 
-        animator = null;
+    /* DefaultExecutorSupplier.getInstance().forMainThreadTasks()
+                        .execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                QRParser qrParser = new QRParser().gsonToQRParser(gson, result.getText());
 
-        ViewTreeObserver vto = scannerLayout.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
+                                final SweetAlertDialog pDialog = new SweetAlertDialog(ScanActivity.this, SweetAlertDialog.SUCCESS_TYPE);
+                                pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+                                pDialog.setTitle("Confirmed :"+qrParser.getUnitname());
+                                pDialog.setTitleText(qrParser.getUnitcode());
+                                pDialog.setCancelable(false);
+                                pDialog.show();
 
-                scannerLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                scannerLayout.getViewTreeObserver().
-                        removeOnGlobalLayoutListener(this);
+                                pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sDialog) {
+                                        sDialog.dismissWithAnimation();
 
-                float destination2 = (float) (0f +
-                        scannerLayout.getHeight());
 
-                animator = ObjectAnimator.ofFloat(scannerBar, "translationY", 0f, destination2);
+                                    }
+                                });
 
-                animator.setRepeatMode(ValueAnimator.REVERSE);
-                animator.setRepeatCount(ValueAnimator.INFINITE);
-                animator.setInterpolator(new AccelerateDecelerateInterpolator());
-                animator.setDuration(3000);
-                animator.start();
-
-            }
-        });
-    } */
+                            }
+                        });*/
 
 }

@@ -172,3 +172,7 @@ q
 Aapp/src/main/java/com/job/darasastudent/model/StudentDetails.java,7\8\78878dbdb0297a292c8df48dfc0f08bca5883c70
 m
 =app/src/main/java/com/job/darasastudent/ui/LoginActivity.java,c\6\c651c2a50b2515b3c2389a31ba1945c0929a561d
+\
+,app/src/main/res/layout/activity_qreader.xml,1\5\15d7fae40eceaa8322272aded40ffed60d8a5c97
+o
+?app/src/main/java/com/job/darasastudent/ui/QReaderActivity.java,b\9\b990ba1bbe2e0795e0606ab9e1ab4badaee7158c

@@ -149,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.main_fab)
     public void onFabClicked() {
         startActivity(new Intent(this, ScanActivity.class));
+        //startActivity(new Intent(this, QReaderActivity.class));
     }
 
     @Override
@@ -241,15 +242,19 @@ public class MainActivity extends AppCompatActivity {
 
                                         // form query
 
-                                        mQuery = queryDocumentSnapshots
-                                                .getQuery()
-                                                .whereArrayContains("courses", course)
-                                                .whereEqualTo("day", sDay)
-                                                .whereEqualTo("semester", currentsemester)
-                                                .whereEqualTo("studyyear", currentyear)
-                                                .orderBy("time", Query.Direction.ASCENDING);
+                                        if (documentSnapshot.exists() && course != null){
 
-                                        setUpList(mQuery);
+                                            mQuery = queryDocumentSnapshots
+                                                    .getQuery()
+                                                    .whereArrayContains("courses", course)
+                                                    .whereEqualTo("day", sDay)
+                                                    .whereEqualTo("semester", currentsemester)
+                                                    .whereEqualTo("studyyear", currentyear)
+                                                    .orderBy("time", Query.Direction.ASCENDING);
+
+                                            setUpList(mQuery);
+                                        }
+
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                             @Override
