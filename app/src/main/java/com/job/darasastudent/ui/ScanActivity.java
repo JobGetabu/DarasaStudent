@@ -131,7 +131,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         pDialog.changeAlertType(SweetAlertDialog.WARNING_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
 
-        pDialog.setTitleText("Not Allowed !" + "\nScan code from" + "\n Darasa Lecturer App");
+        pDialog.setTitleText("Not Allowed !" + "\n\nScan code from" + "\n Darasa Lecturer App");
         pDialog.setCancelable(false);
         pDialog.show();
 
