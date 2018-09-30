@@ -5,6 +5,7 @@ import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 import com.google.gson.Gson;
@@ -24,6 +25,8 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
     QRCodeReaderView qrCodeReaderView;
     @BindView(R.id.scanner_view)
     CodeScannerView scannerView;
+
+    private static final String TAG = "ScanActivity";
 
     private Gson gson;
 
@@ -67,10 +70,18 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
 
+
         QRParser qrParser = new QRParser().gsonToQRParser(gson, text);
+
 
         final SweetAlertDialog pDialog = new SweetAlertDialog(ScanActivity.this, SweetAlertDialog.SUCCESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+
+        if (qrParser == null){
+            Log.d(TAG, "onQRCodeRead: "+text);
+            unauthScanLocation(pDialog);
+            return;
+        }
 
         failScanLocation(pDialog, qrParser);
     }
@@ -100,6 +111,27 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
 
         pDialog.setTitleText("Failed : RESCAN !" + " \n" + "\nYou're not in class!" + "\n Location: proximity OFF");
+        pDialog.setCancelable(false);
+        pDialog.show();
+
+        qrCodeReaderView.stopCamera();
+
+        pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sDialog) {
+                sDialog.dismissWithAnimation();
+
+                finish();
+            }
+        });
+    }
+
+    private void unauthScanLocation(final SweetAlertDialog pDialog) {
+
+        pDialog.changeAlertType(SweetAlertDialog.WARNING_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+
+        pDialog.setTitleText("Not Allowed !" + "\nScan code from" + "\n Darasa Lecturer App");
         pDialog.setCancelable(false);
         pDialog.show();
 

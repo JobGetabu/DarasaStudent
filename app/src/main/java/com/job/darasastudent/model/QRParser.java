@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 
 import java.util.Date;
 
@@ -26,7 +27,7 @@ public class QRParser implements Parcelable {
                     String lecteachtimeid, String unitname, String unitcode) {
         this.latitude = latitude;
         this.longitude = longitude;
-        this.time =time;
+        this.time = time;
         this.lecteachtimeid = lecteachtimeid;
         this.unitname = unitname;
         this.unitcode = unitcode;
@@ -80,15 +81,20 @@ public class QRParser implements Parcelable {
         this.time = time;
     }
 
-    public String classToGson(Gson gson, QRParser qrParser){
+    public String classToGson(Gson gson, QRParser qrParser) {
 
         return gson.toJson(qrParser);
 
     }
 
-    public QRParser gsonToQRParser(Gson gson, String decodedString){
+    public QRParser gsonToQRParser(Gson gson, String decodedString) {
 
-        return gson.fromJson(decodedString , QRParser.class);
+        try {
+
+            return gson.fromJson(decodedString, QRParser.class);
+        }catch (JsonParseException e) {
+           return null;
+        }
 
     }
 
