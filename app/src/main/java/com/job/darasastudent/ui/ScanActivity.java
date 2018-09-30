@@ -10,6 +10,7 @@ import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 import com.google.gson.Gson;
 import com.job.darasastudent.R;
 import com.job.darasastudent.model.QRParser;
+import com.job.darasastudent.scanview.CodeScannerView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,6 +22,8 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
     Toolbar scanToolbar;
     @BindView(R.id.qrdecoderview)
     QRCodeReaderView qrCodeReaderView;
+    @BindView(R.id.scanner_view)
+    CodeScannerView scannerView;
 
     private Gson gson;
 
@@ -53,6 +56,8 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         // Use this function to set back camera preview
         qrCodeReaderView.setBackCamera();
 
+        scannerView.setQRCodeReaderView(qrCodeReaderView);
+
     }
 
 
@@ -67,13 +72,13 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         final SweetAlertDialog pDialog = new SweetAlertDialog(ScanActivity.this, SweetAlertDialog.SUCCESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
 
-       failScanLocation(pDialog, qrParser);
+        failScanLocation(pDialog, qrParser);
     }
 
-    private void successScan(final SweetAlertDialog pDialog,QRParser qrParser){
+    private void successScan(final SweetAlertDialog pDialog, QRParser qrParser) {
         pDialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
-        pDialog.setTitleText("Confirmed :"+qrParser.getUnitname()+" \n"+ qrParser.getUnitcode()+"\n Location: proximity ON");
+        pDialog.setTitleText("Confirmed :" + qrParser.getUnitname() + " \n" + qrParser.getUnitcode() + "\n Location: proximity ON");
         pDialog.setCancelable(false);
         pDialog.show();
 
@@ -89,12 +94,12 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         });
     }
 
-    private void failScanLocation(final SweetAlertDialog pDialog,QRParser qrParser){
+    private void failScanLocation(final SweetAlertDialog pDialog, QRParser qrParser) {
 
         pDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
 
-        pDialog.setTitleText("Failed : RESCAN !"+" \n"+"\nYou're not in class!"+"\n Location: proximity OFF");
+        pDialog.setTitleText("Failed : RESCAN !" + " \n" + "\nYou're not in class!" + "\n Location: proximity OFF");
         pDialog.setCancelable(false);
         pDialog.show();
 
