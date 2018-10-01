@@ -1,3 +1,4 @@
 
-Ssquid:S1135"2Complete the task associated to this TODO comment.(İòÄëşÿÿÿÿ8ò‚ò®Ò,
-Msquid:S1068",Remove this unused "animator" private field.(ëÀšòşÿÿÿÿ8ò‚ò®Ò,
+\squid:UnusedPrivateMethodY"0Remove this unused private "successScan" method.(›¶Öè8ÃÕ¿â,
+ksquid:S1192N"HDefine a constant instead of duplicating this literal "#FF5521" 4 times.(¿ÍßÜüÿÿÿÿ8ÃÕ¿â,
+Rsquid:S1172l"/Remove this unused method parameter "qrParser".(ØõÓ»úÿÿÿÿ8ÃÕ¿â,

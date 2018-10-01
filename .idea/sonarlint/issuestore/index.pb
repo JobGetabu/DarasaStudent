@@ -176,3 +176,15 @@ m
 ,app/src/main/res/layout/activity_qreader.xml,1\5\15d7fae40eceaa8322272aded40ffed60d8a5c97
 o
 ?app/src/main/java/com/job/darasastudent/ui/QReaderActivity.java,b\9\b990ba1bbe2e0795e0606ab9e1ab4badaee7158c
+S
+#app/src/main/res/drawable/ic_vf.xml,b\6\b617b728edbd0a52ae9b1e4f707fd14a3783686c
+T
+$app/src/main/res/drawable/ic_vf2.xml,b\0\b0f7bc7d3dce5f6ae8efc241aae9341b183c3743
+^
+.app/src/main/res/layout/scan_bottom_layout.xml,1\f\1f48242db154d21869b4d470c2c4cfeba337eab4
+Q
+!app/src/main/res/values/attrs.xml,6\7\67fe4d6109901ba14977f463101f33b426043966
+t
+Dapp/src/main/java/com/job/darasastudent/scanview/ViewFinderView.java,1\d\1d159aa0cfc4399aee14f4eab2f54111bdd22c96
+u
+Eapp/src/main/java/com/job/darasastudent/scanview/CodeScannerView.java,d\4\d453a8ca2d08589a79a62071faa92988989bad31
