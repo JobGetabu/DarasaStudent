@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -33,6 +34,7 @@ import com.job.darasastudent.R;
 import com.job.darasastudent.model.LecTeachTime;
 import com.job.darasastudent.util.Constants;
 import com.job.darasastudent.util.DoSnack;
+import com.job.darasastudent.util.ImageProcessor;
 import com.job.darasastudent.util.LessonViewHolder;
 import com.robertlevonyan.views.customfloatingactionbutton.FloatingActionButton;
 
@@ -44,6 +46,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.job.darasastudent.util.Constants.LECTEACHTIMECOL;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
@@ -60,8 +63,20 @@ public class MainActivity extends AppCompatActivity {
     TextView mainToolbartitle;
     @BindView(R.id.main_list)
     RecyclerView mainList;
+    @BindView(R.id.main_user_list_info)
+    View mainUserListView;
 
     private static final String TAG = "main";
+    @BindView(R.id.user_info_image)
+    CircleImageView userInfoImage;
+    @BindView(R.id.user_info_username)
+    TextView userInfoUsername;
+    @BindView(R.id.user_info_time)
+    TextView userInfoTime;
+    @BindView(R.id.user_info_course)
+    TextView userInfoCourse;
+    @BindView(R.id.user_info_img_notification)
+    ImageButton userInfoImgNotification;
 
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
@@ -72,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
     private Query mQuery = null;
 
     private DoSnack doSnack;
+    private ImageProcessor imageProcessor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
         mFirestore = FirebaseFirestore.getInstance();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        imageProcessor = new ImageProcessor(this);
+
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -103,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
                     classListQuery(Calendar.getInstance());
 
+                    setUpUi(userId);
                 }
             }
         };
@@ -110,6 +129,30 @@ public class MainActivity extends AppCompatActivity {
         mAuth.addAuthStateListener(mAuthListener);
 
         doSnack = new DoSnack(this, MainActivity.this);
+    }
+
+    private void setUpUi(String userId) {
+
+        userInfoUsername.setText(mAuth.getCurrentUser().getDisplayName());
+
+        mFirestore.collection(STUDENTDETAILSCOL).document(userId)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        //Sem 2 - 2018/19
+                        //Bs. BBIT
+                        String sem = documentSnapshot.getString("currentsemester");
+                        String academ = documentSnapshot.getString("currentacademicyear");
+                        String course = documentSnapshot.getString("course");
+                        String picurl = documentSnapshot.getString("photourl");
+
+
+                        userInfoTime.setText("Sem " + sem + " - " + academ);
+                        userInfoCourse.setText(course);
+                        imageProcessor.setMyImage(userInfoImage, picurl);
+                    }
+                });
     }
 
     @Override
@@ -149,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.main_fab)
     public void onFabClicked() {
         startActivity(new Intent(this, ScanActivity.class));
-        //startActivity(new Intent(this, QReaderActivity.class));
     }
 
     @Override
@@ -242,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
 
                                         // form query
 
-                                        if (documentSnapshot.exists() && course != null){
+                                        if (documentSnapshot.exists() && course != null) {
 
                                             mQuery = queryDocumentSnapshots
                                                     .getQuery()
@@ -326,10 +368,10 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChanged() {
                 // Show/hide content if the query returns empty.
                 if (getItemCount() == 0) {
-                    mainList.setVisibility(View.GONE);
+                    mainUserListView.setVisibility(View.GONE);
                     noClassView.setVisibility(View.VISIBLE);
                 } else {
-                    mainList.setVisibility(View.VISIBLE);
+                    mainUserListView.setVisibility(View.VISIBLE);
                     noClassView.setVisibility(View.GONE);
                 }
             }

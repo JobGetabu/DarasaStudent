@@ -16,11 +16,11 @@
 
         <com.hbb20.GThumb
             android:id="@+id/attn_gthumb"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            app:gtTextSize="28sp"
+            app:gtTextSize="24sp"
             app:gtUseBoldText="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -35,7 +35,7 @@
             android:fontFamily="@font/nunito"
             android:singleLine="false"
             android:text="TextView"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/ls_time"
             app:layout_constraintStart_toEndOf="@+id/attn_gthumb"

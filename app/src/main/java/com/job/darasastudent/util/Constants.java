@@ -21,6 +21,9 @@ public class Constants {
     public static final String DKUTCOURSES = "DkutCourses";
 
 
+    //prefs
+    public static final String COMPLETED_GIF_PREF_NAME = "COMPLETED_GIF_PREF_NAME";
+
 
 
     public static void createEmailIntent(Context ctx,

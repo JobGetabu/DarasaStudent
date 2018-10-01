@@ -6,19 +6,23 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.design.button.MaterialButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
@@ -29,15 +33,19 @@ import com.job.darasastudent.scanview.CodeScannerView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
 import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider;
 
+import static com.job.darasastudent.util.Constants.COMPLETED_GIF_PREF_NAME;
+
 public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener, OnLocationUpdatedListener {
 
     private static final int LOCATION_PERMISSION_ID = 1001;
     private static final String TAG = "ScanActivity";
+
 
     @BindView(R.id.scan_toolbar)
     Toolbar scanToolbar;
@@ -45,6 +53,10 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
     QRCodeReaderView qrCodeReaderView;
     @BindView(R.id.scanner_view)
     CodeScannerView scannerView;
+    @BindView(R.id.scan_gif)
+    View scanGifView;
+    @BindView(R.id.gif_gotit_btn)
+    MaterialButton gifGotitBtn;
 
 
     private Gson gson;
@@ -57,6 +69,15 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viewfinder);
         ButterKnife.bind(this);
+
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        // Check if we need to display our GIF
+        if (!sharedPreferences.getBoolean(
+                COMPLETED_GIF_PREF_NAME, false)) {
+            // The user hasn't seen the GIF yet, so show it
+            scanGifView.setVisibility(View.VISIBLE);
+        }
 
         setSupportActionBar(scanToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -313,6 +334,20 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
             scanLocImg.setImageResource(R.drawable.ic_loc_off);
         }
+    }
+
+    @OnClick(R.id.gif_gotit_btn)
+    public void gifBtnOnclick(){
+
+        // User has seen GIF, so mark our SharedPreferences
+        // flag as completed so that we don't show our GIF
+        // the next time the user launches the app.
+        SharedPreferences.Editor sharedPreferencesEditor =
+                PreferenceManager.getDefaultSharedPreferences(this).edit();
+        sharedPreferencesEditor.putBoolean(
+                COMPLETED_GIF_PREF_NAME, true);
+        sharedPreferencesEditor.apply();
+        scanGifView.setVisibility(View.GONE);
     }
 
 }

@@ -41,7 +41,7 @@
                 android:minWidth="250dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/gif_darasa"
-                app:layout_constraintBottom_toTopOf="@+id/settings_current"
+                app:layout_constraintBottom_toTopOf="@+id/gif_gotit_btn"
                 app:layout_constraintDimensionRatio="w,16:9"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -49,7 +49,7 @@
 
 
             <android.support.design.button.MaterialButton
-                android:id="@+id/settings_current"
+                android:id="@+id/gif_gotit_btn"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
