@@ -6,11 +6,13 @@
 
     <color name="semitransparent">#64696969</color>
     <color name="semitransparent_darker">#a0696969</color>
+    <color name="lightgrey">#7F7F7F</color>
 
     <color name="colorwhitish">#FFFFFF</color>
     <color name="colorgreyish">#d7d7d7</color>
     <color name="darkgreyish">#1e1e1e</color>
     <color name="bluish">#1212fa</color>
+    <color name="light_bluish">#2C80F0</color>
 
     <color name="contentDividerLine">#e0e0e0</color>
     <color name="greyish">#646464</color>
