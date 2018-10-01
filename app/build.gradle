@@ -70,6 +70,9 @@ dependencies {
     //gthumb
     implementation 'com.hbb20:gthumb:1.3'
 
+    //gif support
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.15'
+
     //architecture components
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:1.1.1"
