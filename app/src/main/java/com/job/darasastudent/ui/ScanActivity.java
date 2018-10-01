@@ -26,7 +26,6 @@ import com.google.gson.Gson;
 import com.job.darasastudent.R;
 import com.job.darasastudent.model.QRParser;
 import com.job.darasastudent.scanview.CodeScannerView;
-import com.job.darasastudent.util.DrawableHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -110,8 +109,8 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         final SweetAlertDialog pDialog = new SweetAlertDialog(ScanActivity.this, SweetAlertDialog.SUCCESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
 
-        if (qrParser == null){
-            Log.d(TAG, "onQRCodeRead: "+text);
+        if (qrParser == null) {
+            Log.d(TAG, "onQRCodeRead: " + text);
             unauthScanLocation(pDialog);
             return;
         }
@@ -243,7 +242,14 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         builder.setMessage(R.string.permission_rationale_location); // Want to enable?
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogInterface, int i) {
-                ScanActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+
+                if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+
+                    ScanActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+
+                } else {
+                    dialogInterface.dismiss();
+                }
             }
         });
         builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -256,11 +262,11 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             dd.show();
-            setUpLocationUi(false,scannerView.getmAutoFocusButton());
+            setUpLocationUi(false, scannerView.getmAutoFocusButton());
 
         } else {
             dd.dismiss();
-            setUpLocationUi(true,scannerView.getmAutoFocusButton());
+            setUpLocationUi(true, scannerView.getmAutoFocusButton());
 
         }
     }
@@ -295,20 +301,18 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
     private void setUpLocationUi(Boolean on_off, ImageView scanLocImg) {
         if (on_off) {
 
-            DrawableHelper
+       /*     DrawableHelper
                     .withContext(this)
                     .withColor(R.color.darkbluish)
                     .withDrawable(R.drawable.ic_location_on)
                     .tint()
-                    .applyTo(scanLocImg);
+                    .applyTo(scanLocImg);*/
+
+            scanLocImg.setImageResource(R.drawable.ic_loc_on);
         } else {
 
-            DrawableHelper
-                    .withContext(this)
-                    .withColor(R.color.greyish)
-                    .withDrawable(R.drawable.ic_location_on)
-                    .tint()
-                    .applyTo(scanLocImg);
+            scanLocImg.setImageResource(R.drawable.ic_loc_off);
         }
     }
+
 }

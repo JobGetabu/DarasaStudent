@@ -44,6 +44,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 import com.job.darasastudent.R;
@@ -532,9 +533,13 @@ public final class CodeScannerView extends ViewGroup {
         @Override
         public void onClick(final View view) {
 
-            setAutoFocusEnabled(true);
-
             Log.d(TAG, "onClick:  auto focus");
+
+            if (getmAutoFocusButton().getDrawable() == getResources().getDrawable(R.drawable.ic_loc_on)){
+                Toast.makeText(getContext(), "Location is ON", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(getContext(), "Location is OFF", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
