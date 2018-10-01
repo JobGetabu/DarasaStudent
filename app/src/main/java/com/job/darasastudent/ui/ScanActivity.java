@@ -1,23 +1,44 @@
 package com.job.darasastudent.ui;
 
+import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PointF;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 import com.google.gson.Gson;
 import com.job.darasastudent.R;
 import com.job.darasastudent.model.QRParser;
 import com.job.darasastudent.scanview.CodeScannerView;
+import com.job.darasastudent.util.DrawableHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import io.nlopez.smartlocation.OnLocationUpdatedListener;
+import io.nlopez.smartlocation.SmartLocation;
+import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider;
 
-public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {
+public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener, OnLocationUpdatedListener {
+
+    private static final int LOCATION_PERMISSION_ID = 1001;
+    private static final String TAG = "ScanActivity";
 
     @BindView(R.id.scan_toolbar)
     Toolbar scanToolbar;
@@ -26,9 +47,11 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
     @BindView(R.id.scanner_view)
     CodeScannerView scannerView;
 
-    private static final String TAG = "ScanActivity";
 
     private Gson gson;
+    private LocationGooglePlayServicesProvider provider;
+    private Location mLocation;
+    private int locationcount = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +64,16 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_back));
 
         gson = new Gson();
+
+        // Check if the location services are enabled
+        checkLocationOn();
+        SmartLocation.with(this).location().state().locationServicesEnabled();
+        // Location permission not granted
+        if (ContextCompat.checkSelfPermission(ScanActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(ScanActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_ID);
+            return;
+        }
+        startLocation();
 
         qrCodeReaderView.setOnQRCodeReadListener(this);
 
@@ -148,41 +181,134 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        //register location change broadcast
+        registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+    }
+
+    @Override
     protected void onResume() {
-        super.onResume();
         qrCodeReaderView.startCamera();
+        //register location change broadcast
+        registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+        super.onResume();
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
         qrCodeReaderView.stopCamera();
+        stopLocation();
+        //unregister location change broadcast
+        try {
+            unregisterReceiver(mGpsSwitchStateReceiver);
+        } catch (IllegalArgumentException e) {
+        }
+        super.onPause();
     }
 
+    @Override
+    protected void onDestroy() {
+        stopLocation();
+        //unregister location change broadcast
+        try {
+            unregisterReceiver(mGpsSwitchStateReceiver);
+        } catch (IllegalArgumentException e) {
+        }
 
-    /* DefaultExecutorSupplier.getInstance().forMainThreadTasks()
-                        .execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                QRParser qrParser = new QRParser().gsonToQRParser(gson, result.getText());
+        super.onDestroy();
+    }
 
-                                final SweetAlertDialog pDialog = new SweetAlertDialog(ScanActivity.this, SweetAlertDialog.SUCCESS_TYPE);
-                                pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
-                                pDialog.setTitle("Confirmed :"+qrParser.getUnitname());
-                                pDialog.setTitleText(qrParser.getUnitcode());
-                                pDialog.setCancelable(false);
-                                pDialog.show();
+    private void startLocation() {
 
-                                pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(SweetAlertDialog sDialog) {
-                                        sDialog.dismissWithAnimation();
+        provider = new LocationGooglePlayServicesProvider();
+        provider.setCheckLocationSettings(true);
 
+        SmartLocation smartLocation = new SmartLocation.Builder(this).logging(true).build();
 
-                                    }
-                                });
+        smartLocation.location(provider).start(this);
 
-                            }
-                        });*/
+        //register location change broadcast
+        registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+    }
 
+    private void checkLocationOn() {
+
+        final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(R.string.location);  // GPS not found
+        builder.setMessage(R.string.permission_rationale_location); // Want to enable?
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ScanActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            }
+        });
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        AlertDialog dd = builder.create();
+
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            dd.show();
+            setUpLocationUi(false,scannerView.getmAutoFocusButton());
+
+        } else {
+            dd.dismiss();
+            setUpLocationUi(true,scannerView.getmAutoFocusButton());
+
+        }
+    }
+
+    /**
+     * Following broadcast receiver is to listen the Location button toggle state in Android.
+     */
+    private BroadcastReceiver mGpsSwitchStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (intent.getAction().matches("android.location.PROVIDERS_CHANGED")) {
+                // Make an action or refresh an already managed state.
+                checkLocationOn();
+            }
+        }
+    };
+
+    @Override
+    public void onLocationUpdated(Location location) {
+        //showLocation(location);
+
+        mLocation = location;
+    }
+
+    private void stopLocation() {
+        SmartLocation.with(this).location().stop();
+        SmartLocation.with(this).geocoding().stop();
+
+    }
+
+    private void setUpLocationUi(Boolean on_off, ImageView scanLocImg) {
+        if (on_off) {
+
+            DrawableHelper
+                    .withContext(this)
+                    .withColor(R.color.darkbluish)
+                    .withDrawable(R.drawable.ic_location_on)
+                    .tint()
+                    .applyTo(scanLocImg);
+        } else {
+
+            DrawableHelper
+                    .withContext(this)
+                    .withColor(R.color.greyish)
+                    .withDrawable(R.drawable.ic_location_on)
+                    .tint()
+                    .applyTo(scanLocImg);
+        }
+    }
 }

@@ -514,6 +514,10 @@ public final class CodeScannerView extends ViewGroup {
                 enabled ? R.drawable.ic_code_scanner_auto_focus_on : R.drawable.ic_code_scanner_auto_focus_off);
     }
 
+    public ImageView getmAutoFocusButton() {
+        return mAutoFocusButton;
+    }
+
     void setFlashEnabled(final boolean enabled) {
         mFlashButton
                 .setImageResource(enabled ? R.drawable.ic_code_scanner_flash_on : R.drawable.ic_code_scanner_flash_off);
