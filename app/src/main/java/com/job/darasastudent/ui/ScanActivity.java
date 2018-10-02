@@ -24,6 +24,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 import com.google.gson.Gson;
@@ -31,17 +32,21 @@ import com.job.darasastudent.R;
 import com.job.darasastudent.model.QRParser;
 import com.job.darasastudent.scanview.CodeScannerView;
 
+import java.text.DecimalFormat;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
+import io.nlopez.smartlocation.location.config.LocationParams;
 import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider;
+import io.nlopez.smartlocation.location.providers.LocationManagerProvider;
 
 import static com.job.darasastudent.util.Constants.COMPLETED_GIF_PREF_NAME;
 
-public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener, OnLocationUpdatedListener {
+public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {
 
     private static final int LOCATION_PERMISSION_ID = 1001;
     private static final String TAG = "ScanActivity";
@@ -63,6 +68,9 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
     private LocationGooglePlayServicesProvider provider;
     private Location mLocation;
     private int locationcount = 1;
+    private int locationAlreadyStarted = 1;
+    private SweetAlertDialog pDialogLoc;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,15 +93,15 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
         gson = new Gson();
 
-        // Check if the location services are enabled
-        checkLocationOn();
         SmartLocation.with(this).location().state().locationServicesEnabled();
         // Location permission not granted
         if (ContextCompat.checkSelfPermission(ScanActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(ScanActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_ID);
             return;
         }
-        startLocation();
+        // Check if the location services are enabled
+        checkLocationOn();
+
 
         qrCodeReaderView.setOnQRCodeReadListener(this);
 
@@ -136,7 +144,19 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
             return;
         }
 
-        failScanLocation(pDialog, qrParser);
+        if (mLocation != null) {
+
+            if (distanceInMeters(mLocation, qrParser.getLatitude(), qrParser.getLongitude())) {
+                successScan(pDialog, qrParser);
+            } else {
+                failScanLocationFar(pDialog, qrParser);
+            }
+
+        } else {
+
+            failScanLocation(pDialog, qrParser);
+        }
+
     }
 
     private void successScan(final SweetAlertDialog pDialog, QRParser qrParser) {
@@ -164,6 +184,27 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
 
         pDialog.setTitleText("Failed : RESCAN !" + " \n" + "\nYou're not in class!" + "\n Location: proximity OFF");
+        pDialog.setCancelable(false);
+        pDialog.show();
+
+        qrCodeReaderView.stopCamera();
+
+        pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sDialog) {
+                sDialog.dismissWithAnimation();
+
+                finish();
+            }
+        });
+    }
+
+    private void failScanLocationFar(final SweetAlertDialog pDialog, QRParser qrParser) {
+
+        pDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+
+        pDialog.setTitleText("Failed : Too Far !" + " \n" + "\nYou're not in class!" + "\n Location: proximity WIDE");
         pDialog.setCancelable(false);
         pDialog.show();
 
@@ -242,15 +283,58 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
     private void startLocation() {
 
-        provider = new LocationGooglePlayServicesProvider();
+       /* provider = new LocationGooglePlayServicesProvider();
         provider.setCheckLocationSettings(true);
 
-        SmartLocation smartLocation = new SmartLocation.Builder(this).logging(true).build();
+        SmartLocation smartLocation = new SmartLocation.Builder(this)
+                .logging(true)
+                .build();
 
-        smartLocation.location(provider).start(this);
+        smartLocation.location(provider).start(this);*/
 
         //register location change broadcast
         registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+
+        pDialogLoc = new SweetAlertDialog(ScanActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+        pDialogLoc.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+        pDialogLoc.setTitleText("Accessing Location" + "\n Just a moment...");
+        pDialogLoc.setCancelable(true);
+        pDialogLoc.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                if (mLocation != null) {
+
+                } else {
+                    Toast.makeText(ScanActivity.this, "Location not acquired", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+        });
+        pDialogLoc.show();
+
+        LocationManagerProvider locationManagerProvider = new LocationManagerProvider();
+
+
+        SmartLocation.with(this)
+                .location(locationManagerProvider)
+                .config(LocationParams.NAVIGATION)
+                .oneFix()
+                .start(new OnLocationUpdatedListener() {
+                    @Override
+                    public void onLocationUpdated(Location location) {
+
+                        Log.d(TAG, "onLocationUpdated: " + location);
+
+                        mLocation = location;
+
+                        if (mLocation != null) {
+                            if (pDialogLoc.isShowing()) {
+                                pDialogLoc.dismiss();
+                            }
+                        }
+                    }
+                });
+
     }
 
     private void checkLocationOn() {
@@ -289,6 +373,10 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
             dd.dismiss();
             setUpLocationUi(true, scannerView.getmAutoFocusButton());
 
+            if (locationAlreadyStarted == 1) {
+                startLocation();
+                locationAlreadyStarted++;
+            }
         }
     }
 
@@ -306,12 +394,17 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         }
     };
 
-    @Override
+   /* @Override
     public void onLocationUpdated(Location location) {
         //showLocation(location);
 
         mLocation = location;
-    }
+        if (mLocation != null){
+            if (pDialogLoc.isShowing()){
+                pDialogLoc.dismiss();
+            }
+        }
+    }*/
 
     private void stopLocation() {
         SmartLocation.with(this).location().stop();
@@ -337,7 +430,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
     }
 
     @OnClick(R.id.gif_gotit_btn)
-    public void gifBtnOnclick(){
+    public void gifBtnOnclick() {
 
         // User has seen GIF, so mark our SharedPreferences
         // flag as completed so that we don't show our GIF
@@ -350,4 +443,73 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         scanGifView.setVisibility(View.GONE);
     }
 
+    private boolean distanceInMeters(Location locHere, String latitude, String longitude) {
+
+        Location loc2 = new Location("");
+        loc2.setLatitude(Double.parseDouble(latitude));
+        loc2.setLongitude(Double.parseDouble(longitude));
+
+        float distanceInMeters = locHere.distanceTo(loc2);
+        Log.d(TAG, "distanceInMeters: " + distanceInMeters);
+
+        if (distanceInMeters < 2) {
+            Toast.makeText(this, "less than 2 m", Toast.LENGTH_SHORT).show();
+
+        }
+        if (distanceInMeters > 200 && distanceInMeters <= 400) {
+
+            Toast.makeText(this, "2 - 4 m", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        if (distanceInMeters > 400 && distanceInMeters <= 600) {
+
+            Toast.makeText(this, "4 - 6 m", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        if (distanceInMeters > 600 && distanceInMeters <= 1000) {
+
+            Toast.makeText(this, "6 - 10 m", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        if (distanceInMeters > 1000 && distanceInMeters <= 2000) {
+
+            Toast.makeText(this, "10 - 40 m", Toast.LENGTH_SHORT).show();
+        } else {
+            return false;
+        }
+        return false;
+    }
+
+    private double calculateDistance(Location locHere, String latitude, String longitude) {
+
+        double fromLatitude = locHere.getLatitude();
+        double fromLongitude = locHere.getLongitude();
+        double toLatitude = Double.parseDouble(latitude);
+        double toLongitude = Double.parseDouble(longitude);
+        float results[] = new float[1];
+
+        try {
+            Location.distanceBetween(fromLatitude, fromLongitude, toLatitude, toLongitude, results);
+        } catch (Exception e) {
+            if (e != null)
+                e.printStackTrace();
+        }
+
+        int dist = (int) results[0];
+        if (dist <= 0)
+            return 0D;
+
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        results[0] /= 1000D;
+        String distance = decimalFormat.format(results[0]);
+        double d = Double.parseDouble(distance);
+
+        Log.d(TAG, "calculateDistance: " + d);
+        return d;
+    }
+
+    private void distInMeters(Location locHere, String latitude, String longitude) {
+        locHere.setAccuracy(0F);
+
+    }
 }
