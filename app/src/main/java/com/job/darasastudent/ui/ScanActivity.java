@@ -15,6 +15,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.button.MaterialButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -27,12 +28,15 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.job.darasastudent.R;
 import com.job.darasastudent.model.QRParser;
 import com.job.darasastudent.scanview.CodeScannerView;
-
-import java.text.DecimalFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +49,7 @@ import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProv
 import io.nlopez.smartlocation.location.providers.LocationManagerProvider;
 
 import static com.job.darasastudent.util.Constants.COMPLETED_GIF_PREF_NAME;
+import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
 
 public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {
 
@@ -71,6 +76,10 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
     private int locationAlreadyStarted = 1;
     private SweetAlertDialog pDialogLoc;
 
+    //firestore
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore mFirestore;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +99,10 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         setSupportActionBar(scanToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_back));
+
+        //firebase
+        mAuth = FirebaseAuth.getInstance();
+        mFirestore = FirebaseFirestore.getInstance();
 
         gson = new Gson();
 
@@ -480,36 +493,24 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         return false;
     }
 
-    private double calculateDistance(Location locHere, String latitude, String longitude) {
+    private void verifyCourseAndDetails(){
+        mFirestore.collection(STUDENTDETAILSCOL).document(mAuth.getCurrentUser().getUid())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-        double fromLatitude = locHere.getLatitude();
-        double fromLongitude = locHere.getLongitude();
-        double toLatitude = Double.parseDouble(latitude);
-        double toLongitude = Double.parseDouble(longitude);
-        float results[] = new float[1];
+                        //verify course, sem
 
-        try {
-            Location.distanceBetween(fromLatitude, fromLongitude, toLatitude, toLongitude, results);
-        } catch (Exception e) {
-            if (e != null)
-                e.printStackTrace();
-        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
 
-        int dist = (int) results[0];
-        if (dist <= 0)
-            return 0D;
+                //dismiss dialogue
 
-        DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        results[0] /= 1000D;
-        String distance = decimalFormat.format(results[0]);
-        double d = Double.parseDouble(distance);
-
-        Log.d(TAG, "calculateDistance: " + d);
-        return d;
-    }
-
-    private void distInMeters(Location locHere, String latitude, String longitude) {
-        locHere.setAccuracy(0F);
+            }
+        });
 
     }
 }

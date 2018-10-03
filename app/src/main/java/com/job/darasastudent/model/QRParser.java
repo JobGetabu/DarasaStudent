@@ -1,20 +1,19 @@
 package com.job.darasastudent.model;
 
+import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
-import java.util.Date;
-
 /**
  * Created by Job on Sunday : 8/12/2018.
  */
 public class QRParser implements Parcelable {
-    private String latitude;
-    private String longitude;
-    private Date time;
+    private Location location;
+    private String course;
+    private String classtime;
     private String lecteachtimeid;
     private String unitname;
     private String unitcode;
@@ -23,30 +22,54 @@ public class QRParser implements Parcelable {
     public QRParser() {
     }
 
-    public QRParser(String latitude, String longitude, Date time,
+    public String classToGson(Gson gson, QRParser qrParser) {
+
+        return gson.toJson(qrParser);
+
+    }
+
+    public QRParser gsonToQRParser(Gson gson, String decodedString) {
+
+        try {
+
+            return gson.fromJson(decodedString, QRParser.class);
+        }catch (JsonParseException e) {
+           return null;
+        }
+    }
+
+    public QRParser(Location location, String course, String classtime,
                     String lecteachtimeid, String unitname, String unitcode) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.time = time;
+        this.location = location;
+        this.course = course;
+        this.classtime = classtime;
         this.lecteachtimeid = lecteachtimeid;
         this.unitname = unitname;
         this.unitcode = unitcode;
     }
 
-    public String getLatitude() {
-        return latitude;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
-    public String getLongitude() {
-        return longitude;
+    public String getCourse() {
+        return course;
     }
 
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
+    public void setCourse(String course) {
+        this.course = course;
+    }
+
+    public String getClasstime() {
+        return classtime;
+    }
+
+    public void setClasstime(String classtime) {
+        this.classtime = classtime;
     }
 
     public String getLecteachtimeid() {
@@ -73,37 +96,12 @@ public class QRParser implements Parcelable {
         this.unitcode = unitcode;
     }
 
-    public Date getTime() {
-        return time;
-    }
-
-    public void setTime(Date time) {
-        this.time = time;
-    }
-
-    public String classToGson(Gson gson, QRParser qrParser) {
-
-        return gson.toJson(qrParser);
-
-    }
-
-    public QRParser gsonToQRParser(Gson gson, String decodedString) {
-
-        try {
-
-            return gson.fromJson(decodedString, QRParser.class);
-        }catch (JsonParseException e) {
-           return null;
-        }
-
-    }
-
     @Override
     public String toString() {
         return "QRParser{" +
-                "latitude='" + latitude + '\'' +
-                ", longitude='" + longitude + '\'' +
-                ", time=" + time +
+                "location=" + location +
+                ", course='" + course + '\'' +
+                ", classtime='" + classtime + '\'' +
                 ", lecteachtimeid='" + lecteachtimeid + '\'' +
                 ", unitname='" + unitname + '\'' +
                 ", unitcode='" + unitcode + '\'' +
@@ -118,19 +116,18 @@ public class QRParser implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.latitude);
-        dest.writeString(this.longitude);
-        dest.writeLong(this.time != null ? this.time.getTime() : -1);
+        dest.writeParcelable(this.location, flags);
+        dest.writeString(this.course);
+        dest.writeString(this.classtime);
         dest.writeString(this.lecteachtimeid);
         dest.writeString(this.unitname);
         dest.writeString(this.unitcode);
     }
 
     protected QRParser(Parcel in) {
-        this.latitude = in.readString();
-        this.longitude = in.readString();
-        long tmpTime = in.readLong();
-        this.time = tmpTime == -1 ? null : new Date(tmpTime);
+        this.location = in.readParcelable(Location.class.getClassLoader());
+        this.course = in.readString();
+        this.classtime = in.readString();
         this.lecteachtimeid = in.readString();
         this.unitname = in.readString();
         this.unitcode = in.readString();
