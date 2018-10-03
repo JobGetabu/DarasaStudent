@@ -44,9 +44,11 @@ import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
+import io.nlopez.smartlocation.location.LocationProvider;
 import io.nlopez.smartlocation.location.config.LocationParams;
 import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider;
 import io.nlopez.smartlocation.location.providers.LocationManagerProvider;
+import io.nlopez.smartlocation.location.providers.MultiFallbackProvider;
 
 import static com.job.darasastudent.util.Constants.COMPLETED_GIF_PREF_NAME;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
@@ -327,9 +329,12 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
         LocationManagerProvider locationManagerProvider = new LocationManagerProvider();
 
+        LocationProvider fallbackProvider = new MultiFallbackProvider.Builder()
+                .withProvider(locationManagerProvider).withGooglePlayServicesProvider().build();
+
 
         SmartLocation.with(this)
-                .location(locationManagerProvider)
+                .location(fallbackProvider)
                 .config(LocationParams.NAVIGATION)
                 .oneFix()
                 .start(new OnLocationUpdatedListener() {
