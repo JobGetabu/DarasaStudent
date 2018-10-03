@@ -159,7 +159,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
         if (mLocation != null) {
 
-            if (distanceInMeters(mLocation, qrParser.getLatitude(), qrParser.getLongitude())) {
+            if (distanceInMeters(mLocation, qrParser.getLocation())) {
                 successScan(pDialog, qrParser);
             } else {
                 failScanLocationFar(pDialog, qrParser);
@@ -456,13 +456,9 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         scanGifView.setVisibility(View.GONE);
     }
 
-    private boolean distanceInMeters(Location locHere, String latitude, String longitude) {
+    private boolean distanceInMeters(Location locHere, Location locLec) {
 
-        Location loc2 = new Location("");
-        loc2.setLatitude(Double.parseDouble(latitude));
-        loc2.setLongitude(Double.parseDouble(longitude));
-
-        float distanceInMeters = locHere.distanceTo(loc2);
+        float distanceInMeters = locHere.distanceTo(locLec);
         Log.d(TAG, "distanceInMeters: " + distanceInMeters);
 
         if (distanceInMeters < 2) {
