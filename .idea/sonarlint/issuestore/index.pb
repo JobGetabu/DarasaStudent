@@ -188,3 +188,5 @@ t
 Dapp/src/main/java/com/job/darasastudent/scanview/ViewFinderView.java,1\d\1d159aa0cfc4399aee14f4eab2f54111bdd22c96
 u
 Eapp/src/main/java/com/job/darasastudent/scanview/CodeScannerView.java,d\4\d453a8ca2d08589a79a62071faa92988989bad31
+s
+Capp/src/main/java/com/job/darasastudent/model/StudentScanClass.java,e\3\e34fcbd2c8629beb69a7a3f36a04d0577ab4f584

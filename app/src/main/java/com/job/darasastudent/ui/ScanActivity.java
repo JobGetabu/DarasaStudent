@@ -334,7 +334,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
 
         SmartLocation.with(this)
-                .location(fallbackProvider)
+                .location()
                 .config(LocationParams.NAVIGATION)
                 .oneFix()
                 .start(new OnLocationUpdatedListener() {
@@ -412,17 +412,6 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         }
     };
 
-   /* @Override
-    public void onLocationUpdated(Location location) {
-        //showLocation(location);
-
-        mLocation = location;
-        if (mLocation != null){
-            if (pDialogLoc.isShowing()){
-                pDialogLoc.dismiss();
-            }
-        }
-    }*/
 
     private void stopLocation() {
         SmartLocation.with(this).location().stop();
@@ -502,6 +491,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
 
                         //verify course, sem
+
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {
