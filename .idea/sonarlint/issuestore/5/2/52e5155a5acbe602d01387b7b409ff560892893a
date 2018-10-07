@@ -1,13 +1,13 @@
 
-Ssquid:S1172Ä"/Remove this unused method parameter "qrParser".(ØõÓ»úÿÿÿÿ8ÃÕ¿â,
-lsquid:S1192š"HDefine a constant instead of duplicating this literal "#FF5521" 6 times.(¿ÍßÜüÿÿÿÿ8ÃÕ¿â,
-msquid:UnusedPrivateMethodñ";Remove this unused private "verifyCourseAndDetails" method.(¨ûİĞüÿÿÿÿ8÷—©÷ã,
-Nsquid:S1066İ"/Merge this if statement with the enclosing one.(¸…°8÷—©÷ã,
-Tsquid:S1068M"1Remove this unused "locationcount" private field.(âÈ‘§úÿÿÿÿ8÷—©÷ã,
-Tsquid:S1481Ì"5Remove this unused "fallbackProvider" local variable.(¡¯‡Ñ8÷—©÷ã,
-Nsquid:S1172Ù"/Remove this unused method parameter "qrParser".(¸Ğ¼8÷—©÷ã,
-Nsquid:S00108š")Either remove or fill this block of code.(¥¨›ıÿÿÿÿ8÷—©÷ã,
-Nsquid:S00108¥")Either remove or fill this block of code.(¥¨›ıÿÿÿÿ8÷—©÷ã,
-Nsquid:S00108À")Either remove or fill this block of code.(Öôû´ùÿÿÿÿ8÷—©÷ã,
-csquid:S1854Ì"DRemove this useless assignment to local variable "fallbackProvider".(¡¯‡Ñ8÷—©÷ã,
-vsquid:S00117±"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¥ºÎùùÿÿÿÿ8÷—©÷ã,
+lsquid:S1192š"HDefine a constant instead of duplicating this literal "#FF5521" 6 times.(¿ÍßÜüÿÿÿÿ8ÚÎˆÏä,
+Nsquid:S00108À")Either remove or fill this block of code.(Öôû´ùÿÿÿÿ8ÚÎˆÏä,
+msquid:UnusedPrivateMethodè";Remove this unused private "verifyCourseAndDetails" method.(¨ûİĞüÿÿÿÿ8ÚÎˆÏä,
+Nsquid:S00108¥")Either remove or fill this block of code.(¥¨›ıÿÿÿÿ8ÚÎˆÏä,
+Nsquid:S1066İ"/Merge this if statement with the enclosing one.(¸…°8ÚÎˆÏä,
+Nsquid:S1172Ù"/Remove this unused method parameter "qrParser".(¸Ğ¼8ÚÎˆÏä,
+vsquid:S00117¦"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¥ºÎùùÿÿÿÿ8ÚÎˆÏä,
+Nsquid:S00108š")Either remove or fill this block of code.(¥¨›ıÿÿÿÿ8ÚÎˆÏä,
+Tsquid:S1068M"1Remove this unused "locationcount" private field.(âÈ‘§úÿÿÿÿ8ÚÎˆÏä,
+Ssquid:S1172Ä"/Remove this unused method parameter "qrParser".(ØõÓ»úÿÿÿÿ8ÚÎˆÏä,
+csquid:S1854Ì"DRemove this useless assignment to local variable "fallbackProvider".(¡¯‡Ñ8ÚÎˆÏä,
+Tsquid:S1481Ì"5Remove this unused "fallbackProvider" local variable.(¡¯‡Ñ8ÚÎˆÏä,

@@ -3,8 +3,10 @@ package com.job.darasastudent.ui;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -32,6 +34,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.job.darasastudent.util.Constants.CURRENT_SEM_PREF_NAME;
+import static com.job.darasastudent.util.Constants.CURRENT_YEAR_PREF_NAME;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
 
 
@@ -53,6 +57,7 @@ public class CurrentSetupActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
 
+    SharedPreferences sharedPreferences;
     private AccountSetupViewModel model;
 
     @Override
@@ -66,6 +71,9 @@ public class CurrentSetupActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_back));
+
+        sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
 
         //firebase
         mAuth = FirebaseAuth.getInstance();
@@ -106,8 +114,8 @@ public class CurrentSetupActivity extends AppCompatActivity {
             pDialog.setCancelable(true);
             pDialog.show();
 
-            String sem = currentSemester.getEditText().getText().toString();
-            String syr = currentYear.getEditText().getText().toString();
+            final String sem = currentSemester.getEditText().getText().toString();
+            final String syr = currentYear.getEditText().getText().toString();
             String ayr = currentAcadyear.getEditText().getText().toString();
 
             Map<String, Object> studMap = new HashMap<>();
@@ -132,6 +140,8 @@ public class CurrentSetupActivity extends AppCompatActivity {
                                 public void onClick(SweetAlertDialog sDialog) {
                                     sDialog.dismissWithAnimation();
 
+                                    saveToSharedPrefs(sem,syr);
+
                                     sendToMain();
 
                                 }
@@ -145,6 +155,18 @@ public class CurrentSetupActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void saveToSharedPrefs(String sem,String syr){
+        SharedPreferences.Editor sharedPreferencesEditor = PreferenceManager.getDefaultSharedPreferences(
+                CurrentSetupActivity.this).edit();
+
+        sharedPreferencesEditor.putString( CURRENT_SEM_PREF_NAME, sem);
+        sharedPreferencesEditor.putString( CURRENT_YEAR_PREF_NAME, syr);
+
+        sharedPreferencesEditor.apply();
+
+
     }
 
     private boolean validate() {

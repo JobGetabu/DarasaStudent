@@ -446,7 +446,9 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
                 PreferenceManager.getDefaultSharedPreferences(this).edit();
         sharedPreferencesEditor.putBoolean(
                 COMPLETED_GIF_PREF_NAME, true);
+
         sharedPreferencesEditor.apply();
+
         scanGifView.setVisibility(View.GONE);
     }
 
@@ -499,6 +501,8 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
             public void onFailure(@NonNull Exception e) {
 
                 //dismiss dialogue
+
+
 
             }
         });

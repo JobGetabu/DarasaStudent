@@ -3,8 +3,10 @@ package com.job.darasastudent.ui;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
@@ -41,6 +43,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.job.darasastudent.util.Constants.COURSE_PREF_NAME;
 import static com.job.darasastudent.util.Constants.DKUTCOURSES;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
 
@@ -134,7 +137,7 @@ public class AccountSetupActivity extends AppCompatActivity {
             String school = setupSchool.getEditText().getText().toString();
             String dept = setupDepartment.getEditText().getText().toString();
             String regno = setupRegno.getEditText().getText().toString().trim();
-            String course = setupCourse.getEditText().getText().toString().trim();
+            final String course = setupCourse.getEditText().getText().toString().trim();
 
             Map<String, Object> studMap = new HashMap<>();
             studMap.put("firstname", fname);
@@ -161,6 +164,7 @@ public class AccountSetupActivity extends AppCompatActivity {
                                 public void onClick(SweetAlertDialog sDialog) {
                                     sDialog.dismissWithAnimation();
 
+                                    saveCoursePref(course);
                                     sendToMain();
 
                                 }
@@ -313,5 +317,14 @@ public class AccountSetupActivity extends AppCompatActivity {
 
                 });
         multiSelectDialog.show(this.getSupportFragmentManager(), "multiSelectDialog");
+    }
+
+    private void saveCoursePref(String course){
+        SharedPreferences.Editor sharedPreferencesEditor = PreferenceManager.getDefaultSharedPreferences(
+                AccountSetupActivity.this).edit();
+
+        sharedPreferencesEditor.putString( COURSE_PREF_NAME, course);
+
+        sharedPreferencesEditor.apply();
     }
 }
