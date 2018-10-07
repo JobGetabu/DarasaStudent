@@ -15,7 +15,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.design.button.MaterialButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -28,10 +27,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.job.darasastudent.R;
@@ -51,7 +47,9 @@ import io.nlopez.smartlocation.location.providers.LocationManagerProvider;
 import io.nlopez.smartlocation.location.providers.MultiFallbackProvider;
 
 import static com.job.darasastudent.util.Constants.COMPLETED_GIF_PREF_NAME;
-import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
+import static com.job.darasastudent.util.Constants.COURSE_PREF_NAME;
+import static com.job.darasastudent.util.Constants.CURRENT_SEM_PREF_NAME;
+import static com.job.darasastudent.util.Constants.CURRENT_YEAR_PREF_NAME;
 
 public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {
 
@@ -77,6 +75,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
     private int locationcount = 1;
     private int locationAlreadyStarted = 1;
     private SweetAlertDialog pDialogLoc;
+    private SharedPreferences mSharedPreferences;
 
     //firestore
     private FirebaseAuth mAuth;
@@ -89,10 +88,9 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         setContentView(R.layout.activity_viewfinder);
         ButterKnife.bind(this);
 
-        SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(this);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         // Check if we need to display our GIF
-        if (!sharedPreferences.getBoolean(
+        if (!mSharedPreferences.getBoolean(
                 COMPLETED_GIF_PREF_NAME, false)) {
             // The user hasn't seen the GIF yet, so show it
             scanGifView.setVisibility(View.VISIBLE);
@@ -149,7 +147,6 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
         QRParser qrParser = new QRParser().gsonToQRParser(gson, text);
 
-
         final SweetAlertDialog pDialog = new SweetAlertDialog(ScanActivity.this, SweetAlertDialog.SUCCESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
 
@@ -161,8 +158,10 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
         if (mLocation != null) {
 
-            if (distanceInMeters(mLocation, qrParser.getLocation())) {
+            if (distanceInMeters(mLocation, qrParser.getLatitude(),qrParser.getLongitude())) {
                 successScan(pDialog, qrParser);
+                verifyCourseAndDetails(pDialog,qrParser);
+
             } else {
                 failScanLocationFar(pDialog, qrParser);
             }
@@ -452,7 +451,11 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         scanGifView.setVisibility(View.GONE);
     }
 
-    private boolean distanceInMeters(Location locHere, Location locLec) {
+    private boolean distanceInMeters(Location locHere, double lat, double lon) {
+
+        Location locLec = new Location("");
+        locLec.setLatitude(lat);
+        locLec.setLongitude(lon);
 
         float distanceInMeters = locHere.distanceTo(locLec);
         Log.d(TAG, "distanceInMeters: " + distanceInMeters);
@@ -485,27 +488,52 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         return false;
     }
 
-    private void verifyCourseAndDetails(){
-        mFirestore.collection(STUDENTDETAILSCOL).document(mAuth.getCurrentUser().getUid())
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+    private boolean verifyCourseAndDetails(final SweetAlertDialog pDialog, QRParser qrParser) {
 
-                        //verify course, sem
+        //check course
+        boolean mycourse = false;
+        for (String c : qrParser.getCourses()){
+            if (mSharedPreferences.getString(COURSE_PREF_NAME,"").equals(c)){
+                mycourse = true;
+                break;
+            }
+        }
 
+        if (! mycourse){
+            failVerifyCourseAndDetails(pDialog, "Not Allowed \n this unit is not \nregistered in your course");
+            return false;
+        }
 
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
+        if (! mSharedPreferences.getString(CURRENT_SEM_PREF_NAME,"").equals(qrParser.getSemester())){
+            failVerifyCourseAndDetails(pDialog, "Not Allowed \n update your current semester \n this is for :"+qrParser.getSemester());
+            return false;
+        }
+
+        if (! mSharedPreferences.getString(CURRENT_YEAR_PREF_NAME,"").equals(qrParser.getSemester())){
+            failVerifyCourseAndDetails(pDialog, "Not Allowed \n update your current study year \n this is for :"+qrParser.getYear());
+            return false;
+        }
+        return true;
+    }
+
+    private void failVerifyCourseAndDetails(final SweetAlertDialog pDialog,String message){
+        pDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+
+        pDialog.setTitleText(message);
+        pDialog.setCancelable(false);
+        pDialog.show();
+
+        qrCodeReaderView.stopCamera();
+
+        pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
             @Override
-            public void onFailure(@NonNull Exception e) {
+            public void onClick(SweetAlertDialog sDialog) {
+                sDialog.dismissWithAnimation();
 
-                //dismiss dialogue
-
-
-
+                finish();
             }
         });
-
     }
+
 }

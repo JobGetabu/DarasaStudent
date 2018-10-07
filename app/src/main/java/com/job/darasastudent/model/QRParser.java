@@ -1,6 +1,5 @@
 package com.job.darasastudent.model;
 
-import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -17,7 +16,8 @@ import java.util.Date;
  * Created by Job on Sunday : 8/12/2018.
  */
 public class QRParser implements Parcelable {
-    private Location location;
+    private double latitude;
+    private double longitude;
     private ArrayList<String> courses;
     private Date classtime;
     private String lecteachtimeid;
@@ -47,9 +47,10 @@ public class QRParser implements Parcelable {
         }
     }
 
-    public QRParser(Location location, ArrayList<String> courses, Date classtime,
+    public QRParser(double latitude, double longitude, ArrayList<String> courses, Date classtime,
                     String lecteachtimeid, String unitname, String unitcode, Date date, String semester, String year) {
-        this.location = location;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.courses = courses;
         this.classtime = classtime;
         this.lecteachtimeid = lecteachtimeid;
@@ -60,12 +61,20 @@ public class QRParser implements Parcelable {
         this.year = year;
     }
 
-    public Location getLocation() {
-        return location;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public ArrayList<String> getCourses() {
@@ -132,18 +141,6 @@ public class QRParser implements Parcelable {
         this.year = year;
     }
 
-    @Override
-    public String toString() {
-        return "QRParser{" +
-                "location=" + location +
-                ", courses=" + courses +
-                ", classtime='" + classtime + '\'' +
-                ", lecteachtimeid='" + lecteachtimeid + '\'' +
-                ", unitname='" + unitname + '\'' +
-                ", unitcode='" + unitcode + '\'' +
-                ", date=" + date +
-                '}';
-    }
 
     private String lessonTimeInString(Date timestamp) {
         //Timestamp timestamp = model.getTimestamp();
@@ -159,6 +156,22 @@ public class QRParser implements Parcelable {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return "QRParser{" +
+                "latitude='" + latitude + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", courses=" + courses +
+                ", classtime=" + classtime +
+                ", lecteachtimeid='" + lecteachtimeid + '\'' +
+                ", unitname='" + unitname + '\'' +
+                ", unitcode='" + unitcode + '\'' +
+                ", date=" + date +
+                ", semester='" + semester + '\'' +
+                ", year='" + year + '\'' +
+                '}';
+    }
+
 
     @Override
     public int describeContents() {
@@ -167,7 +180,8 @@ public class QRParser implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.location, flags);
+        dest.writeDouble(this.latitude);
+        dest.writeDouble(this.longitude);
         dest.writeStringList(this.courses);
         dest.writeLong(this.classtime != null ? this.classtime.getTime() : -1);
         dest.writeString(this.lecteachtimeid);
@@ -179,7 +193,8 @@ public class QRParser implements Parcelable {
     }
 
     protected QRParser(Parcel in) {
-        this.location = in.readParcelable(Location.class.getClassLoader());
+        this.latitude = in.readDouble();
+        this.longitude = in.readDouble();
         this.courses = in.createStringArrayList();
         long tmpClasstime = in.readLong();
         this.classtime = tmpClasstime == -1 ? null : new Date(tmpClasstime);
