@@ -1,7 +1,7 @@
 
-isquid:UnusedPrivateMethod”"7Remove this unused private "lessonTimeInString" method.(”‘Òàúÿÿÿÿ8ÍÊüÎä,
-bsquid:HiddenFieldCheck˜"8Rename "date" which hides the field declared at line 26.(ı±¾Å8ÍÊüÎä,
-“squid:S1319G"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(«Ü›Ãıÿÿÿÿ8ÍÊüÎä,
-squid:S13192"rThe type of the "courses" object should be an interface such as "List" rather than the implementation "ArrayList".(ûµßÇ8×Ö‚Ïä,
-squid:S1319K"rThe type of the "courses" object should be an interface such as "List" rather than the implementation "ArrayList".(¥ÍÓ“8ÍÊüÎä,
-`squid:S001072"AConstructor has 9 parameters, which is greater than 7 authorized.(ûµßÇ8×Ö‚Ïä,
+‘squid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(«Ü›Ãıÿÿÿÿ8ÍÊüÎä,
+squid:S1319"rThe type of the "courses" object should be an interface such as "List" rather than the implementation "ArrayList".(¥ÍÓ“8ÍÊüÎä,
+“squid:S1319"rThe type of the "courses" object should be an interface such as "List" rather than the implementation "ArrayList".(¯„„ƒøÿÿÿÿ8×Ö‚Ïä,
+fsquid:UnusedPrivateMethod"7Remove this unused private "lessonTimeInString" method.(”‘Òàúÿÿÿÿ8ÍÊüÎä,
+_squid:HiddenFieldCheck"8Rename "date" which hides the field declared at line 26.(ı±¾Å8ÍÊüÎä,
+dsquid:S00107"BConstructor has 10 parameters, which is greater than 7 authorized.(¯„„ƒøÿÿÿÿ8ˆ™ÿÃå,

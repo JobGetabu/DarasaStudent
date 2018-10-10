@@ -6,7 +6,13 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- Required for Nearby Connections -->
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:name=".DarasaStudent"
@@ -72,7 +78,7 @@
         <activity
             android:name=".ui.FaqActivity"
             android:parentActivityName=".ui.SettingsActivity" />
-        <activity android:name=".ui.QReaderActivity"></activity>
+        <activity android:name=".ui.QReaderActivity"/>
     </application>
 
 </manifest>
