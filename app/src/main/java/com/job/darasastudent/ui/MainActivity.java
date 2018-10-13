@@ -2,7 +2,9 @@ package com.job.darasastudent.ui;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.design.bottomappbar.BottomAppBar;
 import android.support.design.widget.Snackbar;
@@ -18,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -52,6 +55,8 @@ import static com.job.darasastudent.util.Constants.LECTEACHTIMECOL;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final int REQUEST_CODE_REQUIRED_PERMISSIONS = 1;
 
     @BindView(R.id.main_fab)
     FloatingActionButton mainFab;
@@ -192,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.main_fab)
     public void onFabClicked() {
         startActivity(new Intent(this, ScanActivity.class));
+        //startActivity(new Intent(this,NearbyActivity.class));
     }
 
     @Override
@@ -381,6 +387,27 @@ public class MainActivity extends AppCompatActivity {
         adapter.startListening();
         adapter.notifyDataSetChanged();
         mainList.setAdapter(adapter);
+    }
+
+    /** Handles user acceptance (or denial) of our permission request. */
+    @CallSuper
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode != REQUEST_CODE_REQUIRED_PERMISSIONS) {
+            return;
+        }
+
+        for (int grantResult : grantResults) {
+            if (grantResult == PackageManager.PERMISSION_DENIED) {
+                Toast.makeText(this, R.string.error_missing_permissions, Toast.LENGTH_LONG).show();
+                finish();
+                return;
+            }
+        }
+        recreate();
     }
 
 }

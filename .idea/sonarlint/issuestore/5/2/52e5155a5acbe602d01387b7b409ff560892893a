@@ -1,16 +1,16 @@
 
-Ksquid:S00108")Either remove or fill this block of code.(Öôû´ùÿÿÿÿ8ÚÎˆÏä,
-isquid:S1192"HDefine a constant instead of duplicating this literal "#FF5521" 7 times.(¿ÍßÜüÿÿÿÿ8ÚÎˆÏä,
-Rsquid:S1068"1Remove this unused "locationcount" private field.(âÈ‘§úÿÿÿÿ8ÚÎˆÏä,
-`squid:S1854"DRemove this useless assignment to local variable "fallbackProvider".(¡¯‡Ñ8ÚÎˆÏä,
-Ksquid:S00108")Either remove or fill this block of code.(¥¨›ıÿÿÿÿ8ÚÎˆÏä,
-ssquid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¥ºÎùùÿÿÿÿ8ÚÎˆÏä,
-Ksquid:S1066"/Merge this if statement with the enclosing one.(¸…°8ÚÎˆÏä,
-Qsquid:S1481"5Remove this unused "fallbackProvider" local variable.(¡¯‡Ñ8ÚÎˆÏä,
-Psquid:S1172"/Remove this unused method parameter "qrParser".(ØõÓ»úÿÿÿÿ8ÚÎˆÏä,
-Ksquid:S00108")Either remove or fill this block of code.(¥¨›ıÿÿÿÿ8ÚÎˆÏä,
 Ksquid:S1172"/Remove this unused method parameter "qrParser".(¸Ğ¼8ÚÎˆÏä,
 Esquid:S1068")Remove this unused "mAuth" private field.(ªĞ”’8ä˜ÿÃå,
-Osquid:S1068".Remove this unused "mFirestore" private field.(‘Üÿÿÿÿÿÿ8ä˜ÿÃå,
-psquid:S1450"TRemove the "mAuth" field and declare it as a local variable in the relevant methods.(ªĞ”’8ä˜ÿÃå,
+Rsquid:S1068"1Remove this unused "locationcount" private field.(âÈ‘§úÿÿÿÿ8ÚÎˆÏä,
 zsquid:S1450"YRemove the "mFirestore" field and declare it as a local variable in the relevant methods.(‘Üÿÿÿÿÿÿ8ä˜ÿÃå,
+Ksquid:S00108")Either remove or fill this block of code.(¥¨›ıÿÿÿÿ8ÚÎˆÏä,
+Qsquid:S1481"5Remove this unused "fallbackProvider" local variable.(¡¯‡Ñ8ÚÎˆÏä,
+`squid:S1854"DRemove this useless assignment to local variable "fallbackProvider".(¡¯‡Ñ8ÚÎˆÏä,
+Ksquid:S00108")Either remove or fill this block of code.(Öôû´ùÿÿÿÿ8ÚÎˆÏä,
+Ksquid:S1066"/Merge this if statement with the enclosing one.(¸…°8ÚÎˆÏä,
+Psquid:S1172"/Remove this unused method parameter "qrParser".(ØõÓ»úÿÿÿÿ8ÚÎˆÏä,
+Ksquid:S00108")Either remove or fill this block of code.(¥¨›ıÿÿÿÿ8ÚÎˆÏä,
+ssquid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¥ºÎùùÿÿÿÿ8ÚÎˆÏä,
+psquid:S1450"TRemove the "mAuth" field and declare it as a local variable in the relevant methods.(ªĞ”’8ä˜ÿÃå,
+isquid:S1192"HDefine a constant instead of duplicating this literal "#FF5521" 7 times.(¿ÍßÜüÿÿÿÿ8ÚÎˆÏä,
+Osquid:S1068".Remove this unused "mFirestore" private field.(‘Üÿÿÿÿÿÿ8ä˜ÿÃå,

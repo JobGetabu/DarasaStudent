@@ -25,7 +25,6 @@ import com.google.android.gms.nearby.connection.Strategy;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.job.darasastudent.R;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -58,6 +57,7 @@ public class NearbyActivity extends AppCompatActivity {
         connectionsClient = Nearby.getConnectionsClient(this);
 
 
+        stringBuilder = new StringBuilder();
         stringBuilder.append("");
         btnDisconnect.setVisibility(View.GONE);
     }
@@ -65,7 +65,7 @@ public class NearbyActivity extends AppCompatActivity {
     @OnClick(R.id.btn_cnt)
     public void onBtnCntClicked() {
 
-        startAdvertising();
+        //startAdvertising();
         startDiscovery();
         cntStatus.setText("Searching students");
 
@@ -102,7 +102,7 @@ public class NearbyActivity extends AppCompatActivity {
     }
 
     private String getUserNickname() {
-        return "dummy lec user";
+        return "user 1234";
     }
 
     private final EndpointDiscoveryCallback mEndpointDiscoveryCallback =
@@ -130,14 +130,15 @@ public class NearbyActivity extends AppCompatActivity {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     // Nearby Connections failed to request the connection.
+                                    Log.i(TAG, "onFailure: endpoint fail");
                                 }
                             });
-
                 }
 
                 @Override
                 public void onEndpointLost(String endpointId) {
                     // A previously discovered endpoint has gone away.
+                    Log.i(TAG, "onFailure: endpoint lost");
                 }
             };
 
@@ -180,6 +181,7 @@ public class NearbyActivity extends AppCompatActivity {
                     switch (result.getStatus().getStatusCode()) {
                         case ConnectionsStatusCodes.STATUS_OK:
                             // We're connected! Can now start sending and receiving data.
+                            Log.i(TAG, "onConnectionResult: OKAY");
                             break;
                         case ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED:
                             // The connection was rejected by one or both sides.

@@ -190,3 +190,7 @@ u
 Eapp/src/main/java/com/job/darasastudent/scanview/CodeScannerView.java,d\4\d453a8ca2d08589a79a62071faa92988989bad31
 s
 Capp/src/main/java/com/job/darasastudent/model/StudentScanClass.java,e\3\e34fcbd2c8629beb69a7a3f36a04d0577ab4f584
+[
++app/src/main/res/layout/activity_nearby.xml,f\e\fe3dbbee6d1ee7bd9b19069947690352860ce9f2
+n
+>app/src/main/java/com/job/darasastudent/ui/NearbyActivity.java,7\4\74cae734394af67713c395346631719e8b01915f
