@@ -1,5 +1,7 @@
 package com.job.darasastudent.ui;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -29,11 +31,15 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.job.darasastudent.R;
+import com.job.darasastudent.model.ClassScan;
 import com.job.darasastudent.model.QRParser;
 import com.job.darasastudent.scanview.CodeScannerView;
+import com.job.darasastudent.util.DoSnack;
+import com.job.darasastudent.viewmodel.ScanViewModel;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -76,6 +82,9 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
     private SweetAlertDialog pDialogLoc;
     private SharedPreferences mSharedPreferences;
 
+    private ScanViewModel model;
+    private DoSnack doSnack;
+
     //firestore
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
@@ -99,11 +108,15 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_back));
 
+        //database
+        model = ViewModelProviders.of(this).get(ScanViewModel.class);
+
         //firebase
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
 
         gson = new Gson();
+        doSnack = new DoSnack(this,ScanActivity.this);
 
         /*
         SmartLocation.with(this).location().state().locationServicesEnabled();
@@ -171,6 +184,8 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         pDialog.show();
 
         qrCodeReaderView.stopCamera();
+
+        saveThisScanInDb(qrParser);
 
         //register the class in the db
 
@@ -528,6 +543,11 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
                             return;
                         }
 
+                        //verify repeat
+                        if (isRepeatScan(qrParser)){
+                            failVerifyCourseAndDetails(pDialog,"Not Allowed \n this class session \n has already been scanned");
+                        }
+
                         successScan(pDialog,qrParser);
                     }
                 });
@@ -574,6 +594,39 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         }
 
         return true;
+    }
+
+    private boolean isRepeatScan(QRParser qrParser){
+
+        Calendar c = Calendar.getInstance();
+        int day = c.get(Calendar.DAY_OF_WEEK);
+
+        String dd = doSnack.theDay(day);
+        LiveData<List<ClassScan>> todayScannedClasses = model.getTodayScannedClasses(dd);
+
+        //check
+
+        for (ClassScan cs: todayScannedClasses.getValue()){
+            if (cs.getClasstime() == qrParser.getClasstime()){
+                if (cs.getDate() == qrParser.getDate() && cs.getLecteachtimeid() == qrParser.getLecteachtimeid()){
+                    return  true;
+                }
+            }
+        }
+
+        return  false;
+    }
+
+    private void saveThisScanInDb(QRParser qrParser) {
+        //save this class scan
+        Calendar c = Calendar.getInstance();
+        int day = c.get(Calendar.DAY_OF_WEEK);
+
+        String dd = doSnack.theDay(day);
+        ClassScan classScan = new ClassScan(qrParser.getLecteachtimeid(), qrParser.getClasstime(),qrParser.getDate(), dd);
+
+        model.insert(classScan);
+
     }
 
 }
