@@ -1,13 +1,11 @@
 package com.job.darasastudent.ui;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.location.Location;
@@ -16,8 +14,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.design.button.MaterialButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -27,12 +23,17 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.job.darasastudent.R;
 import com.job.darasastudent.model.QRParser;
 import com.job.darasastudent.scanview.CodeScannerView;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,9 +48,7 @@ import io.nlopez.smartlocation.location.providers.LocationManagerProvider;
 import io.nlopez.smartlocation.location.providers.MultiFallbackProvider;
 
 import static com.job.darasastudent.util.Constants.COMPLETED_GIF_PREF_NAME;
-import static com.job.darasastudent.util.Constants.COURSE_PREF_NAME;
-import static com.job.darasastudent.util.Constants.CURRENT_SEM_PREF_NAME;
-import static com.job.darasastudent.util.Constants.CURRENT_YEAR_PREF_NAME;
+import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
 
 public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {
 
@@ -106,6 +105,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
         gson = new Gson();
 
+        /*
         SmartLocation.with(this).location().state().locationServicesEnabled();
         // Location permission not granted
         if (ContextCompat.checkSelfPermission(ScanActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -114,6 +114,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         }
         // Check if the location services are enabled
         //checkLocationOn();
+        */
 
 
         qrCodeReaderView.setOnQRCodeReadListener(this);
@@ -156,20 +157,9 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
             return;
         }
 
-        if (mLocation != null) {
 
-            if (distanceInMeters(mLocation, qrParser.getLatitude(),qrParser.getLongitude())) {
-                successScan(pDialog, qrParser);
-                verifyCourseAndDetails(pDialog,qrParser);
+        verifyCourseAndDetails(pDialog, qrParser);
 
-            } else {
-                failScanLocationFar(pDialog, qrParser);
-            }
-
-        } else {
-
-            failScanLocation(pDialog, qrParser);
-        }
 
     }
 
@@ -181,6 +171,8 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         pDialog.show();
 
         qrCodeReaderView.stopCamera();
+
+        //register the class in the db
 
         pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
             @Override
@@ -267,30 +259,35 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
     protected void onResume() {
         qrCodeReaderView.startCamera();
         //register location change broadcast
-        registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+        //registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
         super.onResume();
     }
 
     @Override
     protected void onPause() {
         qrCodeReaderView.stopCamera();
+
+        /*
         stopLocation();
         //unregister location change broadcast
         try {
             unregisterReceiver(mGpsSwitchStateReceiver);
         } catch (IllegalArgumentException e) {
         }
+        */
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
         stopLocation();
+        /*
         //unregister location change broadcast
         try {
             unregisterReceiver(mGpsSwitchStateReceiver);
         } catch (IllegalArgumentException e) {
         }
+        */
 
         super.onDestroy();
     }
@@ -488,35 +485,57 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         return false;
     }
 
-    private boolean verifyCourseAndDetails(final SweetAlertDialog pDialog, QRParser qrParser) {
+    private void verifyCourseAndDetails(final SweetAlertDialog pDialog, final QRParser qrParser) {
 
-        //check course
-        boolean mycourse = false;
-        for (String c : qrParser.getCourses()){
-            if (mSharedPreferences.getString(COURSE_PREF_NAME,"").equals(c)){
-                mycourse = true;
-                break;
-            }
-        }
+        mFirestore.collection(STUDENTDETAILSCOL).document(mAuth.getCurrentUser().getUid())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        //check course
+                        boolean mycourse = false;
 
-        if (! mycourse){
-            failVerifyCourseAndDetails(pDialog, "Not Allowed \n this unit is not \nregistered in your course");
-            return false;
-        }
+                        String course = documentSnapshot.getString("course");
+                        String currentsemester = documentSnapshot.getString("currentsemester");
+                        String currentyear = documentSnapshot.getString("currentyear");
 
-        if (! mSharedPreferences.getString(CURRENT_SEM_PREF_NAME,"").equals(qrParser.getSemester())){
-            failVerifyCourseAndDetails(pDialog, "Not Allowed \n update your current semester \n this is for :"+qrParser.getSemester());
-            return false;
-        }
+                        for (String cs : qrParser.getCourses()) {
+                            if (course.equals(cs)) {
 
-        if (! mSharedPreferences.getString(CURRENT_YEAR_PREF_NAME,"").equals(qrParser.getSemester())){
-            failVerifyCourseAndDetails(pDialog, "Not Allowed \n update your current study year \n this is for :"+qrParser.getYear());
-            return false;
-        }
-        return true;
+                                mycourse = true;
+                                break;
+                            }
+                        }
+
+                        if (!mycourse) {
+                            failVerifyCourseAndDetails(pDialog, "Not Allowed \n this unit is not \nregistered in your course");
+                            return;
+                        }
+
+                        if (!currentsemester.equals(qrParser.getSemester())) {
+                            failVerifyCourseAndDetails(pDialog, "Not Allowed \n update your current semester \n this is for " + qrParser.getSemester());
+                            return;
+                        }
+
+                        if (!currentyear.equals(qrParser.getYear())) {
+                            failVerifyCourseAndDetails(pDialog, "Not Allowed \n update your current study year \n this is for " + qrParser.getYear());
+                            return;
+                        }
+
+                        //verify time
+                        //3hrs difference
+                        if (!timeDifference(qrParser, pDialog, "Not Allowed \n class session expired \n contact Lecturer")) {
+                            return;
+                        }
+
+                        successScan(pDialog,qrParser);
+                    }
+                });
+
+
     }
 
-    private void failVerifyCourseAndDetails(final SweetAlertDialog pDialog,String message){
+    private void failVerifyCourseAndDetails(final SweetAlertDialog pDialog, String message) {
         pDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
 
@@ -534,6 +553,27 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
                 finish();
             }
         });
+    }
+
+    private boolean timeDifference(QRParser qrParser, SweetAlertDialog pDialog, String message) {
+
+        Date now = Calendar.getInstance().getTime();
+        Date classTime = qrParser.getDate();
+
+        long millseconds = now.getTime() - classTime.getTime();
+
+        long seconds = (millseconds / 1000);
+
+        //3 hrs == 10800 secs
+
+        if (seconds > 10800 || seconds == 10800 || seconds < 0) {
+            //fail the scan
+            failVerifyCourseAndDetails(pDialog, message);
+
+            return false;
+        }
+
+        return true;
     }
 
 }

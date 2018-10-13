@@ -138,6 +138,18 @@ public class SignupActivity extends AppCompatActivity {
     @OnClick({R.id.signup_via_google,R.id.signup_via_google_image})
     public void onSignupViaGoogleClicked() {
 
+        if (!AppStatus.getInstance(getApplicationContext()).isOnline()) {
+
+            doSnack.showSnackbar("You're offline", "Retry", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onSignupButtonClicked();
+                }
+            });
+
+            return;
+        }
+
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
         signupViaGoogle.setEnabled(false);

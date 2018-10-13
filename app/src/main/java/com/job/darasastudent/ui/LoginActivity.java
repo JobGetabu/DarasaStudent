@@ -208,6 +208,18 @@ public class LoginActivity extends AppCompatActivity {
     @OnClick({R.id.login_via_google, R.id.login_via_google_image})
     public void onLoginViaGoogleClicked() {
 
+        if (!AppStatus.getInstance(getApplicationContext()).isOnline()) {
+
+            doSnack.showSnackbar("You're offline", "Retry", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onLoginViaGoogleClicked();
+                }
+            });
+
+            return;
+        }
+
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
         loginViaGoogle.setEnabled(false);
