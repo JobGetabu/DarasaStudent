@@ -113,7 +113,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
             return;
         }
         // Check if the location services are enabled
-        checkLocationOn();
+        //checkLocationOn();
 
 
         qrCodeReaderView.setOnQRCodeReadListener(this);
@@ -260,7 +260,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         super.onStart();
 
         //register location change broadcast
-        registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+        //registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
     }
 
     @Override
