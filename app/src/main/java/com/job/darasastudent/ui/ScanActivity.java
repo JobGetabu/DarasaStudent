@@ -1,6 +1,5 @@
 package com.job.darasastudent.ui;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -607,14 +606,13 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         int day = c.get(Calendar.DAY_OF_WEEK);
 
         String dd = doSnack.theDay(day);
-        LiveData<List<ClassScan>> todayScannedClasses = model.getTodayScannedClasses(dd);
-
+        List<ClassScan> todayScannedClasses = model.getTodayScannedClasses(dd);
         //check
-
-        if (todayScannedClasses.getValue() != null){
-            for (ClassScan cs : todayScannedClasses.getValue()) {
-                if (cs.getClasstime() == qrParser.getClasstime()) {
-                    if (cs.getDate() == qrParser.getDate() && cs.getLecteachtimeid() == qrParser.getLecteachtimeid()) {
+        if (todayScannedClasses != null){
+            for (ClassScan cs : todayScannedClasses) {
+                if (cs.getClasstime().toString().equals(qrParser.getClasstime().toString())) {
+                    if (cs.getDate().toString().equals(qrParser.getDate().toString())
+                            && cs.getLecteachtimeid().equals(qrParser.getLecteachtimeid())) {
                         return true;
                     }
                 }
@@ -628,26 +626,29 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         //save this class scan
         Calendar c = Calendar.getInstance();
         int day = c.get(Calendar.DAY_OF_WEEK);
-
         String dd = doSnack.theDay(day);
+
         ClassScan classScan = new ClassScan(qrParser.getLecteachtimeid(), qrParser.getClasstime(),qrParser.getDate(), dd);
 
         model.insert(classScan);
-
     }
 
     private void showDbOnLog(){
         //save this class scan
         Calendar c = Calendar.getInstance();
         int day = c.get(Calendar.DAY_OF_WEEK);
-
         String dd = doSnack.theDay(day);
-        model.getTodayScannedClasses(dd);
+        Log.d(TAG, "showDbOnLog: day "+dd);
 
-        for (ClassScan cs : model.getTodayScannedClasses(dd).getValue()) {
+        for (ClassScan cs : model.getScannedClasses()) {
 
+            Log.d(TAG," 1 => "+ cs.toString());
 
-                Log.i(TAG, cs.toString());
+        }
+
+        for (ClassScan cs : model.getTodayScannedClasses(dd)) {
+
+                Log.d(TAG, cs.toString());
 
         }
     }

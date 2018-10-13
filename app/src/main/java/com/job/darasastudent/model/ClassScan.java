@@ -15,7 +15,7 @@ import java.util.Date;
 
 
 @Keep
-@Entity()
+@Entity(tableName = "classScan")
 public class ClassScan {
 
     @PrimaryKey(autoGenerate = true)
