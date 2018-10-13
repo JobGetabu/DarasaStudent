@@ -1,5 +1,6 @@
 package com.job.darasastudent.repository;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
@@ -29,11 +30,11 @@ public interface ClassScanDao {
     void deleteScanClasses(ClassScan... classScan);
 
     @Query("SELECT * from classScan ORDER BY id ASC")
-    List<ClassScan> getAllScanedClasses();
+    LiveData<List<ClassScan>> getAllScanedClasses();
 
     @Query("SELECT * FROM classscan WHERE date_now == :today")
-    void getTodayScannedClasses(Date today);
+    LiveData<List<ClassScan>> getTodayScannedClasses(Date today);
 
     @Query("SELECT * FROM classscan WHERE day == :day")
-    void getTodayScannedClasses(String day);
+    LiveData<List<ClassScan>> getTodayScannedClasses(String day);
 }
