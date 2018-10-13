@@ -3,6 +3,7 @@ package com.job.darasastudent.datasource;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
 import com.job.darasastudent.model.ClassScan;
@@ -13,6 +14,7 @@ import com.job.darasastudent.repository.ClassScanDao;
  */
 
 @Database(entities = {ClassScan.class}, version = 1)
+@TypeConverters(DateConverter.class)
 public abstract class ClassRoomDatabase extends RoomDatabase{
 
     public abstract ClassScanDao classScanDao();
