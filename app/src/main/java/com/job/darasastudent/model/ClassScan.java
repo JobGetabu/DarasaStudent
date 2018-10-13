@@ -2,7 +2,7 @@ package com.job.darasastudent.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Index;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
@@ -15,8 +15,7 @@ import java.util.Date;
 
 
 @Keep
-@Entity(indices = {@Index("darasa"),
-        @Index(value = {"teach_time", "class_time", "date_now", "day"})})
+@Entity()
 public class ClassScan {
 
     @PrimaryKey(autoGenerate = true)
@@ -35,9 +34,9 @@ public class ClassScan {
     @ColumnInfo(name = "day")
     private String day;
 
-    public ClassScan() {
-    }
+    public ClassScan() { }
 
+    @Ignore
     public ClassScan(@NonNull String lecteachtimeid, @NonNull Date classtime, @NonNull Date date, String day) {
         this.lecteachtimeid = lecteachtimeid;
         this.classtime = classtime;
@@ -78,5 +77,24 @@ public class ClassScan {
 
     public void setDay(String day) {
         this.day = day;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "ClassScan{" +
+                "id=" + id +
+                ", lecteachtimeid='" + lecteachtimeid + '\'' +
+                ", classtime=" + classtime +
+                ", date=" + date +
+                ", day='" + day + '\'' +
+                '}';
     }
 }

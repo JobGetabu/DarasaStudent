@@ -149,6 +149,8 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
         scannerView.setQRCodeReaderView(qrCodeReaderView);
 
+        showDbOnLog();
+
     }
 
 
@@ -186,6 +188,8 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         qrCodeReaderView.stopCamera();
 
         saveThisScanInDb(qrParser);
+
+        showDbOnLog();
 
         //register the class in the db
 
@@ -546,6 +550,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
                         //verify repeat
                         if (isRepeatScan(qrParser)){
                             failVerifyCourseAndDetails(pDialog,"Not Allowed \n this class session \n has already been scanned");
+                            return;
                         }
 
                         successScan(pDialog,qrParser);
@@ -606,10 +611,12 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
         //check
 
-        for (ClassScan cs: todayScannedClasses.getValue()){
-            if (cs.getClasstime() == qrParser.getClasstime()){
-                if (cs.getDate() == qrParser.getDate() && cs.getLecteachtimeid() == qrParser.getLecteachtimeid()){
-                    return  true;
+        if (todayScannedClasses.getValue() != null){
+            for (ClassScan cs : todayScannedClasses.getValue()) {
+                if (cs.getClasstime() == qrParser.getClasstime()) {
+                    if (cs.getDate() == qrParser.getDate() && cs.getLecteachtimeid() == qrParser.getLecteachtimeid()) {
+                        return true;
+                    }
                 }
             }
         }
@@ -627,6 +634,22 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
         model.insert(classScan);
 
+    }
+
+    private void showDbOnLog(){
+        //save this class scan
+        Calendar c = Calendar.getInstance();
+        int day = c.get(Calendar.DAY_OF_WEEK);
+
+        String dd = doSnack.theDay(day);
+        model.getTodayScannedClasses(dd);
+
+        for (ClassScan cs : model.getTodayScannedClasses(dd).getValue()) {
+
+
+                Log.i(TAG, cs.toString());
+
+        }
     }
 
 }
