@@ -16,7 +16,7 @@ import java.util.Date;
 
 @Keep
 @Entity(indices = {@Index("darasa"),
-        @Index(value = {"teach_time", "class_time", "date_now"})})
+        @Index(value = {"teach_time", "class_time", "date_now", "day"})})
 public class ClassScan {
 
     @PrimaryKey(autoGenerate = true)
@@ -32,9 +32,51 @@ public class ClassScan {
     @ColumnInfo(name = "date_now")
     private Date date;
 
-    public ClassScan(String lecteachtimeid, Date classtime, Date date) {
+    @ColumnInfo(name = "day")
+    private String day;
+
+    public ClassScan() {
+    }
+
+    public ClassScan(@NonNull String lecteachtimeid, @NonNull Date classtime, @NonNull Date date, String day) {
         this.lecteachtimeid = lecteachtimeid;
         this.classtime = classtime;
         this.date = date;
+        this.day = day;
+    }
+
+    @NonNull
+    public String getLecteachtimeid() {
+        return lecteachtimeid;
+    }
+
+    public void setLecteachtimeid(@NonNull String lecteachtimeid) {
+        this.lecteachtimeid = lecteachtimeid;
+    }
+
+    @NonNull
+    public Date getClasstime() {
+        return classtime;
+    }
+
+    public void setClasstime(@NonNull Date classtime) {
+        this.classtime = classtime;
+    }
+
+    @NonNull
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(@NonNull Date date) {
+        this.date = date;
+    }
+
+    public String getDay() {
+        return day;
+    }
+
+    public void setDay(String day) {
+        this.day = day;
     }
 }
