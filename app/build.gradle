@@ -79,9 +79,6 @@ dependencies {
     //circular imageview
     implementation 'de.hdodenhof:circleimageview:2.2.0'
 
-    //nearby api
-    implementation 'com.google.android.gms:play-services-nearby:15.0.1'
-
     //architecture components
 
     // Room components
