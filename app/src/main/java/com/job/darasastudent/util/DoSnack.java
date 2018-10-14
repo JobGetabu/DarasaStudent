@@ -125,27 +125,8 @@ public class DoSnack {
         }
     }
 
-    private void dialogue(){
-      /*  final SweetAlertDialog pDialog = new SweetAlertDialog(, SweetAlertDialog.PROGRESS_TYPE);
-        pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
-        pDialog.setTitleText("Saving Changes...");
-        pDialog.setCancelable(false);
-
-        pDialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
-        pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-            @Override
-            public void onClick(SweetAlertDialog sDialog) {
-                sDialog.dismissWithAnimation();
-
-            }
-        });
-        pDialog.show();*/
-    }
-
-    private void errorPrompt() {
-        /*new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
-                .setTitleText("Oops...")
-                .setContentText("Something went wrong!")
-                .show();*/
-    }
+   public void showHeadsUpNotification(NotificationUtil mNotificationUtil,String title,String message){
+       mNotificationUtil.showStandardHeadsUpNotification(context,title,
+               message);
+   }
 }

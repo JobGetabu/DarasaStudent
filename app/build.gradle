@@ -42,6 +42,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
     implementation 'com.google.firebase:firebase-firestore:17.1.1'
     implementation 'com.google.firebase:firebase-config:16.0.1'
+    implementation 'com.google.firebase:firebase-messaging:17.3.3'
 
 
     // ButterKnife (for code brevity)
