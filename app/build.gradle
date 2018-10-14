@@ -50,7 +50,7 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-firestore:4.1.0'
 
     //location access
-    implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
 
     //smart location
     implementation 'io.nlopez.smartlocation:library:3.3.3'
@@ -79,8 +79,8 @@ dependencies {
     //circular imageview
     implementation 'de.hdodenhof:circleimageview:2.2.0'
 
-    //nearby api
-    implementation 'com.google.android.gms:play-services-nearby:15.0.1'
+    //adding remote config to app
+    implementation 'com.google.firebase:firebase-config:16.0.1'
 
     //architecture components
 
