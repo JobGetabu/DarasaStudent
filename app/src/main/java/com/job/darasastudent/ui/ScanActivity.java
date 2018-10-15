@@ -14,6 +14,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.button.MaterialButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -32,6 +34,7 @@ import com.google.gson.Gson;
 import com.job.darasastudent.R;
 import com.job.darasastudent.model.ClassScan;
 import com.job.darasastudent.model.QRParser;
+import com.job.darasastudent.model.StudentScanClass;
 import com.job.darasastudent.scanview.CodeScannerView;
 import com.job.darasastudent.util.DoSnack;
 import com.job.darasastudent.viewmodel.ScanViewModel;
@@ -54,6 +57,7 @@ import io.nlopez.smartlocation.location.providers.MultiFallbackProvider;
 
 import static com.job.darasastudent.util.Constants.COMPLETED_GIF_PREF_NAME;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
+import static com.job.darasastudent.util.Constants.STUDENTSCANCLASSCOL;
 
 public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {
 
@@ -76,7 +80,6 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
     private Gson gson;
     private LocationGooglePlayServicesProvider provider;
     private Location mLocation;
-    private int locationcount = 1;
     private int locationAlreadyStarted = 1;
     private SweetAlertDialog pDialogLoc;
     private SharedPreferences mSharedPreferences;
@@ -115,7 +118,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         mFirestore = FirebaseFirestore.getInstance();
 
         gson = new Gson();
-        doSnack = new DoSnack(this,ScanActivity.this);
+        doSnack = new DoSnack(this, ScanActivity.this);
 
         /*
         SmartLocation.with(this).location().state().locationServicesEnabled();
@@ -130,6 +133,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
 
         qrCodeReaderView.setOnQRCodeReadListener(this);
+
 
         // Use this function to enable/disable decoding
         qrCodeReaderView.setQRDecodingEnabled(true);
@@ -148,8 +152,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
         scannerView.setQRCodeReaderView(qrCodeReaderView);
 
-        showDbOnLog();
-
+        debugDb();
     }
 
 
@@ -172,7 +175,10 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         }
 
 
-        verifyCourseAndDetails(pDialog, qrParser);
+        if (model.getScanCount() == 1) {
+            verifyCourseAndDetails(pDialog, qrParser);
+            model.setScanCount(model.getScanCount() + 1);
+        }
 
 
     }
@@ -180,15 +186,14 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
     private void successScan(final SweetAlertDialog pDialog, QRParser qrParser) {
         pDialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
-        pDialog.setTitleText("Confirmed :" + qrParser.getUnitname() + " \n" + qrParser.getUnitcode() + "\n Location: proximity ON");
+        pDialog.setTitleText("Confirmed :" + qrParser.getUnitname() + " \n" + qrParser.getUnitcode() + "\n Location: proximity OFF");
         pDialog.setCancelable(false);
         pDialog.show();
 
         qrCodeReaderView.stopCamera();
 
         saveThisScanInDb(qrParser);
-
-        showDbOnLog();
+        debugDb();
 
         //register the class in the db
 
@@ -202,12 +207,12 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         });
     }
 
-    private void failScanLocation(final SweetAlertDialog pDialog, QRParser qrParser) {
+    private void failScan(final SweetAlertDialog pDialog) {
 
         pDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
-
-        pDialog.setTitleText("Failed : RESCAN !" + " \n" + "\nYou're not in class!" + "\n Location: proximity OFF");
+        pDialog.setTitleText("Failed ");
+        pDialog.setContentText("PLEASE RESCAN !");
         pDialog.setCancelable(false);
         pDialog.show();
 
@@ -547,16 +552,15 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
                         }
 
                         //verify repeat
-                        if (isRepeatScan(qrParser)){
-                            failVerifyCourseAndDetails(pDialog,"Not Allowed \n this class session \n has already been scanned");
+                        if (isRepeatScan(qrParser)) {
+                            failVerifyCourseAndDetails(pDialog, "Not Allowed \n this class session \n has already been scanned");
                             return;
                         }
 
-                        successScan(pDialog,qrParser);
+                        successScan(pDialog, qrParser);
+                        //saveThisInFirestore(qrParser, pDialog);
                     }
                 });
-
-
     }
 
     private void failVerifyCourseAndDetails(final SweetAlertDialog pDialog, String message) {
@@ -600,26 +604,28 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         return true;
     }
 
-    private boolean isRepeatScan(QRParser qrParser){
+    private boolean isRepeatScan(QRParser qrParser) {
 
         Calendar c = Calendar.getInstance();
         int day = c.get(Calendar.DAY_OF_WEEK);
-
         String dd = doSnack.theDay(day);
         List<ClassScan> todayScannedClasses = model.getTodayScannedClasses(dd);
+
+
         //check
-        if (todayScannedClasses != null){
+        if (todayScannedClasses != null) {
             for (ClassScan cs : todayScannedClasses) {
-                if (cs.getClasstime().toString().equals(qrParser.getClasstime().toString())) {
-                    if (cs.getDate().toString().equals(qrParser.getDate().toString())
-                            && cs.getLecteachtimeid().equals(qrParser.getLecteachtimeid())) {
-                        return true;
-                    }
-                }
+                return cs.getClasstime().toString().equals(qrParser.getClasstime().toString()) &&
+                        cs.getDate().toString().equals(qrParser.getDate().toString())
+                        && cs.getLecteachtimeid().equals(qrParser.getLecteachtimeid());
             }
+        } else {
+            Log.d(TAG, "isRepeatScan: no classes scanned today");
+
+            return false;
         }
 
-        return  false;
+        return false;
     }
 
     private void saveThisScanInDb(QRParser qrParser) {
@@ -628,29 +634,85 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         int day = c.get(Calendar.DAY_OF_WEEK);
         String dd = doSnack.theDay(day);
 
-        ClassScan classScan = new ClassScan(qrParser.getLecteachtimeid(), qrParser.getClasstime(),qrParser.getDate(), dd);
+        ClassScan classScan = new ClassScan(qrParser.getLecteachtimeid(), qrParser.getClasstime(), qrParser.getDate(), dd);
 
         model.insert(classScan);
     }
 
-    private void showDbOnLog(){
-        //save this class scan
+    private void saveThisInFirestore(final QRParser qrParser, final SweetAlertDialog pDialog) {
+
+        pDialog.changeAlertType(SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+        pDialog.setTitleText("Recording attendance...");
+        pDialog.setCancelable(true);
+        pDialog.setCanceledOnTouchOutside(true);
+        pDialog.show();
+
+        pDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+
+                Toast.makeText(ScanActivity.this,
+                        "Attendance Confirmed.. Changes will sync when you're online",
+                        Toast.LENGTH_LONG).show();
+                //doSnack.showShortSnackbar("Attendance Confirmed.. Changes will sync when you're online");
+                saveThisScanInDb(qrParser);
+                dialogInterface.dismiss();
+                finish();
+
+            }
+        });
+
+        StudentScanClass scanClass = new StudentScanClass();
+        String key = mFirestore.collection(STUDENTSCANCLASSCOL).document().getId();
+
+        scanClass.setClasstime(qrParser.getClasstime());
+        scanClass.setDate(qrParser.getDate());
+        scanClass.setLecteachtimeid(qrParser.getLecteachtimeid());
+        scanClass.setSemester(qrParser.getSemester());
+        scanClass.setYear(qrParser.getYear());
+        scanClass.setStudentid(mAuth.getCurrentUser().getUid());
+        scanClass.setStudentscanid(key);
+
+        //update the classes
+        mFirestore.collection(STUDENTSCANCLASSCOL).document(key)
+                .set(scanClass)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                        successScan(pDialog, qrParser);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+                doSnack.showShortSnackbar(e.getMessage());
+                failScan(pDialog);
+
+            }
+        });
+
+    }
+
+    private void debugDb() {
+
         Calendar c = Calendar.getInstance();
         int day = c.get(Calendar.DAY_OF_WEEK);
+
         String dd = doSnack.theDay(day);
-        Log.d(TAG, "showDbOnLog: day "+dd);
 
-        for (ClassScan cs : model.getScannedClasses()) {
+        List<ClassScan> todayScannedClasses = model.getTodayScannedClasses(dd);
+        //check
+        if (todayScannedClasses != null) {
+            for (ClassScan cs : todayScannedClasses) {
 
-            Log.d(TAG," 1 => "+ cs.toString());
-
+                Log.d(TAG, "debugDb: " + cs.toString());
+            }
+        }else {
+            Log.d(TAG, "debugDb: query is empty");
         }
 
-        for (ClassScan cs : model.getTodayScannedClasses(dd)) {
-
-                Log.d(TAG, cs.toString());
-
-        }
     }
 
 }

@@ -16,6 +16,7 @@ import java.util.List;
 public class ScanViewModel extends AndroidViewModel {
 
     private ClassScanRepository mRepository;
+    private int scanCount = 1;
 
     public ScanViewModel(@NonNull Application application) {
         super(application);
@@ -38,5 +39,13 @@ public class ScanViewModel extends AndroidViewModel {
 
     public List<ClassScan> getTodayScannedClasses(String today){
         return mRepository.getTodayScannedClasses(today);
+    }
+
+    public int getScanCount() {
+        return scanCount;
+    }
+
+    public void setScanCount(int scanCount) {
+        this.scanCount = scanCount;
     }
 }
