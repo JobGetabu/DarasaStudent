@@ -1,5 +1,7 @@
 package com.job.darasastudent.ui;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,6 +17,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -86,6 +89,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
     private ScanViewModel model;
     private DoSnack doSnack;
+    List<ClassScan> mTodayScannedClasses;
 
     //firestore
     private FirebaseAuth mAuth;
@@ -110,8 +114,6 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_back));
 
-        //database
-        model = ViewModelProviders.of(this).get(ScanViewModel.class);
 
         //firebase
         mAuth = FirebaseAuth.getInstance();
@@ -119,6 +121,12 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
         gson = new Gson();
         doSnack = new DoSnack(this, ScanActivity.this);
+
+        //database
+        model = ViewModelProviders.of(this).get(ScanViewModel.class);
+
+        //subscribe observers
+        debugDb();
 
         /*
         SmartLocation.with(this).location().state().locationServicesEnabled();
@@ -152,7 +160,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
         scannerView.setQRCodeReaderView(qrCodeReaderView);
 
-        debugDb();
+
     }
 
 
@@ -192,7 +200,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
         qrCodeReaderView.stopCamera();
 
-        saveThisScanInDb(qrParser);
+        //saveThisScanInDb(qrParser);
         debugDb();
 
         //register the class in the db
@@ -609,12 +617,12 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         Calendar c = Calendar.getInstance();
         int day = c.get(Calendar.DAY_OF_WEEK);
         String dd = doSnack.theDay(day);
-        List<ClassScan> todayScannedClasses = model.getTodayScannedClasses(dd);
+        //List<ClassScan> todayScannedClasses = model.getTodayScannedClasses(dd);
 
 
         //check
-        if (todayScannedClasses != null) {
-            for (ClassScan cs : todayScannedClasses) {
+        if (mTodayScannedClasses != null) {
+            for (ClassScan cs : mTodayScannedClasses) {
                 return cs.getClasstime().toString().equals(qrParser.getClasstime().toString()) &&
                         cs.getDate().toString().equals(qrParser.getDate().toString())
                         && cs.getLecteachtimeid().equals(qrParser.getLecteachtimeid());
@@ -656,12 +664,14 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
                         "Attendance Confirmed.. Changes will sync when you're online",
                         Toast.LENGTH_LONG).show();
                 //doSnack.showShortSnackbar("Attendance Confirmed.. Changes will sync when you're online");
-                saveThisScanInDb(qrParser);
+
                 dialogInterface.dismiss();
                 finish();
 
             }
         });
+
+        saveThisScanInDb(qrParser);
 
         StudentScanClass scanClass = new StudentScanClass();
         String key = mFirestore.collection(STUDENTSCANCLASSCOL).document().getId();
@@ -702,7 +712,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
         String dd = doSnack.theDay(day);
 
-        List<ClassScan> todayScannedClasses = model.getTodayScannedClasses(dd);
+       /* List<ClassScan> todayScannedClasses = model.getTodayScannedClasses(dd);
         //check
         if (todayScannedClasses != null) {
             for (ClassScan cs : todayScannedClasses) {
@@ -711,8 +721,26 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
             }
         }else {
             Log.d(TAG, "debugDb: query is empty");
-        }
+        }*/
 
+        //LiveData<List<ClassScan>> scannedClasses = model.getScannedClasses();
+
+        model.getTodayScannedClasses(dd).observe(this, new Observer<List<ClassScan>>() {
+            @Override
+            public void onChanged(@Nullable List<ClassScan> classScans) {
+
+                mTodayScannedClasses = classScans;
+
+                if (mTodayScannedClasses != null) {
+                    for (ClassScan cs : mTodayScannedClasses) {
+
+                        Log.d(TAG, "debugDb: " + cs.toString());
+                    }
+                }else {
+                    Log.d(TAG, "debugDb: query is empty");
+                }
+            }
+        });
     }
 
 }

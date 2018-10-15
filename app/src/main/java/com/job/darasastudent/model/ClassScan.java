@@ -3,6 +3,7 @@ package com.job.darasastudent.model;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
@@ -15,19 +16,18 @@ import java.util.Date;
 
 
 @Keep
-@Entity(tableName = "classScan")
+@Entity(tableName = "classScan", indices = {@Index(value = {"date_now"}, unique = true)})
 public class ClassScan {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-    @NonNull
     @ColumnInfo(name = "teach_time")
     private String lecteachtimeid;
-    @NonNull
+
     @ColumnInfo(name = "class_time")
     private Date classtime;
-    @NonNull
+
     @ColumnInfo(name = "date_now")
     private Date date;
 

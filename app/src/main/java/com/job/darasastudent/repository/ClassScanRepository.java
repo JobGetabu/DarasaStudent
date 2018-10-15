@@ -1,13 +1,12 @@
 package com.job.darasastudent.repository;
 
 import android.app.Application;
-import android.util.Log;
+import android.arch.lifecycle.LiveData;
 
 import com.job.darasastudent.appexecutor.DefaultExecutorSupplier;
 import com.job.darasastudent.datasource.ClassRoomDatabase;
 import com.job.darasastudent.model.ClassScan;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -19,9 +18,9 @@ public class ClassScanRepository {
     public static final String TAG = "Repository";
 
     private ClassScanDao classScanDao;
-    private  List<ClassScan> mScannedClasses = new ArrayList<>();
-    private  List<ClassScan> mDateScannedClasses = new ArrayList<>();
-    private  List<ClassScan> mTodayScannedClasses = new ArrayList<>();
+    private LiveData<List<ClassScan>> mScannedClasses = new LiveData<List<ClassScan>>() {};
+    private LiveData<List<ClassScan>> mDateScannedClasses = new LiveData<List<ClassScan>>() {};
+    private LiveData<List<ClassScan>> mTodayScannedClasses = new LiveData<List<ClassScan>>() {};
 
     public ClassScanRepository(Application application) {
         ClassRoomDatabase db = ClassRoomDatabase.getDatabase(application);
@@ -29,7 +28,7 @@ public class ClassScanRepository {
 
     }
 
-    public void insert (final ClassScan classScan){
+    public void insert(final ClassScan classScan) {
         DefaultExecutorSupplier.getInstance().forBackgroundTasks()
                 .submit(new Runnable() {
                     @Override
@@ -39,31 +38,33 @@ public class ClassScanRepository {
                 });
     }
 
-    public List<ClassScan> getScannedClasses(){
+    public LiveData<List<ClassScan>> getScannedClasses() {
         DefaultExecutorSupplier.getInstance().forBackgroundTasks()
                 .submit(new Runnable() {
                     @Override
                     public void run() {
                         mScannedClasses = classScanDao.getAllScannedClasses();
-                        Log.d(TAG, "mScannedClasses: "+mScannedClasses.size());
+
                     }
                 });
         return mScannedClasses;
     }
-    public List<ClassScan> getDateScannedClasses(final Date today){
+
+    public LiveData<List<ClassScan>> getDateScannedClasses(final Date today) {
+
 
         DefaultExecutorSupplier.getInstance().forBackgroundTasks()
                 .submit(new Runnable() {
                     @Override
                     public void run() {
                         mDateScannedClasses = classScanDao.getDateScannedClasses(today);
-                        Log.d(TAG, "mDateScannedClasses: "+mDateScannedClasses.size());
+
                     }
                 });
         return mDateScannedClasses;
     }
 
-    public List<ClassScan> getTodayScannedClasses(final String today){
+    public LiveData<List<ClassScan>> getTodayScannedClasses(final String today) {
         DefaultExecutorSupplier.getInstance().forBackgroundTasks()
                 .submit(new Runnable() {
                     @Override

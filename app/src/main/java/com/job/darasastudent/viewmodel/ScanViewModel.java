@@ -2,6 +2,7 @@ package com.job.darasastudent.viewmodel;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
+import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
 import com.job.darasastudent.model.ClassScan;
@@ -29,15 +30,15 @@ public class ScanViewModel extends AndroidViewModel {
         mRepository.insert(classScan);
     }
 
-    public List<ClassScan> getScannedClasses(){
+    public LiveData<List<ClassScan>> getScannedClasses(){
         return mRepository.getScannedClasses();
     }
 
-    public List<ClassScan> getDateScannedClasses(final Date today){
+    public LiveData<List<ClassScan>> getDateScannedClasses(final Date today){
         return mRepository.getDateScannedClasses(today);
     }
 
-    public List<ClassScan> getTodayScannedClasses(String today){
+    public LiveData<List<ClassScan>> getTodayScannedClasses(String today){
         return mRepository.getTodayScannedClasses(today);
     }
 
