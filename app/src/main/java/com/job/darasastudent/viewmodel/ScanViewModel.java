@@ -3,8 +3,12 @@ package com.job.darasastudent.viewmodel;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
+import android.arch.lifecycle.Observer;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import com.job.darasastudent.DarasaStudent;
 import com.job.darasastudent.model.ClassScan;
 import com.job.darasastudent.repository.ClassScanRepository;
 
@@ -16,30 +20,51 @@ import java.util.List;
  */
 public class ScanViewModel extends AndroidViewModel {
 
-    private ClassScanRepository mRepository;
     private int scanCount = 1;
+    private ClassScanRepository repository;
+
+    // MediatorLiveData can observe other LiveData objects and react on their emissions.
+    private final MediatorLiveData<List<ClassScan>> mObservableScans;
 
     public ScanViewModel(@NonNull Application application) {
         super(application);
 
-        mRepository = new ClassScanRepository(application);
+        mObservableScans = new MediatorLiveData<>();
+        repository = ((DarasaStudent) application).getRepository();
 
+        // set by default null, until we get data from the database.
+        mObservableScans.setValue(null);
+
+        LiveData<List<ClassScan>> scannedClasses = ((DarasaStudent) application).getRepository()
+                .getScannedClasses();
+
+        // observe the changes of the class scans from the database and forward them
+        mObservableScans.addSource(scannedClasses, new Observer<List<ClassScan>>() {
+            @Override
+            public void onChanged(@Nullable List<ClassScan> classScans) {
+                mObservableScans.setValue(classScans);
+            }
+        });
+    }
+
+    /**
+     * Expose the LiveData Products query so the UI can observe it.
+     */
+    public LiveData<List<ClassScan>> getScannedClasses() {
+        return mObservableScans;
     }
 
     public void insert (ClassScan classScan){
-        mRepository.insert(classScan);
+        repository.insert(classScan);
     }
 
-    public LiveData<List<ClassScan>> getScannedClasses(){
-        return mRepository.getScannedClasses();
-    }
 
     public LiveData<List<ClassScan>> getDateScannedClasses(final Date today){
-        return mRepository.getDateScannedClasses(today);
+        return repository.getDateScannedClasses(today);
     }
 
     public LiveData<List<ClassScan>> getTodayScannedClasses(String today){
-        return mRepository.getTodayScannedClasses(today);
+        return repository.getTodayScannedClasses(today);
     }
 
     public int getScanCount() {

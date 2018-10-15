@@ -1,7 +1,9 @@
 package com.job.darasastudent.repository;
 
-import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
+import android.arch.lifecycle.Observer;
+import android.support.annotation.Nullable;
 
 import com.job.darasastudent.appexecutor.DefaultExecutorSupplier;
 import com.job.darasastudent.datasource.ClassRoomDatabase;
@@ -18,14 +20,58 @@ public class ClassScanRepository {
     public static final String TAG = "Repository";
 
     private ClassScanDao classScanDao;
-    private LiveData<List<ClassScan>> mScannedClasses = new LiveData<List<ClassScan>>() {};
-    private LiveData<List<ClassScan>> mDateScannedClasses = new LiveData<List<ClassScan>>() {};
-    private LiveData<List<ClassScan>> mTodayScannedClasses = new LiveData<List<ClassScan>>() {};
 
-    public ClassScanRepository(Application application) {
-        ClassRoomDatabase db = ClassRoomDatabase.getDatabase(application);
-        classScanDao = db.classScanDao();
+    private static ClassScanRepository sInstance;
+    private final ClassRoomDatabase mDatabase;
 
+    private MediatorLiveData<List<ClassScan>> mScannedClasses ;
+    private MediatorLiveData<List<ClassScan>> mDateScannedClasses ;
+    private MediatorLiveData<List<ClassScan>> mTodayScannedClasses ;
+
+    public ClassScanRepository(ClassRoomDatabase database) {
+
+        mDatabase = database;
+        classScanDao = mDatabase.classScanDao();
+
+        //init mediators
+        mScannedClasses = new MediatorLiveData<>();
+        mDateScannedClasses = new MediatorLiveData<>();
+        mTodayScannedClasses = new MediatorLiveData<>();
+
+        DefaultExecutorSupplier.getInstance().forBackgroundTasks()
+                .submit(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        mScannedClasses.addSource(classScanDao.getAllScannedClasses(), new Observer<List<ClassScan>>() {
+                            @Override
+                            public void onChanged(@Nullable List<ClassScan> classScans) {
+                                if (classScans != null)
+                                    mScannedClasses.postValue(classScans);
+                            }
+                        });
+
+                    }
+                });
+    }
+
+    public static ClassScanRepository getInstance(final ClassRoomDatabase database) {
+        if (sInstance == null) {
+            synchronized (ClassScanRepository.class) {
+                if (sInstance == null) {
+                    sInstance = new ClassScanRepository(database);
+                }
+            }
+        }
+        return sInstance;
+    }
+
+
+    /**
+     * Get the list of products from the database and get notified when the data changes.
+     */
+    public LiveData<List<ClassScan>> getScannedClasses() {
+        return mScannedClasses;
     }
 
     public void insert(final ClassScan classScan) {
@@ -38,40 +84,12 @@ public class ClassScanRepository {
                 });
     }
 
-    public LiveData<List<ClassScan>> getScannedClasses() {
-        DefaultExecutorSupplier.getInstance().forBackgroundTasks()
-                .submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        mScannedClasses = classScanDao.getAllScannedClasses();
-
-                    }
-                });
-        return mScannedClasses;
-    }
 
     public LiveData<List<ClassScan>> getDateScannedClasses(final Date today) {
-
-
-        DefaultExecutorSupplier.getInstance().forBackgroundTasks()
-                .submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDateScannedClasses = classScanDao.getDateScannedClasses(today);
-
-                    }
-                });
-        return mDateScannedClasses;
+        return classScanDao.getDateScannedClasses(today);
     }
 
     public LiveData<List<ClassScan>> getTodayScannedClasses(final String today) {
-        DefaultExecutorSupplier.getInstance().forBackgroundTasks()
-                .submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        mTodayScannedClasses = classScanDao.getTodayScannedClasses(today);
-                    }
-                });
-        return mTodayScannedClasses;
+       return classScanDao.getTodayScannedClasses(today);
     }
 }

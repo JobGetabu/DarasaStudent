@@ -7,6 +7,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.job.darasastudent.datasource.ClassRoomDatabase;
+import com.job.darasastudent.repository.ClassScanRepository;
 
 /**
  * Created by Job on Friday : 8/10/2018.
@@ -45,6 +47,14 @@ public class DarasaStudent extends MultiDexApplication {
 
         mAuth.addAuthStateListener(mAuthListener);
 
+    }
+
+    public ClassRoomDatabase getDatabase() {
+        return ClassRoomDatabase.getDatabase(this);
+    }
+
+    public ClassScanRepository getRepository() {
+        return ClassScanRepository.getInstance(getDatabase());
     }
 }
 
