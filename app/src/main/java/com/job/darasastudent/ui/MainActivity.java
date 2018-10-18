@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.design.bottomappbar.BottomAppBar;
@@ -33,6 +34,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.job.darasastudent.BuildConfig;
 import com.job.darasastudent.R;
 import com.job.darasastudent.model.LecTeachTime;
 import com.job.darasastudent.util.Constants;
@@ -100,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        initStrictMode();
         setSupportActionBar(bar);
 
         //subtitle
@@ -408,6 +411,20 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         recreate();
+    }
+
+    private void initStrictMode(){
+
+        if (BuildConfig.DEBUG){
+
+            StrictMode.ThreadPolicy threadPolicy = new StrictMode.ThreadPolicy.Builder()
+                    .detectCustomSlowCalls()
+                    .detectNetwork()
+                    .penaltyLog()
+                    .build();
+
+            StrictMode.setThreadPolicy(threadPolicy);
+        }
     }
 
 }

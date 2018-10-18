@@ -31,6 +31,12 @@ public class Constants {
     public static final String CURRENT_SEM_PREF_NAME = "CURRENT_SEM_PREF_NAME";
     public static final String CURRENT_YEAR_PREF_NAME = "CURRENT_YEAR_PREF_NAME";
 
+    public static final String SCAN_CLASSTIME_PREF_NAME = "SCAN_CLASSTIME_PREF_NAME";
+    public static final String SCAN_DATE_PREF_NAME = "SCAN_DATE_PREF_NAME";
+    public static final String SCAN_LECTEACHID_PREF_NAME = "SCAN_LECTEACHID_PREF_NAME";
+    public static final String SCAN_DAY_PREF_NAME = "SCAN_DAY_PREF_NAME";
+
+
 
 
 

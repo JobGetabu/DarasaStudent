@@ -1,6 +1,5 @@
 package com.job.darasastudent.ui;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
@@ -59,6 +58,10 @@ import io.nlopez.smartlocation.location.providers.LocationManagerProvider;
 import io.nlopez.smartlocation.location.providers.MultiFallbackProvider;
 
 import static com.job.darasastudent.util.Constants.COMPLETED_GIF_PREF_NAME;
+import static com.job.darasastudent.util.Constants.SCAN_CLASSTIME_PREF_NAME;
+import static com.job.darasastudent.util.Constants.SCAN_DATE_PREF_NAME;
+import static com.job.darasastudent.util.Constants.SCAN_DAY_PREF_NAME;
+import static com.job.darasastudent.util.Constants.SCAN_LECTEACHID_PREF_NAME;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
 import static com.job.darasastudent.util.Constants.STUDENTSCANCLASSCOL;
 
@@ -102,6 +105,8 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         setContentView(R.layout.activity_viewfinder);
         ButterKnife.bind(this);
 
+
+
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         // Check if we need to display our GIF
         if (!mSharedPreferences.getBoolean(
@@ -125,8 +130,6 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         //database
         model = ViewModelProviders.of(this).get(ScanViewModel.class);
 
-        //subscribe observers
-        debugDb();
 
         /*
         SmartLocation.with(this).location().state().locationServicesEnabled();
@@ -200,10 +203,9 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
         qrCodeReaderView.stopCamera();
 
-        //saveThisScanInDb(qrParser);
-        debugDb();
-
-        //register the class in the db
+        //register the class in the prefs
+        saveThisScanInPrefs(qrParser);
+        //debugDb();
 
         pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
             @Override
@@ -615,25 +617,18 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
     private boolean isRepeatScan(QRParser qrParser) {
 
         Calendar c = Calendar.getInstance();
-        int day = c.get(Calendar.DAY_OF_WEEK);
-        String dd = doSnack.theDay(day);
-        //List<ClassScan> todayScannedClasses = model.getTodayScannedClasses(dd);
+        String dd = doSnack.theDay(c.get(Calendar.DAY_OF_WEEK));
 
 
-        //check
-        if (mTodayScannedClasses != null) {
-            for (ClassScan cs : mTodayScannedClasses) {
-                return cs.getClasstime().toString().equals(qrParser.getClasstime().toString()) &&
-                        cs.getDate().toString().equals(qrParser.getDate().toString())
-                        && cs.getLecteachtimeid().equals(qrParser.getLecteachtimeid());
-            }
-        } else {
-            Log.d(TAG, "isRepeatScan: no classes scanned today");
+        String day = mSharedPreferences.getString(SCAN_DAY_PREF_NAME, "");
+        String lecteachid = mSharedPreferences.getString(SCAN_LECTEACHID_PREF_NAME, "");
+        long date = mSharedPreferences.getLong(SCAN_DATE_PREF_NAME, 0L);
+        long classtime = mSharedPreferences.getLong(SCAN_CLASSTIME_PREF_NAME, 0L);
 
-            return false;
-        }
+        return classtime == qrParser.getClasstime().getTime() &&
+                date == qrParser.getDate().getTime() &&
+                lecteachid.equals(qrParser.getLecteachtimeid());
 
-        return false;
     }
 
     private void saveThisScanInDb(QRParser qrParser) {
@@ -645,6 +640,24 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         ClassScan classScan = new ClassScan(qrParser.getLecteachtimeid(), qrParser.getClasstime(), qrParser.getDate(), dd);
 
         model.insert(classScan);
+    }
+
+    private void saveThisScanInPrefs(QRParser qrParser) {
+        //save this class scan
+        Calendar c = Calendar.getInstance();
+        int day = c.get(Calendar.DAY_OF_WEEK);
+        String dd = doSnack.theDay(day);
+
+        SharedPreferences.Editor sharedPreferencesEditor =
+                PreferenceManager.getDefaultSharedPreferences(this).edit();
+
+        sharedPreferencesEditor.putString(SCAN_LECTEACHID_PREF_NAME, qrParser.getLecteachtimeid());
+        sharedPreferencesEditor.putString(SCAN_DAY_PREF_NAME, dd);
+        sharedPreferencesEditor.putLong(SCAN_DATE_PREF_NAME, qrParser.getDate().getTime());
+        sharedPreferencesEditor.putLong(SCAN_CLASSTIME_PREF_NAME, qrParser.getClasstime().getTime());
+
+        sharedPreferencesEditor.apply();
+
     }
 
     private void saveThisInFirestore(final QRParser qrParser, final SweetAlertDialog pDialog) {
@@ -731,6 +744,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
                 mTodayScannedClasses = classScans;
 
+                Log.d(TAG, "onChanged: "+classScans.size());
                 if (mTodayScannedClasses != null) {
                     for (ClassScan cs : mTodayScannedClasses) {
 
@@ -742,5 +756,6 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
             }
         });
     }
+
 
 }
