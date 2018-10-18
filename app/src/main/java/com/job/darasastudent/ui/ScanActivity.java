@@ -191,7 +191,6 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
             model.setScanCount(model.getScanCount() + 1);
         }
 
-
     }
 
     private void successScan(final SweetAlertDialog pDialog, QRParser qrParser) {
@@ -203,8 +202,6 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
         qrCodeReaderView.stopCamera();
 
-        //register the class in the prefs
-        saveThisScanInPrefs(qrParser);
         //debugDb();
 
         pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -567,8 +564,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
                             return;
                         }
 
-                        successScan(pDialog, qrParser);
-                        //saveThisInFirestore(qrParser, pDialog);
+                        saveThisInFirestore(qrParser, pDialog);
                     }
                 });
     }
@@ -631,17 +627,6 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
     }
 
-    private void saveThisScanInDb(QRParser qrParser) {
-        //save this class scan
-        Calendar c = Calendar.getInstance();
-        int day = c.get(Calendar.DAY_OF_WEEK);
-        String dd = doSnack.theDay(day);
-
-        ClassScan classScan = new ClassScan(qrParser.getLecteachtimeid(), qrParser.getClasstime(), qrParser.getDate(), dd);
-
-        model.insert(classScan);
-    }
-
     private void saveThisScanInPrefs(QRParser qrParser) {
         //save this class scan
         Calendar c = Calendar.getInstance();
@@ -684,7 +669,8 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
             }
         });
 
-        saveThisScanInDb(qrParser);
+        //register the class in the prefs
+        saveThisScanInPrefs(qrParser);
 
         StudentScanClass scanClass = new StudentScanClass();
         String key = mFirestore.collection(STUDENTSCANCLASSCOL).document().getId();
