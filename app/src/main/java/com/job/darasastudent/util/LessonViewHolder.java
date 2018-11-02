@@ -7,7 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hbb20.GThumb;
 import com.job.darasastudent.R;
@@ -22,6 +24,8 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.job.darasastudent.util.Constants.LECUSERCOL;
 
 
 /**
@@ -42,6 +46,8 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
     TextView lsVenue;
     @BindView(R.id.attn_gthumb)
     GThumb gThumb;
+    @BindView(R.id.ls_lecname)
+    TextView lsLecname;
 
 
     private Context mContext;
@@ -100,9 +106,22 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
                         gThumb.setBackgroundShape(GThumb.BACKGROUND_SHAPE.ROUND);
                         gThumb.loadThumbForName("", lecTeachTime.getUnitname());
                         //locationViewer(lecTeachTime);
-
+                        setLecName(lecTeachTime.getLecid());
                     }
                 });
+    }
+
+    private void setLecName(String lecid) {
+        mFirestore.collection(LECUSERCOL).document(lecid)
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                String firstname = documentSnapshot.getString("firstname");
+                String lastname = documentSnapshot.getString("lastname");
+
+                lsLecname.setText("lec: "+firstname+" "+lastname);
+            }
+        });
     }
 
    /* private void locationViewer(LecTeachTime lecTeachTime) {
