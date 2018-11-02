@@ -192,7 +192,7 @@ public class SignupActivity extends AppCompatActivity {
 
         StudentDetails studentDetails = new StudentDetails();
         studentDetails.setDevicetoken(device_token);
-        studentDetails.setPhotourl(user.getPhotoUrl().toString());
+        studentDetails.setPhotourl(String.valueOf(user.getPhotoUrl()));
         studentDetails.setFirstname(user.getDisplayName());
         studentDetails.setStudentid(mCurrentUserid);
 

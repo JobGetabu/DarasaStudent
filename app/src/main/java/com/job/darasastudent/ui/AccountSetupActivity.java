@@ -27,8 +27,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 import com.job.darasastudent.R;
+import com.job.darasastudent.appexecutor.DefaultExecutorSupplier;
 import com.job.darasastudent.model.StudentDetails;
 import com.job.darasastudent.util.AppStatus;
 import com.job.darasastudent.util.DoSnack;
@@ -47,6 +50,8 @@ import static com.job.darasastudent.util.Constants.COURSE_PREF_NAME;
 import static com.job.darasastudent.util.Constants.DKUTCOURSES;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
 
+//TODO: Check if document already exists,
+//Restrict manipulation of course and registration number.
 
 public class AccountSetupActivity extends AppCompatActivity {
 
@@ -147,9 +152,14 @@ public class AccountSetupActivity extends AppCompatActivity {
             studMap.put("course", course);
             studMap.put("regnumber", regno.toUpperCase());
 
+
+
+            //TODO: Check duplication of field regnumber
+
+            //checkDuplicateReg(pDialog, studMap, regno, course);
+
             // Set the value of 'Users'
             DocumentReference usersRef = mFirestore.collection(STUDENTDETAILSCOL).document(mAuth.getCurrentUser().getUid());
-
             usersRef.update(studMap)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -177,7 +187,76 @@ public class AccountSetupActivity extends AppCompatActivity {
                     doSnack.errorPrompt("Oops...", e.getMessage());
                 }
             });
+
         }
+    }
+
+    private void checkDuplicateReg(final SweetAlertDialog pDialog, final Map<String, Object> studMap, final String regno, final String course) {
+
+        //not applicable for updates
+
+        mFirestore.collection(STUDENTDETAILSCOL)
+                .get()
+                .addOnSuccessListener(DefaultExecutorSupplier.getInstance().forMainThreadTasks(), new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                       for(QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots){
+
+                           boolean isDuplicate = false;
+
+                           String regNumber = queryDocumentSnapshot.getString("regnumber");
+                           if (!regno.toUpperCase().equals(regNumber)){
+                               // Set the value of 'Users'
+                               DocumentReference usersRef = mFirestore.collection(STUDENTDETAILSCOL).document(mAuth.getCurrentUser().getUid());
+                               usersRef.update(studMap)
+                                       .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                           @Override
+                                           public void onSuccess(Void aVoid) {
+
+                                               pDialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                                               pDialog.setCancelable(true);
+                                               pDialog.setTitleText("Saved Successfully");
+                                               pDialog.setContentText("You're now set");
+                                               pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                   @Override
+                                                   public void onClick(SweetAlertDialog sDialog) {
+                                                       sDialog.dismissWithAnimation();
+
+                                                       saveCoursePref(course);
+                                                       sendToMain();
+
+                                                   }
+                                               });
+                                           }
+                                       }).addOnFailureListener(new OnFailureListener() {
+                                   @Override
+                                   public void onFailure(@NonNull Exception e) {
+                                       pDialog.dismiss();
+                                       doSnack.errorPrompt("Oops...", e.getMessage());
+                                   }
+                               });
+                           }else {
+                               isDuplicate = true;
+                               pDialog.changeAlertType(SweetAlertDialog.WARNING_TYPE);
+                               pDialog.setCancelable(true);
+                               pDialog.setTitleText("Duplicate Registration Number Found");
+                               pDialog.setContentText("Check and try again");
+                               pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                   @Override
+                                   public void onClick(SweetAlertDialog sDialog) {
+                                       sDialog.dismissWithAnimation();
+
+                                       saveCoursePref(course);
+                                       sendToMain();
+
+                                   }
+                               });
+                               break;
+                           }
+                       }
+                    }
+                });
     }
 
     private void sendToMain() {
@@ -261,6 +340,18 @@ public class AccountSetupActivity extends AppCompatActivity {
     @OnClick(R.id.setup_course_btn)
     public void onViewCourseClicked() {
 
+        if (!AppStatus.getInstance(getApplicationContext()).isOnline()) {
+
+            doSnack.showSnackbar("You're offline", "Retry", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onViewSetupClicked();
+                }
+            });
+
+            return;
+        }
+
         mFirestore.collection(DKUTCOURSES).document("dkut")
                 .get(Source.DEFAULT)
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -285,6 +376,13 @@ public class AccountSetupActivity extends AppCompatActivity {
 
                                 promptCourseList(listOfCourses);
                             }
+                        }else {
+                            doSnack.showSnackbar("You're offline", "Retry", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    recreate();
+                                }
+                            });
                         }
                     }
                 });

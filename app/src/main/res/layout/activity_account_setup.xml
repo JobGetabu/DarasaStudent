@@ -88,7 +88,7 @@
 
             <android.support.design.button.MaterialButton
                 android:id="@+id/setup_course_btn"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
@@ -100,7 +100,13 @@
                 android:textAlignment="textStart"
                 android:textAllCaps="false"
                 android:textColor="@color/darkgreyish"
-                android:textSize="16sp" />
+                android:textSize="18sp"
+                app:backgroundTint="@color/contentDividerLine"
+                app:icon="@drawable/ic_checklist"
+                app:iconTint="@color/colorAccent"
+                app:additionalPaddingRightForIcon="16dp"
+                app:additionalPaddingLeftForIcon="4dp"
+                />
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/setup_course"

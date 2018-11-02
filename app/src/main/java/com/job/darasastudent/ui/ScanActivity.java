@@ -1,5 +1,6 @@
 package com.job.darasastudent.ui;
 
+import android.Manifest;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
@@ -8,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.location.Location;
@@ -18,6 +20,8 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -68,6 +72,7 @@ import static com.job.darasastudent.util.Constants.STUDENTSCANCLASSCOL;
 public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {
 
     private static final int LOCATION_PERMISSION_ID = 1001;
+    private static final int CAMERA_PERMISSION_ID = 1021;
     private static final String TAG = "ScanActivity";
 
 
@@ -142,6 +147,11 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         //checkLocationOn();
         */
 
+
+        if (ContextCompat.checkSelfPermission(ScanActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(ScanActivity.this, new String[]{Manifest.permission.CAMERA}, LOCATION_PERMISSION_ID);
+            return;
+        }
 
         qrCodeReaderView.setOnQRCodeReadListener(this);
 
