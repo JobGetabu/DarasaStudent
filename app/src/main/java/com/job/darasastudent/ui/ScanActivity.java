@@ -45,6 +45,8 @@ import com.job.darasastudent.scanview.CodeScannerView;
 import com.job.darasastudent.util.DoSnack;
 import com.job.darasastudent.viewmodel.ScanViewModel;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -62,6 +64,7 @@ import io.nlopez.smartlocation.location.providers.LocationManagerProvider;
 import io.nlopez.smartlocation.location.providers.MultiFallbackProvider;
 
 import static com.job.darasastudent.util.Constants.COMPLETED_GIF_PREF_NAME;
+import static com.job.darasastudent.util.Constants.DATE_SCAN_FORMAT;
 import static com.job.darasastudent.util.Constants.SCAN_CLASSTIME_PREF_NAME;
 import static com.job.darasastudent.util.Constants.SCAN_DATE_PREF_NAME;
 import static com.job.darasastudent.util.Constants.SCAN_DAY_PREF_NAME;
@@ -682,6 +685,10 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         //register the class in the prefs
         saveThisScanInPrefs(qrParser);
 
+        //get short date today
+        Calendar c = Calendar.getInstance();
+        DateFormat dateFormat2 = new SimpleDateFormat(DATE_SCAN_FORMAT);
+        String today = dateFormat2.format(c.getTime());
         StudentScanClass scanClass = new StudentScanClass();
         String key = mFirestore.collection(STUDENTSCANCLASSCOL).document().getId();
 
@@ -692,6 +699,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         scanClass.setYear(qrParser.getYear());
         scanClass.setStudentid(mAuth.getCurrentUser().getUid());
         scanClass.setStudentscanid(key);
+        scanClass.setQuerydate(today);
 
         //update the classes
         mFirestore.collection(STUDENTSCANCLASSCOL).document(key)
