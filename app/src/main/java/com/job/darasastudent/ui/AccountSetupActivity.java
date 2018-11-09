@@ -175,7 +175,7 @@ public class AccountSetupActivity extends AppCompatActivity {
                                     sDialog.dismissWithAnimation();
 
                                     saveCoursePref(course);
-                                    sendToMain();
+                                    sendToCurrentSetup();
 
                                 }
                             });
@@ -262,6 +262,12 @@ public class AccountSetupActivity extends AppCompatActivity {
     private void sendToMain() {
         Intent mIntent = new Intent(this, MainActivity.class);
         startActivity(mIntent);
+        finish();
+    }
+
+    private void sendToCurrentSetup(){
+        Intent cIntent = new Intent(this, CurrentSetupActivity.class);
+        startActivity(cIntent);
         finish();
     }
 
