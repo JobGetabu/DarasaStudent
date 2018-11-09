@@ -1,18 +1,18 @@
 
-Qsquid:S1481"5Remove this unused "fallbackProvider" local variable.(¡¯‡Ñ8ÌÎÁè,
-Ksquid:S1066"/Merge this if statement with the enclosing one.(¸…°8ÌÎÁè,
-Ksquid:S00108")Either remove or fill this block of code.(Öôû´ùÿÿÿÿ8ÌÎÁè,
-ssquid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¥ºÎùùÿÿÿÿ8ÌÎÁè,
-Csquid:S1185"(Remove this method to simply inherit it.(ºŠñ=8ÌÎÁè,
-`squid:S1854"DRemove this useless assignment to local variable "fallbackProvider".(¡¯‡Ñ8ÌÎÁè,
-Dsquid:S1481"(Remove this unused "day" local variable.(«–µ8ÌÎÁè,
-Vsquid:UnusedPrivateMethod",Remove this unused private "debugDb" method.(ìæí®8ÉÎİÁè,
-Ssquid:S1854"7Remove this useless assignment to local variable "day".(«–µ8ÌÎÁè,
-bsquid:UnusedPrivateMethod"8Remove this unused private "failScanLocationFar" method.(¸Ğ¼8ÌÎÁè,
-Ksquid:S1172"/Remove this unused method parameter "qrParser".(¸Ğ¼8ÌÎÁè,
+Ysquid:S1068"8Remove this unused "CAMERA_PERMISSION_ID" private field.(ä¹Ú÷úÿÿÿÿ8‘Â‹×î,
+dsquid:S2583"CChange this condition so that it does not always evaluate to "true"(î‚åÅúÿÿÿÿ8æø‹×î,
 Wsquid:S1854"6Remove this useless assignment to local variable "dd".(Áãıÿÿÿÿÿ8ÌÎÁè,
-dsquid:S2583"CChange this condition so that it does not always evaluate to "true"(î‚åÅúÿÿÿÿ8ÌÎÁè,
-[squid:S1068":Remove this unused "LOCATION_PERMISSION_ID" private field.(àÍ´ƒşÿÿÿÿ8ÌÎÁè,
 dsquid:UnusedPrivateMethod"5Remove this unused private "distanceInMeters" method.(ÂÂĞøÿÿÿÿ8ÌÎÁè,
-Hsquid:S1481"'Remove this unused "dd" local variable.(Áãıÿÿÿÿÿ8ÌÎÁè,
+bsquid:UnusedPrivateMethod"8Remove this unused private "failScanLocationFar" method.(¸Ğ¼8ÌÎÁè,
+Ksquid:S1066"/Merge this if statement with the enclosing one.(¸…°8ÌÎÁè,
+Csquid:S1185"(Remove this method to simply inherit it.(ºŠñ=8ÌÎÁè,
+ssquid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¥ºÎùùÿÿÿÿ8ÌÎÁè,
+`squid:S1854"DRemove this useless assignment to local variable "fallbackProvider".(¡¯‡Ñ8ÌÎÁè,
+Qsquid:S1481"5Remove this unused "fallbackProvider" local variable.(¡¯‡Ñ8ÌÎÁè,
+Vsquid:UnusedPrivateMethod",Remove this unused private "debugDb" method.(ìæí®8æø‹×î,
 isquid:S1192"HDefine a constant instead of duplicating this literal "#FF5521" 8 times.(¿ÍßÜüÿÿÿÿ8ÌÎÁè,
+Ksquid:S1172"/Remove this unused method parameter "qrParser".(¸Ğ¼8ÌÎÁè,
+Ksquid:S00108")Either remove or fill this block of code.(Öôû´ùÿÿÿÿ8ÌÎÁè,
+Dsquid:S1481"(Remove this unused "day" local variable.(«–µ8ÌÎÁè,
+Ssquid:S1854"7Remove this useless assignment to local variable "day".(«–µ8ÌÎÁè,
+Hsquid:S1481"'Remove this unused "dd" local variable.(Áãıÿÿÿÿÿ8ÌÎÁè,
