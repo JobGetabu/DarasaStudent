@@ -29,6 +29,7 @@ public class WelcomeActivity extends AppCompatActivity {
     public void onLoginPositiveClicked() {
 
         Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
     }
@@ -37,6 +38,7 @@ public class WelcomeActivity extends AppCompatActivity {
     public void onLoginNegativeClicked() {
 
         Intent intent = new Intent(this, SignupActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
     }
