@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- Required for Nearby Connections -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -59,6 +60,10 @@
         <meta-data
             android:name="com.google.android.nearby.messages.API_KEY"
             android:value="AIzaSyDMu5NAQRU1j1xRbOGN3v85M-CN9FP5rys" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="c7ec6ad6fd423dc47de6c3143c4205bcea46e55e"
+            />
 
         <service android:name=".services.MyFirebaseMessagingService">
             <intent-filter>
