@@ -59,6 +59,7 @@ import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_REQUIRED_PERMISSIONS = 1;
+    private static final String TAG = "main";
 
     @BindView(R.id.main_fab)
     FloatingActionButton mainFab;
@@ -72,8 +73,6 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView mainList;
     @BindView(R.id.main_user_list_info)
     View mainUserListView;
-
-    private static final String TAG = "main";
     @BindView(R.id.user_info_image)
     CircleImageView userInfoImage;
     @BindView(R.id.user_info_username)

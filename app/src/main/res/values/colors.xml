@@ -20,4 +20,6 @@
 
     <color name="colortext">#100b20</color>
     <color name="colorhint">#a9aaac</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>

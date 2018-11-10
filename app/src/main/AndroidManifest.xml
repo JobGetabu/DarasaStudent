@@ -8,13 +8,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- Required for Nearby Connections -->
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
     <application
         android:name=".DarasaStudent"
         android:allowBackup="true"
@@ -62,8 +55,7 @@
             android:value="AIzaSyDMu5NAQRU1j1xRbOGN3v85M-CN9FP5rys" />
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="c7ec6ad6fd423dc47de6c3143c4205bcea46e55e"
-            />
+            android:value="c7ec6ad6fd423dc47de6c3143c4205bcea46e55e" />
 
         <service android:name=".services.MyFirebaseMessagingService">
             <intent-filter>
@@ -71,13 +63,17 @@
             </intent-filter>
         </service>
 
-        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
-             See README(https://goo.gl/l4GJaQ) for more. -->
+        <!--
+             Set custom default icon. This is used when no icon is set for incoming notification messages.
+             See README(https://goo.gl/l4GJaQ) for more.
+        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_launcher" />
-        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
-             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <!--
+             Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more.
+        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
@@ -101,7 +97,12 @@
             android:name=".ui.FaqActivity"
             android:parentActivityName=".ui.SettingsActivity" />
         <activity android:name=".ui.QReaderActivity" />
-
+        <activity
+            android:name=".ui.SplashScreenActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_splash_screen"
+            android:theme="@style/SplashScreenTheme">
+        </activity>
     </application>
 
 </manifest>
