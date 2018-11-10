@@ -20,10 +20,5 @@
         android:tint="#161616"
         android:title="@string/invite_share" />
 
-    <item
-        android:id="@+id/nav_logout"
-        android:icon="@drawable/ic_exit"
-        android:tint="#161616"
-        android:title="@string/logout" />
 
 </menu>
