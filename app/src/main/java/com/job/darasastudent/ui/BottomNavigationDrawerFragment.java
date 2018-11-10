@@ -79,17 +79,6 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
                             dismiss();
                             return true;
 
-                        case R.id.nav_logout:
-
-                            // user is now signed out
-                            auth.signOut();
-
-                            sendToLogin();
-
-                            dismiss();
-                            return true;
-
-
                         case R.id.nav_share:
                             sendToInviteScreen();
                             dismiss();
