@@ -55,7 +55,8 @@
             android:value="AIzaSyDMu5NAQRU1j1xRbOGN3v85M-CN9FP5rys" />
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="c7ec6ad6fd423dc47de6c3143c4205bcea46e55e" />
+            android:value="bd67bf129c485e4f45930b61a67e4b8b08359675"
+            />
 
         <service android:name=".services.MyFirebaseMessagingService">
             <intent-filter>
@@ -100,7 +101,6 @@
         <activity
             android:name=".ui.SplashScreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_splash_screen"
             android:theme="@style/SplashScreenTheme">
         </activity>
     </application>

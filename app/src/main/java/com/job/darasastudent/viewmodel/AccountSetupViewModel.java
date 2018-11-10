@@ -70,7 +70,6 @@ public class AccountSetupViewModel extends AndroidViewModel {
                                     studUserMediatorLiveData.postValue(documentSnapshot.toObject(StudentDetails.class));
                                 }
                             });
-
                 }else {
                     studUserMediatorLiveData.postValue(null);
                 }
