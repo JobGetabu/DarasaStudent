@@ -119,7 +119,7 @@ public class AccountSetupActivity extends AppCompatActivity {
 
         if (!AppStatus.getInstance(getApplicationContext()).isOnline()) {
 
-            doSnack.showSnackbar("You're offline", "Retry", new View.OnClickListener() {
+            doSnack.showSnackbar(getString(R.string.your_offline), getString(R.string.retry), new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     onViewSetupClicked();
@@ -151,7 +151,6 @@ public class AccountSetupActivity extends AppCompatActivity {
             studMap.put("department", dept);
             studMap.put("course", course);
             studMap.put("regnumber", regno.toUpperCase());
-
 
 
             //TODO: Check duplication of field regnumber
@@ -201,60 +200,60 @@ public class AccountSetupActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                       for(QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots){
+                        for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
 
-                           boolean isDuplicate = false;
+                            boolean isDuplicate = false;
 
-                           String regNumber = queryDocumentSnapshot.getString("regnumber");
-                           if (!regno.toUpperCase().equals(regNumber)){
-                               // Set the value of 'Users'
-                               DocumentReference usersRef = mFirestore.collection(STUDENTDETAILSCOL).document(mAuth.getCurrentUser().getUid());
-                               usersRef.update(studMap)
-                                       .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                           @Override
-                                           public void onSuccess(Void aVoid) {
+                            String regNumber = queryDocumentSnapshot.getString("regnumber");
+                            if (!regno.toUpperCase().equals(regNumber)) {
+                                // Set the value of 'Users'
+                                DocumentReference usersRef = mFirestore.collection(STUDENTDETAILSCOL).document(mAuth.getCurrentUser().getUid());
+                                usersRef.update(studMap)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
 
-                                               pDialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
-                                               pDialog.setCancelable(true);
-                                               pDialog.setTitleText("Saved Successfully");
-                                               pDialog.setContentText("You're now set");
-                                               pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                                   @Override
-                                                   public void onClick(SweetAlertDialog sDialog) {
-                                                       sDialog.dismissWithAnimation();
+                                                pDialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                                                pDialog.setCancelable(true);
+                                                pDialog.setTitleText("Saved Successfully");
+                                                pDialog.setContentText("You're now set");
+                                                pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                    @Override
+                                                    public void onClick(SweetAlertDialog sDialog) {
+                                                        sDialog.dismissWithAnimation();
 
-                                                       saveCoursePref(course);
-                                                       sendToMain();
+                                                        saveCoursePref(course);
+                                                        sendToMain();
 
-                                                   }
-                                               });
-                                           }
-                                       }).addOnFailureListener(new OnFailureListener() {
-                                   @Override
-                                   public void onFailure(@NonNull Exception e) {
-                                       pDialog.dismiss();
-                                       doSnack.errorPrompt("Oops...", e.getMessage());
-                                   }
-                               });
-                           }else {
-                               isDuplicate = true;
-                               pDialog.changeAlertType(SweetAlertDialog.WARNING_TYPE);
-                               pDialog.setCancelable(true);
-                               pDialog.setTitleText("Duplicate Registration Number Found");
-                               pDialog.setContentText("Check and try again");
-                               pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                   @Override
-                                   public void onClick(SweetAlertDialog sDialog) {
-                                       sDialog.dismissWithAnimation();
+                                                    }
+                                                });
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        pDialog.dismiss();
+                                        doSnack.errorPrompt("Oops...", e.getMessage());
+                                    }
+                                });
+                            } else {
+                                isDuplicate = true;
+                                pDialog.changeAlertType(SweetAlertDialog.WARNING_TYPE);
+                                pDialog.setCancelable(true);
+                                pDialog.setTitleText("Duplicate Registration Number Found");
+                                pDialog.setContentText("Check and try again");
+                                pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sDialog) {
+                                        sDialog.dismissWithAnimation();
 
-                                       saveCoursePref(course);
-                                       sendToMain();
+                                        saveCoursePref(course);
+                                        sendToMain();
 
-                                   }
-                               });
-                               break;
-                           }
-                       }
+                                    }
+                                });
+                                break;
+                            }
+                        }
                     }
                 });
     }
@@ -265,7 +264,7 @@ public class AccountSetupActivity extends AppCompatActivity {
         finish();
     }
 
-    private void sendToCurrentSetup(){
+    private void sendToCurrentSetup() {
         Intent cIntent = new Intent(this, CurrentSetupActivity.class);
         startActivity(cIntent);
         finish();
@@ -317,7 +316,7 @@ public class AccountSetupActivity extends AppCompatActivity {
         }
 
         if (course.isEmpty()) {
-            setupCourse.setError("enter course");
+            setupCourse.setError("select course");
             valid = false;
         } else {
             setupCourse.setError(null);
@@ -336,8 +335,13 @@ public class AccountSetupActivity extends AppCompatActivity {
                     setupSchool.getEditText().setText(studUser.getSchool());
                     setupDepartment.getEditText().setText(studUser.getDepartment());
                     setupRegno.getEditText().setText(studUser.getDepartment());
-                    setupCourse.setVisibility(View.VISIBLE);
-                    setupCourse.getEditText().setText(studUser.getCourse());
+
+                    if (studUser.getCourse() == null) {
+                        setupCourse.setVisibility(View.GONE);
+                    } else {
+                        setupCourse.setVisibility(View.VISIBLE);
+                        setupCourse.getEditText().setText(studUser.getCourse());
+                    }
                 }
             }
         });
@@ -382,8 +386,8 @@ public class AccountSetupActivity extends AppCompatActivity {
 
                                 promptCourseList(listOfCourses);
                             }
-                        }else {
-                            doSnack.showSnackbar("You're offline", "Retry", new View.OnClickListener() {
+                        } else {
+                            doSnack.showSnackbar(getString(R.string.your_offline), getString(R.string.retry), new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     recreate();
@@ -423,11 +427,11 @@ public class AccountSetupActivity extends AppCompatActivity {
         multiSelectDialog.show(this.getSupportFragmentManager(), "multiSelectDialog");
     }
 
-    private void saveCoursePref(String course){
+    private void saveCoursePref(String course) {
         SharedPreferences.Editor sharedPreferencesEditor = PreferenceManager.getDefaultSharedPreferences(
                 AccountSetupActivity.this).edit();
 
-        sharedPreferencesEditor.putString( COURSE_PREF_NAME, course);
+        sharedPreferencesEditor.putString(COURSE_PREF_NAME, course);
 
         sharedPreferencesEditor.apply();
     }

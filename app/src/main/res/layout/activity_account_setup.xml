@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.SignupActivity"
+    tools:context=".ui.AccountSetupActivity"
     >
 
     <android.support.v7.widget.Toolbar
@@ -20,8 +20,6 @@
         app:titleTextColor="@android:color/white"
 
         />
-
-
 
     <ScrollView
         android:layout_width="match_parent"
@@ -74,15 +72,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="24dp"
-                >
+                android:layout_marginEnd="16dp"
+                app:hintAnimationEnabled="true">
 
                 <android.support.design.widget.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/regno"
-                    android:inputType="text"
+                    android:inputType="textCapCharacters"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
@@ -114,7 +112,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp">
+                android:layout_marginTop="24dp"
+                android:visibility="visible"
+                >
 
                 <EditText
                     android:layout_width="match_parent"
@@ -157,7 +157,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/department"
-                    android:inputType="textAutoComplete"
+                    android:inputType="textCapCharacters"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
