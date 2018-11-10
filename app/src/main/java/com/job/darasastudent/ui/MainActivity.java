@@ -1,12 +1,15 @@
 package com.job.darasastudent.ui;
 
 import android.app.DatePickerDialog;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.bottomappbar.BottomAppBar;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +26,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -37,10 +41,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.job.darasastudent.BuildConfig;
 import com.job.darasastudent.R;
 import com.job.darasastudent.model.LecTeachTime;
+import com.job.darasastudent.model.StudentDetails;
 import com.job.darasastudent.util.Constants;
 import com.job.darasastudent.util.DoSnack;
 import com.job.darasastudent.util.ImageProcessor;
 import com.job.darasastudent.util.LessonViewHolder;
+import com.job.darasastudent.viewmodel.AccountSetupViewModel;
 import com.robertlevonyan.views.customfloatingactionbutton.FloatingActionButton;
 
 import java.text.DateFormat;
@@ -52,6 +58,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.fabric.sdk.android.Fabric;
 
 import static com.job.darasastudent.util.Constants.LECTEACHTIMECOL;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
@@ -94,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DoSnack doSnack;
     private ImageProcessor imageProcessor;
+    private AccountSetupViewModel accountSetupViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
         imageProcessor = new ImageProcessor(this);
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
+        mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -129,13 +137,63 @@ public class MainActivity extends AppCompatActivity {
                     classListQuery(Calendar.getInstance());
 
                     setUpUi(userId);
+
+                    // View model
+                    AccountSetupViewModel.Factory factory = new AccountSetupViewModel.Factory(
+                            MainActivity.this.getApplication(), mAuth, mFirestore);
+                    accountSetupViewModel = ViewModelProviders.of(MainActivity.this, factory)
+                            .get(AccountSetupViewModel.class);
+
+                    uiObserver();
                 }
             }
-        };
-
-        mAuth.addAuthStateListener(mAuthListener);
+        });
 
         doSnack = new DoSnack(this, MainActivity.this);
+
+
+
+        //crashlytics
+        Fabric.with(this, new Crashlytics());
+    }
+
+    private void uiObserver() {
+
+        accountSetupViewModel.getLecUserMediatorLiveData().observe(this, new Observer<StudentDetails>() {
+            @Override
+            public void onChanged(@Nullable StudentDetails studUser) {
+                if (studUser != null) {
+
+                    if (studUser.getCourse() == null)  {
+                        doSnack.showSnackbar(getString(R.string.add_ur_course), getString(R.string.add), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                sendToAccountSetup();
+                            }
+                        });
+                    }
+                    if (studUser.getCurrentsemester() == null)  {
+                        doSnack.showSnackbar(getString(R.string.add_ur_sem), getString(R.string.add), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                sendToCurrentManage();
+                            }
+                        });
+                    }
+
+                }
+            }
+        });
+    }
+
+    private void sendToAccountSetup() {
+        Intent aIntent = new Intent(this, AccountSetupActivity.class);
+        startActivity(aIntent);
+    }
+
+    private void sendToCurrentManage() {
+        Intent aIntent = new Intent(this, CurrentSetupActivity.class);
+        startActivity(aIntent);
     }
 
     private void setUpUi(String userId) {
@@ -166,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
+        mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -178,9 +236,7 @@ public class MainActivity extends AppCompatActivity {
                     userId = mAuth.getCurrentUser().getUid();
                 }
             }
-        };
-
-        mAuth.addAuthStateListener(mAuthListener);
+        });
 
         if (adapter != null) {
             adapter.startListening();
@@ -391,7 +447,9 @@ public class MainActivity extends AppCompatActivity {
         mainList.setAdapter(adapter);
     }
 
-    /** Handles user acceptance (or denial) of our permission request. */
+    /**
+     * Handles user acceptance (or denial) of our permission request.
+     */
     @CallSuper
     @Override
     public void onRequestPermissionsResult(
@@ -412,9 +470,9 @@ public class MainActivity extends AppCompatActivity {
         recreate();
     }
 
-    private void initStrictMode(){
+    private void initStrictMode() {
 
-        if (BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
 
             StrictMode.ThreadPolicy threadPolicy = new StrictMode.ThreadPolicy.Builder()
                     .detectCustomSlowCalls()
