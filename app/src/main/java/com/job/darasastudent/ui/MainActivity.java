@@ -68,7 +68,6 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.fabric.sdk.android.Fabric;
 
-import static com.job.darasastudent.util.Constants.CURRENT_ACAD_YEAR_PREF_NAME;
 import static com.job.darasastudent.util.Constants.LECTEACHTIMECOL;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
 
@@ -510,45 +509,6 @@ public class MainActivity extends AppCompatActivity implements OnRecyclerItemCli
 
             StrictMode.setThreadPolicy(threadPolicy);
         }
-    }
-
-
-    private void calenderObserver() {
-
-    }
-
-    private void listObserver() {
-
-
-        accountSetupViewModel.getLecTechTimeLiveData().observe(this, new Observer<List<LecTeachTime>>() {
-            @Override
-            public void onChanged(@Nullable List<LecTeachTime> lecTeachTimes) {
-                if (lecTeachTimes != null) {
-
-                    for (LecTeachTime c : lecTeachTimes) {
-                        Log.d("TEST", "================>: C1 " + c.toString());
-                    }
-
-                    String yearofstudy = mSharedPreferences.getString(CURRENT_ACAD_YEAR_PREF_NAME, "0");
-                    Log.d("TEST", "================>: yearofstudy" + yearofstudy);
-                    accountSetupViewModel.getLecTechTimeResult(yearofstudy)
-                            .observe(MainActivity.this, new Observer<List<LecTeachTime>>() {
-                                @Override
-                                public void onChanged(@Nullable List<LecTeachTime> lecTeachTimes) {
-                                    if (lecTeachTimes != null) {
-                                        Log.d("TEST", "================>: lecTeachTimes" + lecTeachTimes.toString());
-
-                                        for (LecTeachTime c : lecTeachTimes) {
-                                            Log.d("TEST", "================>: C2 " + c.toString());
-                                        }
-                                        setUpList(lecTeachTimes);
-                                    }
-                                }
-                            });
-
-                }
-            }
-        });
     }
 
     private void setUpList(List<LecTeachTime> lecTeachTimeList) {
