@@ -158,8 +158,6 @@ public class MainActivity extends AppCompatActivity implements OnRecyclerItemCli
                             .get(AccountSetupViewModel.class);
 
                     uiObserver();
-                    //calenderObserver();
-                    //listObserver();
                 }
             }
         });
@@ -168,7 +166,8 @@ public class MainActivity extends AppCompatActivity implements OnRecyclerItemCli
 
 
         //crashlytics
-        Fabric.with(this, new Crashlytics());
+        if (!BuildConfig.DEBUG)
+            Fabric.with(this, new Crashlytics());
     }
 
     private void uiObserver() {
@@ -345,7 +344,6 @@ public class MainActivity extends AppCompatActivity implements OnRecyclerItemCli
         int daydate = c.get(Calendar.DAY_OF_MONTH);
     }
 
-    @Deprecated
     private Query classListQuery(Calendar c) {
 
         //Due to change in structure we, have to incorporate complex query.
