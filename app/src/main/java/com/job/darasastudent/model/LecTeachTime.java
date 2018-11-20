@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Keep;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -23,13 +24,13 @@ public class LecTeachTime implements Parcelable {
     private String studyyear;
     private String venue;
     private String lecteachtimeid;
+    private ArrayList<CourseYear> courses;
 
     public LecTeachTime() {
     }
 
-    public LecTeachTime(String lecid, String lecteachid, String day,
-                        Date time, String unitcode, String unitname,
-                        String semester, String studyyear, String venue, String lecteachtimeid) {
+    public LecTeachTime(String lecid, String lecteachid, String day, Date time, String unitcode,
+                        String unitname, String semester, String studyyear, String venue, String lecteachtimeid, ArrayList<CourseYear> courses) {
         this.lecid = lecid;
         this.lecteachid = lecteachid;
         this.day = day;
@@ -40,6 +41,7 @@ public class LecTeachTime implements Parcelable {
         this.studyyear = studyyear;
         this.venue = venue;
         this.lecteachtimeid = lecteachtimeid;
+        this.courses = courses;
     }
 
     public String getLecid() {
@@ -135,7 +137,16 @@ public class LecTeachTime implements Parcelable {
                 ", studyyear='" + studyyear + '\'' +
                 ", venue='" + venue + '\'' +
                 ", lecteachtimeid='" + lecteachtimeid + '\'' +
+                ", courses=" + courses +
                 '}';
+    }
+
+    public ArrayList<CourseYear> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(ArrayList<CourseYear> courses) {
+        this.courses = courses;
     }
 
 
@@ -156,6 +167,7 @@ public class LecTeachTime implements Parcelable {
         dest.writeString(this.studyyear);
         dest.writeString(this.venue);
         dest.writeString(this.lecteachtimeid);
+        dest.writeTypedList(this.courses);
     }
 
     protected LecTeachTime(Parcel in) {
@@ -170,6 +182,7 @@ public class LecTeachTime implements Parcelable {
         this.studyyear = in.readString();
         this.venue = in.readString();
         this.lecteachtimeid = in.readString();
+        this.courses = in.createTypedArrayList(CourseYear.CREATOR);
     }
 
     public static final Creator<LecTeachTime> CREATOR = new Creator<LecTeachTime>() {
