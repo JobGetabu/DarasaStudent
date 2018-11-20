@@ -34,6 +34,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.job.darasastudent.util.Constants.CURRENT_ACAD_YEAR_PREF_NAME;
 import static com.job.darasastudent.util.Constants.CURRENT_SEM_PREF_NAME;
 import static com.job.darasastudent.util.Constants.CURRENT_YEAR_PREF_NAME;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
@@ -116,12 +117,12 @@ public class CurrentSetupActivity extends AppCompatActivity {
 
             final String sem = currentSemester.getEditText().getText().toString();
             final String syr = currentYear.getEditText().getText().toString();
-            String ayr = currentAcadyear.getEditText().getText().toString();
+            final String ayr = currentAcadyear.getEditText().getText().toString();
 
             Map<String, Object> studMap = new HashMap<>();
             studMap.put("currentsemester", sem);
             studMap.put("currentyear", syr);
-            studMap.put("currentacademicyear", ayr);
+            studMap.put("yearofstudy", ayr);
 
             // Set the value of 'Users'
             DocumentReference usersRef = mFirestore.collection(STUDENTDETAILSCOL).document(mAuth.getCurrentUser().getUid());
@@ -140,7 +141,7 @@ public class CurrentSetupActivity extends AppCompatActivity {
                                 public void onClick(SweetAlertDialog sDialog) {
                                     sDialog.dismissWithAnimation();
 
-                                    saveToSharedPrefs(sem,syr);
+                                    saveToSharedPrefs(sem,syr,ayr);
 
                                     sendToMain();
 
@@ -157,16 +158,15 @@ public class CurrentSetupActivity extends AppCompatActivity {
         }
     }
 
-    private void saveToSharedPrefs(String sem,String syr){
+    private void saveToSharedPrefs(String sem,String syr,String ayr ){
         SharedPreferences.Editor sharedPreferencesEditor = PreferenceManager.getDefaultSharedPreferences(
                 CurrentSetupActivity.this).edit();
 
         sharedPreferencesEditor.putString( CURRENT_SEM_PREF_NAME, sem);
         sharedPreferencesEditor.putString( CURRENT_YEAR_PREF_NAME, syr);
+        sharedPreferencesEditor.putString( CURRENT_ACAD_YEAR_PREF_NAME, ayr);
 
         sharedPreferencesEditor.apply();
-
-
     }
 
     private boolean validate() {
@@ -214,7 +214,7 @@ public class CurrentSetupActivity extends AppCompatActivity {
                 if (studUser != null) {
                     currentSemester.getEditText().setText(studUser.getCurrentsemester());
                     currentYear.getEditText().setText(studUser.getCurrentyear());
-                    currentAcadyear.getEditText().setText(studUser.getCurrentacademicyear());
+                    currentAcadyear.getEditText().setText(String.valueOf(studUser.getYearofstudy()));
                 }
             }
         });
