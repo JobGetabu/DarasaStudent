@@ -15,6 +15,7 @@ import com.hbb20.GThumb;
 import com.job.darasastudent.R;
 import com.job.darasastudent.appexecutor.DefaultExecutorSupplier;
 import com.job.darasastudent.model.LecTeachTime;
+import com.job.darasastudent.model.Timetable;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -25,6 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.job.darasastudent.util.Constants.LECTEACHTIMECOL;
 import static com.job.darasastudent.util.Constants.LECUSERCOL;
 
 
@@ -53,7 +55,7 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
     private Context mContext;
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
-    private LecTeachTime lecTeachTime;
+    private Timetable timetable;
 
     private static final String TAG = "LessonVH";
 
@@ -63,11 +65,11 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    public void init(Context mContext, FirebaseFirestore mFirestore, FirebaseAuth mAuth, LecTeachTime lecTeachTime) {
+    public void init(Context mContext, FirebaseFirestore mFirestore, FirebaseAuth mAuth, Timetable timetable) {
         this.mContext = mContext;
         this.mFirestore = mFirestore;
         this.mAuth = mAuth;
-        this.lecTeachTime = lecTeachTime;
+        this.timetable = timetable;
     }
 
     /*
@@ -90,25 +92,25 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
     public void onLsCardClicked() {
     }
 
-    public void setUpUi(final LecTeachTime lecTeachTime) {
+    public void setUpUi(final Timetable timetable) {
 
-        //smoother experience...
-        DefaultExecutorSupplier.getInstance().forMainThreadTasks()
-                .execute(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        lsUnitcode.setText("Unit code: "+lecTeachTime.getUnitcode());
-                        lsUnitname.setText("Unit :"+lecTeachTime.getUnitname());
-                        lsVenue.setText("Venue : "+lecTeachTime.getVenue());
-                        lessonTime(lecTeachTime.getTime());
-                        gThumb.applyMultiColor();
-                        gThumb.setBackgroundShape(GThumb.BACKGROUND_SHAPE.ROUND);
-                        gThumb.loadThumbForName("", lecTeachTime.getUnitname());
-                        //locationViewer(lecTeachTime);
-                        setLecName(lecTeachTime.getLecid());
-                    }
-                });
+        mFirestore.collection(LECTEACHTIMECOL).document(timetable.getLecteachtimeid())
+                .get().addOnSuccessListener(DefaultExecutorSupplier.getInstance().forMainThreadTasks(),
+                new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                LecTeachTime lecTeachTime = documentSnapshot.toObject(LecTeachTime.class);
+                lsUnitcode.setText("Unit code: "+lecTeachTime.getUnitcode());
+                lsUnitname.setText("Unit :"+lecTeachTime.getUnitname());
+                lsVenue.setText("Venue : "+lecTeachTime.getVenue());
+                lessonTime(lecTeachTime.getTime());
+                gThumb.applyMultiColor();
+                gThumb.setBackgroundShape(GThumb.BACKGROUND_SHAPE.ROUND);
+                gThumb.loadThumbForName("", lecTeachTime.getUnitname());
+                //locationViewer(lecTeachTime);
+                setLecName(lecTeachTime.getLecid());
+            }
+        });
     }
 
     private void setLecName(String lecid) {

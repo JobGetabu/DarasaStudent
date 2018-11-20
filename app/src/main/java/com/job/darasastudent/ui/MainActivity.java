@@ -42,8 +42,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.job.darasastudent.BuildConfig;
 import com.job.darasastudent.R;
-import com.job.darasastudent.model.LecTeachTime;
 import com.job.darasastudent.model.StudentDetails;
+import com.job.darasastudent.model.Timetable;
 import com.job.darasastudent.ui.auth.AccountSetupActivity;
 import com.job.darasastudent.ui.auth.CurrentSetupActivity;
 import com.job.darasastudent.ui.auth.WelcomeActivity;
@@ -416,11 +416,11 @@ public class MainActivity extends AppCompatActivity implements OnRecyclerItemCli
 
         initList();
 
-        FirestoreRecyclerOptions<LecTeachTime> options = new FirestoreRecyclerOptions.Builder<LecTeachTime>()
-                .setQuery(mQuery, LecTeachTime.class)
+        FirestoreRecyclerOptions<Timetable> options = new FirestoreRecyclerOptions.Builder<Timetable>()
+                .setQuery(mQuery, Timetable.class)
                 .build();
 
-        adapter = new FirestoreRecyclerAdapter<LecTeachTime, LessonViewHolder>(options) {
+        adapter = new FirestoreRecyclerAdapter<Timetable, LessonViewHolder>(options) {
 
             @NonNull
             @Override
@@ -432,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements OnRecyclerItemCli
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull final LessonViewHolder holder, int position, @NonNull LecTeachTime model) {
+            protected void onBindViewHolder(@NonNull final LessonViewHolder holder, int position, @NonNull Timetable model) {
 
                 holder.init(MainActivity.this, mFirestore, mAuth, model);
                 holder.setUpUi(model);
