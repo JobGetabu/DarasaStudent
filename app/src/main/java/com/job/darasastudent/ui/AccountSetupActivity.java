@@ -333,8 +333,8 @@ public class AccountSetupActivity extends AppCompatActivity {
                     setupFirstname.getEditText().setText(studUser.getFirstname());
                     setupLastname.getEditText().setText(studUser.getLastname());
                     setupSchool.getEditText().setText(studUser.getSchool());
-                    setupDepartment.getEditText().setText(studUser.getDepartment());
-                    setupRegno.getEditText().setText(studUser.getDepartment());
+                    setupDepartment.getEditText().setText(studUser.getDepartment().toUpperCase());
+                    setupRegno.getEditText().setText(studUser.getDepartment().toUpperCase());
 
                     if (studUser.getCourse() == null) {
                         setupCourse.setVisibility(View.GONE);

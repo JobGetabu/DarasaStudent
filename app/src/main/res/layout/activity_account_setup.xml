@@ -139,7 +139,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/school"
-                    android:inputType="textAutoComplete"
+                    android:inputType="textCapCharacters"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
