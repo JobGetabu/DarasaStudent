@@ -32,6 +32,7 @@ dependencies {
     def room_version = "1.1.1"
     def firebase_common = "16.0.4"
     def butterknife_version ="8.8.1"
+    def lottie_version = "2.7.0"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "com.android.support:appcompat-v7:$support_version"
@@ -89,6 +90,9 @@ dependencies {
 
     //circular imageview
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+
+    //lottie
+    implementation "com.airbnb.android:lottie:$lottie_version"
 
     //architecture components
 
