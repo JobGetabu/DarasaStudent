@@ -11,6 +11,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.job.darasastudent.R;
+import com.job.darasastudent.ui.auth.AccountSetupActivity;
+import com.job.darasastudent.ui.auth.CurrentSetupActivity;
+import com.job.darasastudent.ui.auth.WelcomeActivity;
 import com.job.darasastudent.util.Constants;
 
 import butterknife.BindView;

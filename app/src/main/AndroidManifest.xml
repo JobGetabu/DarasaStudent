@@ -38,7 +38,7 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.WelcomeActivity" />
+        <activity android:name=".ui.auth.WelcomeActivity" />
         <activity
             android:name=".ui.ScanActivity"
             android:parentActivityName=".ui.MainActivity" />
@@ -80,19 +80,19 @@
             android:resource="@color/colorAccent" />
 
         <activity
-            android:name=".ui.LoginActivity"
-            android:parentActivityName=".ui.WelcomeActivity" />
+            android:name=".ui.auth.LoginActivity"
+            android:parentActivityName=".ui.auth.WelcomeActivity" />
         <activity
-            android:name=".ui.SignupActivity"
-            android:parentActivityName=".ui.WelcomeActivity" />
+            android:name=".ui.auth.SignupActivity"
+            android:parentActivityName=".ui.auth.WelcomeActivity" />
         <activity
             android:name=".ui.SettingsActivity"
             android:parentActivityName=".ui.MainActivity" />
         <activity
-            android:name=".ui.CurrentSetupActivity"
+            android:name=".ui.auth.CurrentSetupActivity"
             android:parentActivityName=".ui.SettingsActivity" />
         <activity
-            android:name=".ui.AccountSetupActivity"
+            android:name=".ui.auth.AccountSetupActivity"
             android:parentActivityName=".ui.SettingsActivity" />
         <activity
             android:name=".ui.FaqActivity"

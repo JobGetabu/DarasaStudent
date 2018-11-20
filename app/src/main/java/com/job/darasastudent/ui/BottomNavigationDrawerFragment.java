@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.job.darasastudent.R;
+import com.job.darasastudent.ui.auth.WelcomeActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

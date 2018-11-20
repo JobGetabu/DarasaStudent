@@ -1,4 +1,4 @@
-package com.job.darasastudent.ui;
+package com.job.darasastudent.ui.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
