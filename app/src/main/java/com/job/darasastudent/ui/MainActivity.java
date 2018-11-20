@@ -66,8 +66,8 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.fabric.sdk.android.Fabric;
 
-import static com.job.darasastudent.util.Constants.LECTEACHTIMECOL;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
+import static com.job.darasastudent.util.Constants.TIMETTCOL;
 
 public class MainActivity extends AppCompatActivity implements OnRecyclerItemClickListener {
 
@@ -348,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements OnRecyclerItemCli
         final String sDay = Constants.getDay(day);
 
 
-        mFirestore.collection(LECTEACHTIMECOL)
+        mFirestore.collection(TIMETTCOL)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -371,14 +371,12 @@ public class MainActivity extends AppCompatActivity implements OnRecyclerItemCli
 
                                             mQuery = queryDocumentSnapshots
                                                     .getQuery()
-                                                    .whereArrayContains("courses.course", course)
+                                                    .whereArrayContains("course", course)
                                                     .whereEqualTo("day", sDay)
                                                     .whereEqualTo("semester", currentsemester)
-                                                    .whereEqualTo("studyyear", currentyear)
+                                                    .whereEqualTo("currentyear", currentyear)
+                                                    .whereEqualTo("yearofstudy", yearofstudy)
                                                     .orderBy("time", Query.Direction.ASCENDING);
-
-                                            //double ArrayContains not supported
-                                            //.whereArrayContains("courses.yearofstudy", yearofstudy)
 
                                             setUpList(mQuery);
                                         }
