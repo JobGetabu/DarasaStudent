@@ -52,7 +52,6 @@ import com.job.darasastudent.util.DoSnack;
 import com.job.darasastudent.util.ImageProcessor;
 import com.job.darasastudent.util.LessonViewHolder;
 import com.job.darasastudent.viewmodel.AccountSetupViewModel;
-import com.leodroidcoder.genericadapter.OnRecyclerItemClickListener;
 import com.robertlevonyan.views.customfloatingactionbutton.FloatingActionButton;
 
 import java.text.DateFormat;
@@ -69,7 +68,7 @@ import io.fabric.sdk.android.Fabric;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
 import static com.job.darasastudent.util.Constants.TIMETTCOL;
 
-public class MainActivity extends AppCompatActivity implements OnRecyclerItemClickListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_REQUIRED_PERMISSIONS = 1;
     private static final String TAG = "main";
@@ -501,10 +500,5 @@ public class MainActivity extends AppCompatActivity implements OnRecyclerItemCli
 
             StrictMode.setThreadPolicy(threadPolicy);
         }
-    }
-
-    @Override
-    public void onItemClick(int position) {
-
     }
 }
