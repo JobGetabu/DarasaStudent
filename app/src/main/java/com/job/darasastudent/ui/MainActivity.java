@@ -152,7 +152,6 @@ public class MainActivity extends AppCompatActivity {
         doSnack = new DoSnack(this, MainActivity.this);
 
 
-
         //crashlytics
         Fabric.with(this, new Crashlytics());
     }
@@ -164,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(@Nullable StudentDetails studUser) {
                 if (studUser != null) {
 
-                    if (studUser.getCourse() == null)  {
+                    if (studUser.getCourse() == null) {
                         doSnack.showSnackbar(getString(R.string.add_ur_course), getString(R.string.add), new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -172,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     }
-                    if (studUser.getCurrentsemester() == null)  {
+                    if (studUser.getCurrentsemester() == null) {
                         doSnack.showSnackbar(getString(R.string.add_ur_sem), getString(R.string.add), new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -180,7 +179,15 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     }
-
+                }else {
+                    //stud account is null
+                    doSnack.showSnackbar(getString(R.string.add_ur_info), getString(R.string.add), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mAuth.signOut();
+                            sendToLogin();
+                        }
+                    });
                 }
             }
         });
@@ -345,6 +352,7 @@ public class MainActivity extends AppCompatActivity {
                                         String currentsemester = documentSnapshot.getString("currentsemester");
                                         String currentyear = documentSnapshot.getString("currentyear");
                                         String course = documentSnapshot.getString("course");
+                                        String yearofstudy = documentSnapshot.getString("yearofstudy");
 
                                         // form query
 
@@ -352,7 +360,8 @@ public class MainActivity extends AppCompatActivity {
 
                                             mQuery = queryDocumentSnapshots
                                                     .getQuery()
-                                                    .whereArrayContains("courses", course)
+                                                    .whereArrayContains("courses.course", course)
+                                                    .whereArrayContains("courses.yearofstudy", yearofstudy)
                                                     .whereEqualTo("day", sDay)
                                                     .whereEqualTo("semester", currentsemester)
                                                     .whereEqualTo("studyyear", currentyear)
