@@ -94,6 +94,9 @@ dependencies {
     //lottie
     implementation "com.airbnb.android:lottie:$lottie_version"
 
+    //generic adapter
+    implementation "com.leodroidcoder:generic-adapter:1.0.1"
+
     //architecture components
 
     // Room components
