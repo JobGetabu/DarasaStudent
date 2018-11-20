@@ -4,9 +4,11 @@ import android.app.DatePickerDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.preference.PreferenceManager;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -40,6 +42,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.job.darasastudent.BuildConfig;
 import com.job.darasastudent.R;
+import com.job.darasastudent.adapter.TimetableAdapter;
 import com.job.darasastudent.model.LecTeachTime;
 import com.job.darasastudent.model.StudentDetails;
 import com.job.darasastudent.ui.auth.AccountSetupActivity;
@@ -50,11 +53,13 @@ import com.job.darasastudent.util.DoSnack;
 import com.job.darasastudent.util.ImageProcessor;
 import com.job.darasastudent.util.LessonViewHolder;
 import com.job.darasastudent.viewmodel.AccountSetupViewModel;
+import com.leodroidcoder.genericadapter.OnRecyclerItemClickListener;
 import com.robertlevonyan.views.customfloatingactionbutton.FloatingActionButton;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -63,10 +68,11 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.fabric.sdk.android.Fabric;
 
+import static com.job.darasastudent.util.Constants.CURRENT_ACAD_YEAR_PREF_NAME;
 import static com.job.darasastudent.util.Constants.LECTEACHTIMECOL;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnRecyclerItemClickListener {
 
     private static final int REQUEST_CODE_REQUIRED_PERMISSIONS = 1;
     private static final String TAG = "main";
@@ -100,7 +106,9 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore mFirestore;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirestoreRecyclerAdapter adapter;
+    private TimetableAdapter timetableAdapter;
     private Query mQuery = null;
+    private SharedPreferences mSharedPreferences;
 
     private DoSnack doSnack;
     private ImageProcessor imageProcessor;
@@ -124,6 +132,9 @@ public class MainActivity extends AppCompatActivity {
         mUser = FirebaseAuth.getInstance().getCurrentUser();
 
         imageProcessor = new ImageProcessor(this);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        timetableAdapter = new TimetableAdapter(this, this);
+        initList();
 
         mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
@@ -148,6 +159,8 @@ public class MainActivity extends AppCompatActivity {
                             .get(AccountSetupViewModel.class);
 
                     uiObserver();
+                    //calenderObserver();
+                    //listObserver();
                 }
             }
         });
@@ -182,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     }
-                }else {
+                } else {
                     //stud account is null
                     doSnack.showSnackbar(getString(R.string.add_ur_info), getString(R.string.add), new View.OnClickListener() {
                         @Override
@@ -333,8 +346,10 @@ public class MainActivity extends AppCompatActivity {
         int daydate = c.get(Calendar.DAY_OF_MONTH);
     }
 
+    @Deprecated
     private Query classListQuery(Calendar c) {
 
+        //Due to change in structure we, have to incorporate complex query.
 
         final int day = c.get(Calendar.DAY_OF_WEEK);
         final String sDay = Constants.getDay(day);
@@ -355,7 +370,7 @@ public class MainActivity extends AppCompatActivity {
                                         String currentsemester = documentSnapshot.getString("currentsemester");
                                         String currentyear = documentSnapshot.getString("currentyear");
                                         String course = documentSnapshot.getString("course");
-                                        String yearofstudy = documentSnapshot.getString("yearofstudy");
+                                        final String yearofstudy = documentSnapshot.getString("yearofstudy");
 
                                         // form query
 
@@ -364,15 +379,16 @@ public class MainActivity extends AppCompatActivity {
                                             mQuery = queryDocumentSnapshots
                                                     .getQuery()
                                                     .whereArrayContains("courses.course", course)
-                                                    .whereArrayContains("courses.yearofstudy", yearofstudy)
                                                     .whereEqualTo("day", sDay)
                                                     .whereEqualTo("semester", currentsemester)
                                                     .whereEqualTo("studyyear", currentyear)
                                                     .orderBy("time", Query.Direction.ASCENDING);
 
+                                            //double ArrayContains not supported
+                                            //.whereArrayContains("courses.yearofstudy", yearofstudy)
+
                                             setUpList(mQuery);
                                         }
-
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -496,4 +512,58 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    private void calenderObserver() {
+
+    }
+
+    private void listObserver() {
+
+
+        accountSetupViewModel.getLecTechTimeLiveData().observe(this, new Observer<List<LecTeachTime>>() {
+            @Override
+            public void onChanged(@Nullable List<LecTeachTime> lecTeachTimes) {
+                if (lecTeachTimes != null) {
+
+                    for (LecTeachTime c : lecTeachTimes) {
+                        Log.d("TEST", "================>: C1 " + c.toString());
+                    }
+
+                    String yearofstudy = mSharedPreferences.getString(CURRENT_ACAD_YEAR_PREF_NAME, "0");
+                    Log.d("TEST", "================>: yearofstudy" + yearofstudy);
+                    accountSetupViewModel.getLecTechTimeResult(yearofstudy)
+                            .observe(MainActivity.this, new Observer<List<LecTeachTime>>() {
+                                @Override
+                                public void onChanged(@Nullable List<LecTeachTime> lecTeachTimes) {
+                                    if (lecTeachTimes != null) {
+                                        Log.d("TEST", "================>: lecTeachTimes" + lecTeachTimes.toString());
+
+                                        for (LecTeachTime c : lecTeachTimes) {
+                                            Log.d("TEST", "================>: C2 " + c.toString());
+                                        }
+                                        setUpList(lecTeachTimes);
+                                    }
+                                }
+                            });
+
+                }
+            }
+        });
+    }
+
+    private void setUpList(List<LecTeachTime> lecTeachTimeList) {
+
+        mainList.setAdapter(timetableAdapter);
+        timetableAdapter.setItems(lecTeachTimeList);
+
+        //test
+        mainUserListView.setVisibility(View.VISIBLE);
+        noClassView.setVisibility(View.GONE);
+    }
+
+
+    @Override
+    public void onItemClick(int position) {
+
+    }
 }
