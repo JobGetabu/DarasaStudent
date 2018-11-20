@@ -27,11 +27,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 import com.job.darasastudent.R;
-import com.job.darasastudent.appexecutor.DefaultExecutorSupplier;
 import com.job.darasastudent.model.StudentDetails;
 import com.job.darasastudent.ui.MainActivity;
 import com.job.darasastudent.util.AppStatus;
@@ -50,6 +47,8 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import static com.job.darasastudent.util.Constants.COURSE_PREF_NAME;
 import static com.job.darasastudent.util.Constants.DKUTCOURSES;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
+import static com.job.darasastudent.util.Constants.STUDNAME_PREF_NAME;
+import static com.job.darasastudent.util.Constants.STUDREG_PREF_NAME;
 
 //TODO: Check if document already exists,
 //Restrict manipulation of course and registration number.
@@ -138,11 +137,11 @@ public class AccountSetupActivity extends AppCompatActivity {
             pDialog.setCancelable(true);
             pDialog.show();
 
-            String fname = setupFirstname.getEditText().getText().toString();
-            String lname = setupLastname.getEditText().getText().toString();
+            final String fname = setupFirstname.getEditText().getText().toString();
+            final String lname = setupLastname.getEditText().getText().toString();
             String school = setupSchool.getEditText().getText().toString();
             String dept = setupDepartment.getEditText().getText().toString();
-            String regno = setupRegno.getEditText().getText().toString().trim();
+            final String regno = setupRegno.getEditText().getText().toString().trim();
             final String course = setupCourse.getEditText().getText().toString().trim();
 
             Map<String, Object> studMap = new HashMap<>();
@@ -174,7 +173,7 @@ public class AccountSetupActivity extends AppCompatActivity {
                                 public void onClick(SweetAlertDialog sDialog) {
                                     sDialog.dismissWithAnimation();
 
-                                    saveCoursePref(course);
+                                    saveStudPref(course,fname,lname,regno.toUpperCase());
                                     sendToCurrentSetup();
 
                                 }
@@ -189,74 +188,6 @@ public class AccountSetupActivity extends AppCompatActivity {
             });
 
         }
-    }
-
-    private void checkDuplicateReg(final SweetAlertDialog pDialog, final Map<String, Object> studMap, final String regno, final String course) {
-
-        //not applicable for updates
-
-        mFirestore.collection(STUDENTDETAILSCOL)
-                .get()
-                .addOnSuccessListener(DefaultExecutorSupplier.getInstance().forMainThreadTasks(), new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                        for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
-
-                            boolean isDuplicate = false;
-
-                            String regNumber = queryDocumentSnapshot.getString("regnumber");
-                            if (!regno.toUpperCase().equals(regNumber)) {
-                                // Set the value of 'Users'
-                                DocumentReference usersRef = mFirestore.collection(STUDENTDETAILSCOL).document(mAuth.getCurrentUser().getUid());
-                                usersRef.update(studMap)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-
-                                                pDialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
-                                                pDialog.setCancelable(true);
-                                                pDialog.setTitleText("Saved Successfully");
-                                                pDialog.setContentText("You're now set");
-                                                pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                                    @Override
-                                                    public void onClick(SweetAlertDialog sDialog) {
-                                                        sDialog.dismissWithAnimation();
-
-                                                        saveCoursePref(course);
-                                                        sendToMain();
-
-                                                    }
-                                                });
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        pDialog.dismiss();
-                                        doSnack.errorPrompt("Oops...", e.getMessage());
-                                    }
-                                });
-                            } else {
-                                isDuplicate = true;
-                                pDialog.changeAlertType(SweetAlertDialog.WARNING_TYPE);
-                                pDialog.setCancelable(true);
-                                pDialog.setTitleText("Duplicate Registration Number Found");
-                                pDialog.setContentText("Check and try again");
-                                pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(SweetAlertDialog sDialog) {
-                                        sDialog.dismissWithAnimation();
-
-                                        saveCoursePref(course);
-                                        sendToMain();
-
-                                    }
-                                });
-                                break;
-                            }
-                        }
-                    }
-                });
     }
 
     private void sendToMain() {
@@ -428,11 +359,13 @@ public class AccountSetupActivity extends AppCompatActivity {
         multiSelectDialog.show(this.getSupportFragmentManager(), "multiSelectDialog");
     }
 
-    private void saveCoursePref(String course) {
+    private void saveStudPref(String fname, String lname, String course, String regno) {
         SharedPreferences.Editor sharedPreferencesEditor = PreferenceManager.getDefaultSharedPreferences(
                 AccountSetupActivity.this).edit();
 
         sharedPreferencesEditor.putString(COURSE_PREF_NAME, course);
+        sharedPreferencesEditor.putString(STUDNAME_PREF_NAME, fname+" "+lname);
+        sharedPreferencesEditor.putString(STUDREG_PREF_NAME, regno);
 
         sharedPreferencesEditor.apply();
     }
