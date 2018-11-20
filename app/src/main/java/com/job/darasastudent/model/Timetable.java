@@ -1,11 +1,14 @@
 package com.job.darasastudent.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Date;
 
 /**
  * Created by Job on Wednesday : 11/21/2018.
  */
-public class Timetable {
+public class Timetable implements Parcelable {
 
     //Populates students timetables
 
@@ -134,4 +137,48 @@ public class Timetable {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.lecid);
+        dest.writeString(this.lecteachid);
+        dest.writeString(this.lecteachtimeid);
+        dest.writeString(this.timetableid);
+        dest.writeString(this.day);
+        dest.writeLong(this.time != null ? this.time.getTime() : -1);
+        dest.writeString(this.semester);
+        dest.writeString(this.currentyear);
+        dest.writeString(this.yearofstudy);
+        dest.writeString(this.course);
+    }
+
+    protected Timetable(Parcel in) {
+        this.lecid = in.readString();
+        this.lecteachid = in.readString();
+        this.lecteachtimeid = in.readString();
+        this.timetableid = in.readString();
+        this.day = in.readString();
+        long tmpTime = in.readLong();
+        this.time = tmpTime == -1 ? null : new Date(tmpTime);
+        this.semester = in.readString();
+        this.currentyear = in.readString();
+        this.yearofstudy = in.readString();
+        this.course = in.readString();
+    }
+
+    public static final Parcelable.Creator<Timetable> CREATOR = new Parcelable.Creator<Timetable>() {
+        @Override
+        public Timetable createFromParcel(Parcel source) {
+            return new Timetable(source);
+        }
+
+        @Override
+        public Timetable[] newArray(int size) {
+            return new Timetable[size];
+        }
+    };
 }
