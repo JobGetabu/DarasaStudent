@@ -1,6 +1,0 @@
-
-Z"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(Ò“ÿšùÿÿÿÿ8âè€Ûá,
-Nsquid:S1068"2Remove this unused "REQUEST_INVITE" private field.(ë Ñ´8âè€Ûá,
-Osquid:S1068".Remove this unused "mFirestore" private field.(‘Üÿÿÿÿÿÿ8âè€Ûá,
-Ssquid:S1068"2Remove this unused "progressDialog" private field.(·á…Çùÿÿÿÿ8âè€Ûá,
-zsquid:S1450"YRemove the "mFirestore" field and declare it as a local variable in the relevant methods.(‘Üÿÿÿÿÿÿ8âè€Ûá,

@@ -357,6 +357,7 @@ public class LoginActivity extends AppCompatActivity {
         studentDetails.setPhotourl(user.getPhotoUrl().toString());
         studentDetails.setFirstname(user.getDisplayName());
         studentDetails.setStudentid(mCurrentUserid);
+        studentDetails.setYearofstudy("1"); //DEF = 1
 
         // Set the value of 'Users'
         DocumentReference usersRef = mFirestore.collection(STUDENTDETAILSCOL).document(mCurrentUserid);

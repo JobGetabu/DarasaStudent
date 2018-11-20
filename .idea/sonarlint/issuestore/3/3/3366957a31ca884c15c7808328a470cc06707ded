@@ -1,7 +1,0 @@
-
-=squid:S1148"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ
-csquid:S00100"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(°óÍl
-?squid:S1068"+Remove this unused "context" private field.(êÝç
-Nsquid:UnusedPrivateMethod"+Remove this unused private "theDay" method.(ô—ç…
-Usquid:UnusedPrivateMethod"-Remove this unused private "dialogue" method.(æÃõÅúÿÿÿÿ
-Xsquid:UnusedPrivateMethod"0Remove this unused private "errorPrompt" method.(ž¢ßÍÿÿÿÿÿ

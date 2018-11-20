@@ -65,6 +65,8 @@
     <string name="add_ur_course">Add your Course</string>
     <string name="add_ur_sem">Add current Semester</string>
     <string name="add_ur_yr">Add study Year</string>
+    <string name="add_ur_info">Add Student Profile</string>
+    <string name="study_year">Study year e.g 1</string>
 
 
 </resources>
