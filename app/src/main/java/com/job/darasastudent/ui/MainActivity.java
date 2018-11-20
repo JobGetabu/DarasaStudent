@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
                         //Sem 2 - 2018/19
                         //Bs. BBIT
                         String sem = documentSnapshot.getString("currentsemester");
-                        String academ = documentSnapshot.getString("currentacademicyear");
+                        String academ = documentSnapshot.getString("yearofstudy");
                         String course = documentSnapshot.getString("course");
                         String picurl = documentSnapshot.getString("photourl");
 
