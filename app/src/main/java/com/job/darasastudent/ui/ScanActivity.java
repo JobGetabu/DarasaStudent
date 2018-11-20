@@ -64,6 +64,8 @@ import io.nlopez.smartlocation.location.providers.LocationManagerProvider;
 import io.nlopez.smartlocation.location.providers.MultiFallbackProvider;
 
 import static com.job.darasastudent.util.Constants.COMPLETED_GIF_PREF_NAME;
+import static com.job.darasastudent.util.Constants.COURSE_PREF_NAME;
+import static com.job.darasastudent.util.Constants.CURRENT_ACAD_YEAR_PREF_NAME;
 import static com.job.darasastudent.util.Constants.DATE_SCAN_FORMAT;
 import static com.job.darasastudent.util.Constants.SCAN_CLASSTIME_PREF_NAME;
 import static com.job.darasastudent.util.Constants.SCAN_DATE_PREF_NAME;
@@ -71,6 +73,8 @@ import static com.job.darasastudent.util.Constants.SCAN_DAY_PREF_NAME;
 import static com.job.darasastudent.util.Constants.SCAN_LECTEACHID_PREF_NAME;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
 import static com.job.darasastudent.util.Constants.STUDENTSCANCLASSCOL;
+import static com.job.darasastudent.util.Constants.STUDNAME_PREF_NAME;
+import static com.job.darasastudent.util.Constants.STUDREG_PREF_NAME;
 
 public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {
 
@@ -100,7 +104,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
     private ScanViewModel model;
     private DoSnack doSnack;
-    List<ClassScan> mTodayScannedClasses;
+    private List<ClassScan> mTodayScannedClasses;
 
     //firestore
     private FirebaseAuth mAuth;
@@ -698,6 +702,14 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         scanClass.setSemester(qrParser.getSemester());
         scanClass.setYear(qrParser.getYear());
         scanClass.setStudentid(mAuth.getCurrentUser().getUid());
+        //web fields set
+        scanClass.setCourse(mSharedPreferences.getString(COURSE_PREF_NAME,""));
+        scanClass.setStudname(mSharedPreferences.getString(STUDNAME_PREF_NAME,""));
+        scanClass.setYearofstudy(mSharedPreferences.getString(CURRENT_ACAD_YEAR_PREF_NAME,""));
+        scanClass.setRegno(mSharedPreferences.getString(STUDREG_PREF_NAME,""));
+        scanClass.setUnitcode(qrParser.getUnitcode());
+        scanClass.setUnitname(qrParser.getUnitname());
+
         scanClass.setStudentscanid(key);
         scanClass.setQuerydate(today);
 

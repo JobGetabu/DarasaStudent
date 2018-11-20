@@ -151,4 +151,5 @@ public class StudentScanClass {
     public void setYearofstudy(String yearofstudy) {
         this.yearofstudy = yearofstudy;
     }
+
 }
