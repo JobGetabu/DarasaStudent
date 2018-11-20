@@ -19,11 +19,10 @@ import java.util.Date;
 
 @Keep
 public class QRParser implements Parcelable {
-    private double latitude;
-    private double longitude;
-    private ArrayList<String> courses;
+    private ArrayList<CourseYear> courses;
     private Date classtime;
     private String lecteachtimeid;
+    private String lecteachid;
     private String unitname;
     private String unitcode;
     private Date date;
@@ -50,13 +49,12 @@ public class QRParser implements Parcelable {
         }
     }
 
-    public QRParser(double latitude, double longitude, ArrayList<String> courses, Date classtime,
-                    String lecteachtimeid, String unitname, String unitcode, Date date, String semester, String year) {
-        this.latitude = latitude;
-        this.longitude = longitude;
+    public QRParser(ArrayList<CourseYear> courses, Date classtime, String lecteachtimeid,
+                    String lecteachid, String unitname, String unitcode, Date date, String semester, String year) {
         this.courses = courses;
         this.classtime = classtime;
         this.lecteachtimeid = lecteachtimeid;
+        this.lecteachid = lecteachid;
         this.unitname = unitname;
         this.unitcode = unitcode;
         this.date = date;
@@ -64,27 +62,11 @@ public class QRParser implements Parcelable {
         this.year = year;
     }
 
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public ArrayList<String> getCourses() {
+    public ArrayList<CourseYear> getCourses() {
         return courses;
     }
 
-    public void setCourses(ArrayList<String> courses) {
+    public void setCourses(ArrayList<CourseYear> courses) {
         this.courses = courses;
     }
 
@@ -144,6 +126,13 @@ public class QRParser implements Parcelable {
         this.year = year;
     }
 
+    public String getLecteachid() {
+        return lecteachid;
+    }
+
+    public void setLecteachid(String lecteachid) {
+        this.lecteachid = lecteachid;
+    }
 
     private String lessonTimeInString(Date timestamp) {
         //Timestamp timestamp = model.getTimestamp();
@@ -162,11 +151,10 @@ public class QRParser implements Parcelable {
     @Override
     public String toString() {
         return "QRParser{" +
-                "latitude='" + latitude + '\'' +
-                ", longitude='" + longitude + '\'' +
-                ", courses=" + courses +
+                "courses=" + courses +
                 ", classtime=" + classtime +
                 ", lecteachtimeid='" + lecteachtimeid + '\'' +
+                ", lecteachid='" + lecteachid + '\'' +
                 ", unitname='" + unitname + '\'' +
                 ", unitcode='" + unitcode + '\'' +
                 ", date=" + date +
@@ -183,11 +171,10 @@ public class QRParser implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeDouble(this.latitude);
-        dest.writeDouble(this.longitude);
-        dest.writeStringList(this.courses);
+        dest.writeTypedList(this.courses);
         dest.writeLong(this.classtime != null ? this.classtime.getTime() : -1);
         dest.writeString(this.lecteachtimeid);
+        dest.writeString(this.lecteachid);
         dest.writeString(this.unitname);
         dest.writeString(this.unitcode);
         dest.writeLong(this.date != null ? this.date.getTime() : -1);
@@ -196,12 +183,11 @@ public class QRParser implements Parcelable {
     }
 
     protected QRParser(Parcel in) {
-        this.latitude = in.readDouble();
-        this.longitude = in.readDouble();
-        this.courses = in.createStringArrayList();
+        this.courses = in.createTypedArrayList(CourseYear.CREATOR);
         long tmpClasstime = in.readLong();
         this.classtime = tmpClasstime == -1 ? null : new Date(tmpClasstime);
         this.lecteachtimeid = in.readString();
+        this.lecteachid = in.readString();
         this.unitname = in.readString();
         this.unitcode = in.readString();
         long tmpDate = in.readLong();
