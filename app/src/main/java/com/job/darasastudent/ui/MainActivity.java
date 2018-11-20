@@ -42,7 +42,6 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.job.darasastudent.BuildConfig;
 import com.job.darasastudent.R;
-import com.job.darasastudent.adapter.TimetableAdapter;
 import com.job.darasastudent.model.LecTeachTime;
 import com.job.darasastudent.model.StudentDetails;
 import com.job.darasastudent.ui.auth.AccountSetupActivity;
@@ -59,7 +58,6 @@ import com.robertlevonyan.views.customfloatingactionbutton.FloatingActionButton;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -105,7 +103,6 @@ public class MainActivity extends AppCompatActivity implements OnRecyclerItemCli
     private FirebaseFirestore mFirestore;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirestoreRecyclerAdapter adapter;
-    private TimetableAdapter timetableAdapter;
     private Query mQuery = null;
     private SharedPreferences mSharedPreferences;
 
@@ -132,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements OnRecyclerItemCli
 
         imageProcessor = new ImageProcessor(this);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        timetableAdapter = new TimetableAdapter(this, this);
         initList();
 
         mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
@@ -508,17 +504,6 @@ public class MainActivity extends AppCompatActivity implements OnRecyclerItemCli
             StrictMode.setThreadPolicy(threadPolicy);
         }
     }
-
-    private void setUpList(List<LecTeachTime> lecTeachTimeList) {
-
-        mainList.setAdapter(timetableAdapter);
-        timetableAdapter.setItems(lecTeachTimeList);
-
-        //test
-        mainUserListView.setVisibility(View.VISIBLE);
-        noClassView.setVisibility(View.GONE);
-    }
-
 
     @Override
     public void onItemClick(int position) {
