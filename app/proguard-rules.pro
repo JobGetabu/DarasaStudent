@@ -32,3 +32,13 @@
 -keep class cn.pedant.SweetAlert.Rotate3dAnimation {
     public <init>(...);
  }
+
+## Square Picasso specific rules ##
+ -dontwarn com.squareup.okhttp.**
+
+#next two lines for Error:Execution failed for task ‘app:transformClassesAndResourcesWithProguardForRelease
+-ignorewarnings
+
+-keep class * {
+    public private *;
+}
