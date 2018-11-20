@@ -370,7 +370,7 @@ public class MainActivity extends AppCompatActivity {
 
                                             mQuery = queryDocumentSnapshots
                                                     .getQuery()
-                                                    .whereArrayContains("course", course)
+                                                    .whereEqualTo("course", course)
                                                     .whereEqualTo("day", sDay)
                                                     .whereEqualTo("semester", currentsemester)
                                                     .whereEqualTo("currentyear", currentyear)
