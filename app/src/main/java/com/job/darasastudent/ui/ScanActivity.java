@@ -39,6 +39,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.job.darasastudent.R;
 import com.job.darasastudent.model.ClassScan;
+import com.job.darasastudent.model.CourseYear;
 import com.job.darasastudent.model.QRParser;
 import com.job.darasastudent.model.StudentScanClass;
 import com.job.darasastudent.scanview.CodeScannerView;
@@ -545,9 +546,10 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
                         String course = documentSnapshot.getString("course");
                         String currentsemester = documentSnapshot.getString("currentsemester");
                         String currentyear = documentSnapshot.getString("currentyear");
+                        String yearofstudy = documentSnapshot.getString("yearofstudy");
 
-                        for (String cs : qrParser.getCourses()) {
-                            if (course.equals(cs)) {
+                        for (CourseYear cs: qrParser.getCourses()) {
+                            if (course.equals(cs.getCourse()) && yearofstudy.equals(String.valueOf(cs.getYearofstudy()))) {
 
                                 mycourse = true;
                                 break;
