@@ -80,4 +80,9 @@
     <string name="unit_code">Unit code</string>
     <string name="unit_name">Unit name</string>
     <string name="youre_offline">You\'re offline</string>
+    <string name="scan_lec_qr">Scan Lec QR code</string>
+
+    <string name="this_scan_qr_txt">This will open camera to scan <b>QR CODE</b> if you're unable to detect lecturer's network</string>
+    <string name="scan_qr">Scan QR code</string>
+    <string name="dismiss">Dismiss</string>
 </resources>

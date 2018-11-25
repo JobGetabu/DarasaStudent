@@ -3,6 +3,7 @@ package com.job.darasastudent.ui;
 import android.app.DatePickerDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -14,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.bottomappbar.BottomAppBar;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -165,6 +167,38 @@ public class MainActivity extends AppCompatActivity {
         //crashlytics
         if (!BuildConfig.DEBUG)
             Fabric.with(this, new Crashlytics());
+
+        mainFab.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setCancelable(false);
+                builder.setTitle(R.string.scan_lec_qr);
+                builder.setCancelable(true);
+                builder.setIcon(DoSnack.setDrawable(MainActivity.this, R.drawable.ic_qrcode_small));
+                builder.setMessage(getString(R.string.this_scan_qr_txt));
+                builder.setPositiveButton(getString(R.string.scan_qr), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent(MainActivity.this, ScanActivity.class));
+                    }
+                });
+
+                builder.setNegativeButton(R.string.dismiss, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+
+                return true;
+            }
+        });
     }
 
     private void uiObserver() {
@@ -272,8 +306,8 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.main_fab)
     public void onFabClicked() {
-        startActivity(new Intent(this, ScanActivity.class));
-        //startActivity(new Intent(this,NearbyActivity.class));
+        //startActivity(new Intent(this, ScanActivity.class));
+        startActivity(new Intent(this,AdvertClassActivity.class));
     }
 
     @Override
