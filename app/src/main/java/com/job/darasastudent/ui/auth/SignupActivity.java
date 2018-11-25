@@ -129,7 +129,7 @@ public class SignupActivity extends AppCompatActivity {
 
                             } else {
                                 pDialog.dismiss();
-                                doSnack.UserAuthToastExceptions(authtask);
+                                DoSnack.UserAuthToastExceptions(SignupActivity.this,authtask);
                             }
                         }
                     });

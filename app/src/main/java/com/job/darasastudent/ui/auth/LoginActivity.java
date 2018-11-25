@@ -198,7 +198,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             } else {
                                 pDialog.dismiss();
-                                doSnack.UserAuthToastExceptions(authtask);
+                                DoSnack.UserAuthToastExceptions(LoginActivity.this,authtask);
                             }
                         }
                     });
