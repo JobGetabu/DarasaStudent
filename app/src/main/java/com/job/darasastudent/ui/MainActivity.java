@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.preference.PreferenceManager;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -131,7 +130,8 @@ public class MainActivity extends AppCompatActivity {
         mUser = FirebaseAuth.getInstance().getCurrentUser();
 
         imageProcessor = new ImageProcessor(this);
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mSharedPreferences = getSharedPreferences(getApplicationContext().getPackageName(),MODE_PRIVATE);
+
         initList();
 
         mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
@@ -167,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
         //crashlytics
         if (!BuildConfig.DEBUG)
             Fabric.with(this, new Crashlytics());
+
 
         mainFab.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -265,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
                         String picurl = documentSnapshot.getString("photourl");
 
 
-                        userInfoTime.setText("Sem " + sem + " - " + academ);
+                        userInfoTime.setText("Sem " + sem + " - Year " + academ);
                         userInfoCourse.setText(course);
                         imageProcessor.setMyImage(userInfoImage, picurl);
                     }
