@@ -46,7 +46,8 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import static com.job.darasastudent.util.Constants.COURSE_PREF_NAME;
 import static com.job.darasastudent.util.Constants.DKUTCOURSES;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
-import static com.job.darasastudent.util.Constants.STUDNAME_PREF_NAME;
+import static com.job.darasastudent.util.Constants.STUDFNAME_PREF_NAME;
+import static com.job.darasastudent.util.Constants.STUDLNAME_PREF_NAME;
 import static com.job.darasastudent.util.Constants.STUDREG_PREF_NAME;
 
 //TODO: Check if document already exists,
@@ -362,7 +363,8 @@ public class AccountSetupActivity extends AppCompatActivity {
         SharedPreferences.Editor sharedPreferencesEditor = getSharedPreferences(getApplicationContext().getPackageName(),MODE_PRIVATE).edit();
 
         sharedPreferencesEditor.putString(COURSE_PREF_NAME, course);
-        sharedPreferencesEditor.putString(STUDNAME_PREF_NAME, fname+" "+lname);
+        sharedPreferencesEditor.putString(STUDFNAME_PREF_NAME, fname);
+        sharedPreferencesEditor.putString(STUDLNAME_PREF_NAME, lname);
         sharedPreferencesEditor.putString(STUDREG_PREF_NAME, regno);
 
         sharedPreferencesEditor.apply();

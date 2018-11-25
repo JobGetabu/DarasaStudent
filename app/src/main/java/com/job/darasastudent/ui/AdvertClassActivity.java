@@ -1,8 +1,11 @@
 package com.job.darasastudent.ui;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -38,26 +41,47 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.job.darasastudent.R;
 import com.job.darasastudent.appexecutor.DefaultExecutorSupplier;
+import com.job.darasastudent.model.CourseYear;
 import com.job.darasastudent.model.QRParser;
+import com.job.darasastudent.model.StudentMessage;
+import com.job.darasastudent.model.StudentScanClass;
 import com.job.darasastudent.util.AppStatus;
 import com.job.darasastudent.util.DoSnack;
 import com.job.darasastudent.util.ImageProcessor;
 import com.job.darasastudent.util.LessonMessage;
+import com.job.darasastudent.viewmodel.ScanViewModel;
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
 import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.job.darasastudent.util.Constants.COURSE_PREF_NAME;
+import static com.job.darasastudent.util.Constants.CURRENT_ACAD_YEAR_PREF_NAME;
+import static com.job.darasastudent.util.Constants.CURRENT_SEM_PREF_NAME;
+import static com.job.darasastudent.util.Constants.CURRENT_YEAR_PREF_NAME;
+import static com.job.darasastudent.util.Constants.DATE_SCAN_FORMAT;
+import static com.job.darasastudent.util.Constants.SCAN_CLASSTIME_PREF_NAME;
+import static com.job.darasastudent.util.Constants.SCAN_DATE_PREF_NAME;
+import static com.job.darasastudent.util.Constants.SCAN_DAY_PREF_NAME;
+import static com.job.darasastudent.util.Constants.SCAN_LECTEACHID_PREF_NAME;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
+import static com.job.darasastudent.util.Constants.STUDENTSCANCLASSCOL;
+import static com.job.darasastudent.util.Constants.STUDFNAME_PREF_NAME;
+import static com.job.darasastudent.util.Constants.STUDLNAME_PREF_NAME;
+import static com.job.darasastudent.util.Constants.STUDREG_PREF_NAME;
 
 public class AdvertClassActivity extends AppCompatActivity implements OnMenuItemClickListener {
 
@@ -139,10 +163,10 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     //endregion
 
-    private QRParser qrParser;
     private Gson gson;
     private SharedPreferences mSharedPreferences;
     private ImageProcessor imageProcessor;
+    private ScanViewModel model;
 
 
     //firebase
@@ -169,8 +193,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
 
-        //get qrparser
-        qrParser = getIntent().getParcelableExtra(QRPARSEREXTRA);
+        //database
+        model = ViewModelProviders.of(this).get(ScanViewModel.class);
         imageProcessor = new ImageProcessor(this);
         gson = new Gson();
         setUpUi();
@@ -182,10 +206,13 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
 
         // Build the message that is going to be published. This contains the device owner and a UUID.
-        String lecFirstName = "";
-        String lecSecondName = "";
+        String studFirstName = mSharedPreferences.getString(STUDFNAME_PREF_NAME, "");
+        String studSecondName = mSharedPreferences.getString(STUDLNAME_PREF_NAME, "");
+        String studentid = mAuth.getCurrentUser().getUid();
+        String regNo = mSharedPreferences.getString(STUDREG_PREF_NAME, "");
+        StudentMessage studentMessage = new StudentMessage(studFirstName, studSecondName, studentid, regNo);
         mPubMessage = LessonMessage.newNearbyMessage(DoSnack.getUUID(mSharedPreferences),
-                lecFirstName, lecSecondName, qrParser, null);
+                null, null, null, studentMessage);
 
         initMessageListener();
     }
@@ -447,6 +474,29 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 //mNearbyDevicesArrayAdapter.add(DeviceMessage.fromNearbyMessage(message).getMessageBody());
 
                 Toast.makeText(AdvertClassActivity.this, "new device " + message.toString(), Toast.LENGTH_SHORT).show();
+
+                //check for lec message only
+                LessonMessage lessonMessage = LessonMessage.fromNearbyMessage(message);
+                if (lessonMessage != null) {
+                    if (lessonMessage.getStudentMessage() == null) {
+                        if (lessonMessage.getQrParser() != null) {
+                            //this is is a Lec message
+                            //try to confirm attendance
+
+                            if (model.getScanCount() == 1) {
+
+                                final SweetAlertDialog pDialog = new SweetAlertDialog(AdvertClassActivity.this, SweetAlertDialog.SUCCESS_TYPE);
+                                pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+
+                                QRParser qrParser = lessonMessage.getQrParser();
+
+                                verifyCourseAndDetails(pDialog, qrParser);
+                                model.setScanCount(model.getScanCount() + 1);
+                            }
+
+                        }
+                    }
+                }
             }
 
             @Override
@@ -560,6 +610,222 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     }
 
     //region SAVING THE CLASS
+
+    private void saveThisInFirestore(final QRParser qrParser, final SweetAlertDialog pDialog) {
+
+        pDialog.changeAlertType(SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+        pDialog.setTitleText("Recording attendance...");
+        pDialog.setCancelable(true);
+        pDialog.setCanceledOnTouchOutside(true);
+        pDialog.show();
+
+        pDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+
+                Toast.makeText(AdvertClassActivity.this,
+                        "Attendance Confirmed.. Changes will sync when you're online",
+                        Toast.LENGTH_LONG).show();
+                //doSnack.showShortSnackbar("Attendance Confirmed.. Changes will sync when you're online");
+
+                dialogInterface.dismiss();
+                finish();
+
+            }
+        });
+
+        //register the class in the prefs
+        saveThisScanInPrefs(qrParser);
+
+        //get short date today
+        Calendar c = Calendar.getInstance();
+        DateFormat dateFormat2 = new SimpleDateFormat(DATE_SCAN_FORMAT);
+        String today = dateFormat2.format(c.getTime());
+        StudentScanClass scanClass = new StudentScanClass();
+        String key = mFirestore.collection(STUDENTSCANCLASSCOL).document().getId();
+
+        scanClass.setClasstime(qrParser.getClasstime());
+        scanClass.setDate(qrParser.getDate());
+        scanClass.setLecteachtimeid(qrParser.getLecteachtimeid());
+        scanClass.setSemester(qrParser.getSemester());
+        scanClass.setYear(qrParser.getYear());
+        scanClass.setStudentid(mAuth.getCurrentUser().getUid());
+        //web fields set
+        scanClass.setCourse(mSharedPreferences.getString(COURSE_PREF_NAME, ""));
+        scanClass.setStudname(mSharedPreferences.getString(STUDFNAME_PREF_NAME, "") +
+                " " + mSharedPreferences.getString(STUDLNAME_PREF_NAME, ""));
+        scanClass.setYearofstudy(mSharedPreferences.getString(CURRENT_ACAD_YEAR_PREF_NAME, ""));
+        scanClass.setRegno(mSharedPreferences.getString(STUDREG_PREF_NAME, ""));
+        scanClass.setUnitcode(qrParser.getUnitcode());
+        scanClass.setUnitname(qrParser.getUnitname());
+
+        scanClass.setStudentscanid(key);
+        scanClass.setQuerydate(today);
+
+        //update the classes
+        mFirestore.collection(STUDENTSCANCLASSCOL).document(key)
+                .set(scanClass)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                        successScan(pDialog, qrParser);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+                DoSnack.showShortSnackbar(AdvertClassActivity.this, e.getMessage());
+                failScan(pDialog);
+
+            }
+        });
+
+    }
+
+
+    private void successScan(final SweetAlertDialog pDialog, QRParser qrParser) {
+        pDialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+        pDialog.setTitleText("Confirmed :" + qrParser.getUnitname() + " \n" + qrParser.getUnitcode() + "\n Location: proximity OFF");
+        pDialog.setCancelable(false);
+        pDialog.show();
+
+        STATE = "STOPPED";
+        Nearby.getMessagesClient(this).unpublish(mPubMessage);
+        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
+        adStartScanBtn.setEnabled(true);
+        initUI();
+
+        pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sDialog) {
+                sDialog.dismissWithAnimation();
+
+                finish();
+            }
+        });
+    }
+
+    private void failScan(final SweetAlertDialog pDialog) {
+
+        pDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+        pDialog.setTitleText("Failed ");
+        pDialog.setContentText("PLEASE RESCAN !");
+        pDialog.setCancelable(false);
+        pDialog.show();
+
+        pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sDialog) {
+                sDialog.dismissWithAnimation();
+
+                finish();
+            }
+        });
+    }
+
+    private void saveThisScanInPrefs(QRParser qrParser) {
+        //save this class scan
+        Calendar c = Calendar.getInstance();
+        int day = c.get(Calendar.DAY_OF_WEEK);
+        String dd = DoSnack.theDay(day);
+
+        SharedPreferences.Editor sharedPreferencesEditor =
+                getSharedPreferences(getApplicationContext().getPackageName(), MODE_PRIVATE).edit();
+
+        sharedPreferencesEditor.putString(SCAN_LECTEACHID_PREF_NAME, qrParser.getLecteachtimeid());
+        sharedPreferencesEditor.putString(SCAN_DAY_PREF_NAME, dd);
+        sharedPreferencesEditor.putLong(SCAN_DATE_PREF_NAME, qrParser.getDate().getTime());
+        sharedPreferencesEditor.putLong(SCAN_CLASSTIME_PREF_NAME, qrParser.getClasstime().getTime());
+
+        sharedPreferencesEditor.apply();
+
+    }
+
+    private boolean verifyCourseAndDetails(final SweetAlertDialog pDialog, final QRParser qrParser){
+
+        //check course
+        boolean mycourse = false;
+
+        String course = mSharedPreferences.getString(COURSE_PREF_NAME,"");
+        String currentsemester = mSharedPreferences.getString(CURRENT_SEM_PREF_NAME,"");
+        String currentyear = mSharedPreferences.getString(CURRENT_YEAR_PREF_NAME,"");
+        String yearofstudy = mSharedPreferences.getString(CURRENT_ACAD_YEAR_PREF_NAME,"");
+
+        for (CourseYear cs : qrParser.getCourses()) {
+            if (course.equals(cs.getCourse()) && yearofstudy.equals(String.valueOf(cs.getYearofstudy()))) {
+
+                mycourse = true;
+                break;
+            }
+        }
+
+        if (!mycourse) {
+            Log.d(TAG, "Not Allowed \n this unit is not \nregistered in your course");
+            return false;
+        }
+
+        if (!currentsemester.equals(qrParser.getSemester())) {
+            Log.d(TAG, "Not Allowed \n update your current semester \n this is for " + qrParser.getSemester());
+            return false;
+        }
+
+        if (!currentyear.equals(qrParser.getYear())) {
+
+            Log.d(TAG, "Not Allowed \n update your current study year \n this is for " + qrParser.getYear());
+            return false;
+        }
+
+        //verify repeat
+        if (isRepeatScan(qrParser)) {
+
+            failVerifyCourseAndDetails(pDialog, "Not Allowed \n this class session \n has already been scanned");
+            Log.d(TAG,"Not Allowed \n this class session \n has already been scanned" );
+            return false;
+        }
+
+        saveThisInFirestore(qrParser, pDialog);
+
+        return true;
+    }
+
+
+    private boolean isRepeatScan(QRParser qrParser) {
+
+        Calendar c = Calendar.getInstance();
+        String dd = DoSnack.theDay(c.get(Calendar.DAY_OF_WEEK));
+
+        String day = mSharedPreferences.getString(SCAN_DAY_PREF_NAME, "");
+        String lecteachid = mSharedPreferences.getString(SCAN_LECTEACHID_PREF_NAME, "");
+        long date = mSharedPreferences.getLong(SCAN_DATE_PREF_NAME, 0L);
+        long classtime = mSharedPreferences.getLong(SCAN_CLASSTIME_PREF_NAME, 0L);
+
+        return classtime == qrParser.getClasstime().getTime() &&
+                date == qrParser.getDate().getTime() &&
+                lecteachid.equals(qrParser.getLecteachtimeid());
+
+    }
+
+    private void failVerifyCourseAndDetails(final SweetAlertDialog pDialog, String message) {
+        pDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+
+        pDialog.setTitleText(message);
+        pDialog.setCancelable(false);
+        pDialog.show();
+
+        pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sDialog) {
+                sDialog.dismissWithAnimation();
+
+                finish();
+            }
+        });
+    }
 
     //endregion
 

@@ -74,7 +74,8 @@ import static com.job.darasastudent.util.Constants.SCAN_DAY_PREF_NAME;
 import static com.job.darasastudent.util.Constants.SCAN_LECTEACHID_PREF_NAME;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
 import static com.job.darasastudent.util.Constants.STUDENTSCANCLASSCOL;
-import static com.job.darasastudent.util.Constants.STUDNAME_PREF_NAME;
+import static com.job.darasastudent.util.Constants.STUDFNAME_PREF_NAME;
+import static com.job.darasastudent.util.Constants.STUDLNAME_PREF_NAME;
 import static com.job.darasastudent.util.Constants.STUDREG_PREF_NAME;
 
 public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {
@@ -632,7 +633,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
     private boolean isRepeatScan(QRParser qrParser) {
 
         Calendar c = Calendar.getInstance();
-        String dd = doSnack.theDay(c.get(Calendar.DAY_OF_WEEK));
+        String dd = DoSnack.theDay(c.get(Calendar.DAY_OF_WEEK));
 
 
         String day = mSharedPreferences.getString(SCAN_DAY_PREF_NAME, "");
@@ -650,7 +651,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         //save this class scan
         Calendar c = Calendar.getInstance();
         int day = c.get(Calendar.DAY_OF_WEEK);
-        String dd = doSnack.theDay(day);
+        String dd = DoSnack.theDay(day);
 
         SharedPreferences.Editor sharedPreferencesEditor =
                 getSharedPreferences(getApplicationContext().getPackageName(),MODE_PRIVATE).edit();
@@ -706,7 +707,8 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         scanClass.setStudentid(mAuth.getCurrentUser().getUid());
         //web fields set
         scanClass.setCourse(mSharedPreferences.getString(COURSE_PREF_NAME,""));
-        scanClass.setStudname(mSharedPreferences.getString(STUDNAME_PREF_NAME,""));
+        scanClass.setStudname(mSharedPreferences.getString(STUDFNAME_PREF_NAME,"")+
+                " "+mSharedPreferences.getString(STUDLNAME_PREF_NAME,""));
         scanClass.setYearofstudy(mSharedPreferences.getString(CURRENT_ACAD_YEAR_PREF_NAME,""));
         scanClass.setRegno(mSharedPreferences.getString(STUDREG_PREF_NAME,""));
         scanClass.setUnitcode(qrParser.getUnitcode());
@@ -741,7 +743,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         Calendar c = Calendar.getInstance();
         int day = c.get(Calendar.DAY_OF_WEEK);
 
-        String dd = doSnack.theDay(day);
+        String dd = DoSnack.theDay(day);
 
        /* List<ClassScan> todayScannedClasses = model.getTodayScannedClasses(dd);
         //check

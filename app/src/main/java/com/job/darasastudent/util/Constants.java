@@ -32,7 +32,8 @@ public class Constants {
     //prefs
     public static final String COMPLETED_GIF_PREF_NAME = "COMPLETED_GIF_PREF_NAME";
     public static final String COURSE_PREF_NAME = "COURSE_PREF_NAME";
-    public static final String STUDNAME_PREF_NAME = "STUDNAME_PREF_NAME";
+    public static final String STUDFNAME_PREF_NAME = "STUDFNAME_PREF_NAME";
+    public static final String STUDLNAME_PREF_NAME = "STUDLNAME_PREF_NAME";
     public static final String STUDREG_PREF_NAME = "STUDREG_PREF_NAME";
     public static final String CURRENT_SEM_PREF_NAME = "CURRENT_SEM_PREF_NAME";
     public static final String CURRENT_YEAR_PREF_NAME = "CURRENT_YEAR_PREF_NAME";
