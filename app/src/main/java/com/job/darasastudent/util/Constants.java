@@ -26,6 +26,8 @@ public class Constants {
     public static final String DKUTCOURSES = "DkutCourses";
     public static final String DATE_SCAN_FORMAT = "yyyy-MM-dd";
 
+    public static final String KEY_UUID = "key_uuid";
+
 
     //prefs
     public static final String COMPLETED_GIF_PREF_NAME = "COMPLETED_GIF_PREF_NAME";

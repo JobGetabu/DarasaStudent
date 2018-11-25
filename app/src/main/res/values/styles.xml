@@ -20,4 +20,10 @@
         <item name ="android:windowBackground"> @drawable/splash_screen_background</item>
     </style>
 
+    <style name="ChipTextStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#232323</item>
+        <item name="android:fontFamily">@font/nunito</item>
+    </style>
+
 </resources>
