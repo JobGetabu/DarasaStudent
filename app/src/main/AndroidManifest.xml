@@ -103,6 +103,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/SplashScreenTheme">
         </activity>
+        <activity android:name=".ui.AdvertClassActivity" />
     </application>
 
 </manifest>
