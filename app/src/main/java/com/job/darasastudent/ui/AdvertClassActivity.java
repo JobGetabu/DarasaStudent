@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.button.MaterialButton;
@@ -49,6 +50,7 @@ import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -86,6 +88,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     LottieAnimationView adStartScanAnimationView;
     @BindView(R.id.ad_start_scan_bck)
     ConstraintLayout adStartScanMain;
+    @BindView(R.id.ad_pop_bck)
+    ConstraintLayout adPopMain;
     @BindView(R.id.ad_network_bck)
     ConstraintLayout adNetworkMain;
     @BindView(R.id.ad_bck)
@@ -102,6 +106,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     TextView userInfoTime;
     @BindView(R.id.user_course_chip)
     Chip userCourseChip;
+    @BindView(R.id.ad_pop_txt)
+    TextView adPopText;
 
 
     //endregion
@@ -192,9 +198,11 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         adMain.setBackgroundColor(DoSnack.setColor(this, R.color.scan_blue));
         adStartScanMain.setVisibility(View.VISIBLE);
         adCardTop.setVisibility(View.VISIBLE);
+
         adNetworkMain.setVisibility(View.GONE);
+        adPopMain.setVisibility(View.GONE);
 
-
+        adStartScanBtn.setVisibility(View.VISIBLE);
         adStartScanBtn.setBackground(DoSnack.setDrawable(this, R.drawable.round_off_btn_bg));
         adStatusTxt.setText(R.string.start_scanning_for_lec_txt);
         adStartScanBtn.setText(R.string.start_scan);
@@ -204,12 +212,29 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         STATE = "FRESH";
     }
 
-    private void initStudentListUI() {
+    private void initSuccessUI() {
         adMain.setBackgroundColor(DoSnack.setColor(this, R.color.scan_blue));
         adStartScanMain.setVisibility(View.GONE);
         adNetworkMain.setVisibility(View.GONE);
 
         adCardTop.setVisibility(View.VISIBLE);
+        adPopMain.setVisibility(View.VISIBLE);
+
+        //this where we place logic for success
+        //4 seconds
+        new CountDownTimer(4000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                //ticking
+                changeTextColor();
+            }
+
+            public void onFinish() {
+
+                initScanningUI();
+                DoSnack.showShortSnackbar(AdvertClassActivity.this, getString(R.string.checking_for_lec_txt));
+            }
+        }.start();
     }
 
     private void initNetworkLostUI() {
@@ -228,6 +253,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         adMain.setBackgroundColor(DoSnack.setColor(this, R.color.scan_blue));
 
         adNetworkMain.setVisibility(View.GONE);
+        adPopMain.setVisibility(View.GONE);
+
 
         adStartScanMain.setVisibility(View.VISIBLE);
         adStartScanAnimationView.setVisibility(View.VISIBLE);
@@ -282,7 +309,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                         String picurl = documentSnapshot.getString("photourl");
 
 
-                        userInfoTime.setText("Sem " + sem + " - " + academ);
+                        userInfoTime.setText("Sem " + sem + " - Year " + academ);
                         setChip(course);
                         imageProcessor.setMyImage(userInfoImage, picurl);
                     }
@@ -292,17 +319,15 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     }
 
     private void setChip(String course) {
-        Chip chip = new Chip(this);
-        chip.setChipText(course);
+        userCourseChip.setChipText(course);
         //chip.setCloseIconEnabled(true);
         //chip.setCloseIconResource(R.drawable.your_icon);
         //chip.setChipIconResource(R.drawable.your_icon);
         //chip.setChipBackgroundColorResource(R.color.red);
-        chip.setTextAppearanceResource(R.style.ChipTextStyle);
-        chip.setChipStartPadding(4f);
-        chip.setChipEndPadding(4f);
+        userCourseChip.setTextAppearanceResource(R.style.ChipTextStyle);
+        userCourseChip.setChipStartPadding(4f);
+        userCourseChip.setChipEndPadding(4f);
 
-        userCourseChip = chip;
     }
 
     @OnClick(R.id.ad_network_retry)
@@ -385,7 +410,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
             case 1: //scan qr
                 sendToQr();
                 break;
-            case 3: //stop scanning
+            case 2: //stop scanning
                 STATE = "STOPPED";
                 Nearby.getMessagesClient(this).unpublish(mPubMessage);
                 Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
@@ -504,7 +529,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                         Log.d(TAG, "Published successfully.");
                         //initScanningUI();
                         STATE = "SUCCESS";
-                        initStudentListUI();
+                        initSuccessUI();
                         adStatusTxt.setText(R.string.checking_for_lec_txt);
                     }
                 })
@@ -527,7 +552,6 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 });
     }
 
-
     //endregion
 
     private void sendToQr() {
@@ -539,4 +563,25 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     //endregion
 
+    private void changeTextColor() {
+        Random random = new Random();
+        Integer integer = random.nextInt(4);
+        switch (integer) {
+            case 0:
+                adPopText.setTextColor(DoSnack.setColor(this, R.color.scan_t3));
+                break;
+            case 1:
+                adPopText.setTextColor(DoSnack.setColor(this, R.color.scan_t2));
+                break;
+            case 2:
+                adPopText.setTextColor(DoSnack.setColor(this, R.color.scan_t1));
+                break;
+            case 3:
+                adPopText.setTextColor(DoSnack.setColor(this, R.color.scan_t4));
+                break;
+            default:
+                adPopText.setTextColor(DoSnack.setColor(this, R.color.white));
+                break;
+        }
+    }
 }
