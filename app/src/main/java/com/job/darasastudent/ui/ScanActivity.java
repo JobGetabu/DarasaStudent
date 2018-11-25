@@ -120,7 +120,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
 
 
 
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mSharedPreferences = getSharedPreferences(getApplicationContext().getPackageName(),MODE_PRIVATE);
         // Check if we need to display our GIF
         if (!mSharedPreferences.getBoolean(
                 COMPLETED_GIF_PREF_NAME, false)) {
@@ -653,7 +653,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         String dd = doSnack.theDay(day);
 
         SharedPreferences.Editor sharedPreferencesEditor =
-                PreferenceManager.getDefaultSharedPreferences(this).edit();
+                getSharedPreferences(getApplicationContext().getPackageName(),MODE_PRIVATE).edit();
 
         sharedPreferencesEditor.putString(SCAN_LECTEACHID_PREF_NAME, qrParser.getLecteachtimeid());
         sharedPreferencesEditor.putString(SCAN_DAY_PREF_NAME, dd);
@@ -774,6 +774,5 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
             }
         });
     }
-
 
 }

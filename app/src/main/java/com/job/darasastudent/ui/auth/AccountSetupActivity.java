@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
@@ -360,8 +359,7 @@ public class AccountSetupActivity extends AppCompatActivity {
     }
 
     private void saveStudPref(String fname, String lname, String course, String regno) {
-        SharedPreferences.Editor sharedPreferencesEditor = PreferenceManager.getDefaultSharedPreferences(
-                AccountSetupActivity.this).edit();
+        SharedPreferences.Editor sharedPreferencesEditor = getSharedPreferences(getApplicationContext().getPackageName(),MODE_PRIVATE).edit();
 
         sharedPreferencesEditor.putString(COURSE_PREF_NAME, course);
         sharedPreferencesEditor.putString(STUDNAME_PREF_NAME, fname+" "+lname);

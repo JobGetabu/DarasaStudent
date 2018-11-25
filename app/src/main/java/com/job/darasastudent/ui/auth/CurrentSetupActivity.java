@@ -160,8 +160,7 @@ public class CurrentSetupActivity extends AppCompatActivity {
     }
 
     private void saveToSharedPrefs(String sem,String syr,String ayr ){
-        SharedPreferences.Editor sharedPreferencesEditor = PreferenceManager.getDefaultSharedPreferences(
-                CurrentSetupActivity.this).edit();
+        SharedPreferences.Editor sharedPreferencesEditor = getSharedPreferences(getApplicationContext().getPackageName(),MODE_PRIVATE).edit();
 
         sharedPreferencesEditor.putString( CURRENT_SEM_PREF_NAME, sem);
         sharedPreferencesEditor.putString( CURRENT_YEAR_PREF_NAME, syr);
