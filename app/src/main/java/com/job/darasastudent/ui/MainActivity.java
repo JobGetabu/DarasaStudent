@@ -16,6 +16,8 @@ import android.support.design.bottomappbar.BottomAppBar;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -73,6 +75,11 @@ import static com.job.darasastudent.util.Constants.TIMETTCOL;
 
 public class MainActivity extends AppCompatActivity {
 
+    //this works < 19
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     private static final int REQUEST_CODE_REQUIRED_PERMISSIONS = 1;
     private static final String TAG = "main";
 
@@ -121,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         initStrictMode();
         setSupportActionBar(bar);
 
+        mainFab.setFabIcon(AppCompatResources.getDrawable(this,R.drawable.ic_add));
         //subtitle
         showDateOfClasses(Calendar.getInstance());
 
@@ -346,6 +354,7 @@ public class MainActivity extends AppCompatActivity {
 
                         showDateOfClasses(myCalendar);
                         classListQuery(myCalendar);
+                        adapter.notifyDataSetChanged();
                     }
                 };
 

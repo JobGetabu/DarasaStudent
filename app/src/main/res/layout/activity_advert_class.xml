@@ -26,7 +26,10 @@
         app:maxImageSize="56dp"
         app:rippleColor="@color/colorPrimaryDark"
         app:srcCompat="@drawable/ic_add_small"
-        app:tint="@color/colorAccent" />
+        app:tint="@color/colorAccent"
+        app:layout_anchor="@id/ad_card_top"
+        android:elevation="10dp"
+        />
 
     <android.support.v7.widget.CardView
         style="@style/Widget.MaterialComponents.CardView"
