@@ -160,7 +160,7 @@ public class DoSnack {
                 .show();
     }
 
-    private String theDay(int day) {
+    public String theDay(int day) {
         switch (day) {
             case 1:
                 return "Sunday";
