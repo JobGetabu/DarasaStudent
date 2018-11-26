@@ -697,7 +697,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     private void successScan(final SweetAlertDialog pDialog, QRParser qrParser) {
         pDialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
-        pDialog.setTitleText("Confirmed :" + qrParser.getUnitname() + " \n" + qrParser.getUnitcode() + "\n Location: proximity OFF");
+        pDialog.setTitleText("Confirmed :" + qrParser.getUnitname() + " \n" + qrParser.getUnitcode() + "\n Location: proximity ON");
         pDialog.setCancelable(false);
         pDialog.show();
 
