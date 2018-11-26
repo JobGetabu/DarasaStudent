@@ -69,7 +69,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.fabric.sdk.android.Fabric;
 
 import static com.job.darasastudent.util.Constants.COURSE_PREF_NAME;
-import static com.job.darasastudent.util.Constants.CURRENT_ACAD_YEAR_PREF_NAME;
+import static com.job.darasastudent.util.Constants.CURRENT_YEAROFSTUDY_PREF_NAME;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
 import static com.job.darasastudent.util.Constants.TIMETTCOL;
 
@@ -218,15 +218,15 @@ public class MainActivity extends AppCompatActivity {
                 if (studUser != null) {
 
                     if (studUser.getCourse() == null || mSharedPreferences.getString(COURSE_PREF_NAME,"").isEmpty()) {
-                        doSnack.showSnackbar(getString(R.string.add_ur_course), getString(R.string.add), new View.OnClickListener() {
+                        DoSnack.showSnackbar(MainActivity.this,getString(R.string.add_ur_course), getString(R.string.add), new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 sendToAccountSetup();
                             }
                         });
                     }
-                    if (studUser.getCurrentsemester() == null || mSharedPreferences.getString(CURRENT_ACAD_YEAR_PREF_NAME,"").isEmpty()) {
-                        doSnack.showSnackbar(getString(R.string.add_ur_sem), getString(R.string.add), new View.OnClickListener() {
+                    if (studUser.getCurrentsemester() == null || mSharedPreferences.getString(CURRENT_YEAROFSTUDY_PREF_NAME,"").isEmpty()) {
+                        DoSnack.showSnackbar(MainActivity.this,getString(R.string.add_ur_sem), getString(R.string.add), new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 sendToCurrentManage();
@@ -235,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } else {
                     //stud account is null
-                    doSnack.showSnackbar(getString(R.string.add_ur_info), getString(R.string.add), new View.OnClickListener() {
+                    DoSnack.showSnackbar(MainActivity.this,getString(R.string.add_ur_info), getString(R.string.add), new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             mAuth.signOut();
