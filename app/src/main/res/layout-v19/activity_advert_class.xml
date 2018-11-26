@@ -9,21 +9,6 @@
     android:fitsSystemWindows="true"
     tools:context=".ui.AdvertClassActivity">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/ad_fab"
-        style="@style/Widget.MaterialComponents.FloatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:backgroundTint="@color/white"
-        app:fabSize="normal"
-        app:layout_anchor="@+id/ad_card_top"
-        app:layout_anchorGravity="bottom|right"
-        app:maxImageSize="56dp"
-        app:rippleColor="@color/colorPrimaryDark"
-        app:srcCompat="@drawable/ic_add_small"
-        app:tint="@color/colorAccent" />
-
     <android.support.constraint.ConstraintLayout
         android:id="@+id/ad_bck"
         android:layout_width="match_parent"
@@ -129,6 +114,20 @@
                     app:layout_constraintEnd_toStartOf="@+id/ad_fab"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/user_course_chip" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/ad_fab"
+                    style="@style/Widget.MaterialComponents.FloatingActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:backgroundTint="@color/white"
+                    app:fabSize="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:maxImageSize="56dp"
+                    app:rippleColor="@color/colorPrimaryDark"
+                    app:srcCompat="@drawable/ic_add_small"
+                    app:tint="@color/colorAccent" />
 
             </android.support.constraint.ConstraintLayout>
         </android.support.v7.widget.CardView>
