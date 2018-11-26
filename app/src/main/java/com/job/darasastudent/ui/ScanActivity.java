@@ -15,7 +15,6 @@ import android.graphics.PointF;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -66,7 +65,7 @@ import io.nlopez.smartlocation.location.providers.MultiFallbackProvider;
 
 import static com.job.darasastudent.util.Constants.COMPLETED_GIF_PREF_NAME;
 import static com.job.darasastudent.util.Constants.COURSE_PREF_NAME;
-import static com.job.darasastudent.util.Constants.CURRENT_ACAD_YEAR_PREF_NAME;
+import static com.job.darasastudent.util.Constants.CURRENT_YEAROFSTUDY_PREF_NAME;
 import static com.job.darasastudent.util.Constants.DATE_SCAN_FORMAT;
 import static com.job.darasastudent.util.Constants.SCAN_CLASSTIME_PREF_NAME;
 import static com.job.darasastudent.util.Constants.SCAN_DATE_PREF_NAME;
@@ -488,7 +487,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         // flag as completed so that we don't show our GIF
         // the next time the user launches the app.
         SharedPreferences.Editor sharedPreferencesEditor =
-                PreferenceManager.getDefaultSharedPreferences(this).edit();
+                getSharedPreferences(getApplicationContext().getPackageName(),MODE_PRIVATE).edit();
         sharedPreferencesEditor.putBoolean(
                 COMPLETED_GIF_PREF_NAME, true);
 
@@ -709,7 +708,7 @@ public class ScanActivity extends AppCompatActivity implements QRCodeReaderView.
         scanClass.setCourse(mSharedPreferences.getString(COURSE_PREF_NAME,""));
         scanClass.setStudname(mSharedPreferences.getString(STUDFNAME_PREF_NAME,"")+
                 " "+mSharedPreferences.getString(STUDLNAME_PREF_NAME,""));
-        scanClass.setYearofstudy(mSharedPreferences.getString(CURRENT_ACAD_YEAR_PREF_NAME,""));
+        scanClass.setYearofstudy(mSharedPreferences.getString(CURRENT_YEAROFSTUDY_PREF_NAME,""));
         scanClass.setRegno(mSharedPreferences.getString(STUDREG_PREF_NAME,""));
         scanClass.setUnitcode(qrParser.getUnitcode());
         scanClass.setUnitname(qrParser.getUnitname());

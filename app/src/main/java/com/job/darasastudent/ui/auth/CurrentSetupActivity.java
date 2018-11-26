@@ -35,8 +35,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-import static com.job.darasastudent.util.Constants.CURRENT_ACAD_YEAR_PREF_NAME;
 import static com.job.darasastudent.util.Constants.CURRENT_SEM_PREF_NAME;
+import static com.job.darasastudent.util.Constants.CURRENT_YEAROFSTUDY_PREF_NAME;
 import static com.job.darasastudent.util.Constants.CURRENT_YEAR_PREF_NAME;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
 
@@ -164,7 +164,7 @@ public class CurrentSetupActivity extends AppCompatActivity {
 
         sharedPreferencesEditor.putString( CURRENT_SEM_PREF_NAME, sem);
         sharedPreferencesEditor.putString( CURRENT_YEAR_PREF_NAME, syr);
-        sharedPreferencesEditor.putString( CURRENT_ACAD_YEAR_PREF_NAME, ayr);
+        sharedPreferencesEditor.putString( CURRENT_YEAROFSTUDY_PREF_NAME, ayr);
 
         sharedPreferencesEditor.apply();
     }
