@@ -38,7 +38,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.gson.Gson;
 import com.job.darasastudent.R;
 import com.job.darasastudent.appexecutor.DefaultExecutorSupplier;
 import com.job.darasastudent.model.CourseYear;
@@ -163,7 +162,6 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     //endregion
 
-    private Gson gson;
     private SharedPreferences mSharedPreferences;
     private ImageProcessor imageProcessor;
     private ScanViewModel model;
@@ -196,7 +194,6 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         //database
         model = ViewModelProviders.of(this).get(ScanViewModel.class);
         imageProcessor = new ImageProcessor(this);
-        gson = new Gson();
         setUpUi();
 
         mSharedPreferences = getSharedPreferences(getApplicationContext().getPackageName(), Context.MODE_PRIVATE);
@@ -307,7 +304,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
         if (AppStatus.getInstance(this).isOnline()) {
             subscribe();
-            publish();
+
 
         } else {
 
@@ -364,7 +361,6 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         if (AppStatus.getInstance(this).isOnline()) {
             initScanningUI();
             subscribe();
-            publish();
 
         } else {
 
@@ -481,9 +477,6 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                         if (lessonMessage.getQrParser() != null) {
                             //this is is a Lec message
                             //try to confirm attendance
-
-                            Toast.makeText(AdvertClassActivity.this, "new device " + message.toString(), Toast.LENGTH_SHORT).show();
-
 
                             if (model.getScanCount() == 1) {
 
@@ -803,6 +796,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
             return false;
         }
 
+        //publishing message only when student has successfully scanned class
+        publish();
         saveThisInFirestore(qrParser, pDialog);
 
         return true;
