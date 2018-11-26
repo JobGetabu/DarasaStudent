@@ -487,8 +487,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
                             if (model.getScanCount() == 1) {
 
-                                Log.d(TAG, "onFound: model.getScanCount()"+model.getScanCount());
-                                Log.d(TAG, "onFound: "+ lessonMessage.getQrParser().toString());
+                                Log.d(TAG, "onFound: model.getScanCount()" + model.getScanCount());
+                                Log.d(TAG, "onFound: " + lessonMessage.getQrParser().toString());
 
                                 final SweetAlertDialog pDialog = new SweetAlertDialog(AdvertClassActivity.this, SweetAlertDialog.SUCCESS_TYPE);
                                 pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
@@ -510,7 +510,16 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
             public void onLost(Message message) {
                 // Called when a message is no longer detectable nearby.
                 //mNearbyDevicesArrayAdapter.remove(DeviceMessage.fromNearbyMessage(message).getMessageBody());
-                Toast.makeText(AdvertClassActivity.this, "device lost " + message.toString(), Toast.LENGTH_SHORT).show();
+                LessonMessage lessonMessage = LessonMessage.fromNearbyMessage(message);
+                if (lessonMessage != null) {
+                    if (lessonMessage.getStudentMessage() == null) {
+                        if (lessonMessage.getQrParser() != null) {
+                            //this is is a Lec message
+                            //try to confirm attendance
+                            DoSnack.showShortSnackbar(AdvertClassActivity.this, "Lecturer closed the network");
+                        }
+                    }
+                }
             }
         };
     }
