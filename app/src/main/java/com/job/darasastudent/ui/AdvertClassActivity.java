@@ -14,6 +14,7 @@ import android.support.design.button.MaterialButton;
 import android.support.design.chip.Chip;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
@@ -179,6 +180,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         setContentView(R.layout.activity_advert_class);
         ButterKnife.bind(this);
 
+        adFab.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_add_small)); //ic_add_small
+
         //region Keep the screen always on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -246,7 +249,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
         //this where we place logic for success
         //4 seconds
-        new CountDownTimer(4000, 1000) {
+        new CountDownTimer(4000, 100) {
 
             public void onTick(long millisUntilFinished) {
                 //ticking
