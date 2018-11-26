@@ -69,8 +69,8 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.job.darasastudent.util.Constants.COURSE_PREF_NAME;
-import static com.job.darasastudent.util.Constants.CURRENT_ACAD_YEAR_PREF_NAME;
 import static com.job.darasastudent.util.Constants.CURRENT_SEM_PREF_NAME;
+import static com.job.darasastudent.util.Constants.CURRENT_YEAROFSTUDY_PREF_NAME;
 import static com.job.darasastudent.util.Constants.CURRENT_YEAR_PREF_NAME;
 import static com.job.darasastudent.util.Constants.DATE_SCAN_FORMAT;
 import static com.job.darasastudent.util.Constants.SCAN_CLASSTIME_PREF_NAME;
@@ -473,7 +473,6 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 // Called when a new message is found.
                 //mNearbyDevicesArrayAdapter.add(DeviceMessage.fromNearbyMessage(message).getMessageBody());
 
-                Toast.makeText(AdvertClassActivity.this, "new device " + message.toString(), Toast.LENGTH_SHORT).show();
 
                 //check for lec message only
                 LessonMessage lessonMessage = LessonMessage.fromNearbyMessage(message);
@@ -483,15 +482,23 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                             //this is is a Lec message
                             //try to confirm attendance
 
+                            Toast.makeText(AdvertClassActivity.this, "new device " + message.toString(), Toast.LENGTH_SHORT).show();
+
+
                             if (model.getScanCount() == 1) {
+
+                                Log.d(TAG, "onFound: model.getScanCount()"+model.getScanCount());
+                                Log.d(TAG, "onFound: "+ lessonMessage.getQrParser().toString());
 
                                 final SweetAlertDialog pDialog = new SweetAlertDialog(AdvertClassActivity.this, SweetAlertDialog.SUCCESS_TYPE);
                                 pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
 
                                 QRParser qrParser = lessonMessage.getQrParser();
 
-                                verifyCourseAndDetails(pDialog, qrParser);
-                                model.setScanCount(model.getScanCount() + 1);
+                                if (verifyCourseAndDetails(pDialog, qrParser)) {
+
+                                    model.setScanCount(model.getScanCount() + 1);
+                                }
                             }
 
                         }
@@ -655,7 +662,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         scanClass.setCourse(mSharedPreferences.getString(COURSE_PREF_NAME, ""));
         scanClass.setStudname(mSharedPreferences.getString(STUDFNAME_PREF_NAME, "") +
                 " " + mSharedPreferences.getString(STUDLNAME_PREF_NAME, ""));
-        scanClass.setYearofstudy(mSharedPreferences.getString(CURRENT_ACAD_YEAR_PREF_NAME, ""));
+        scanClass.setYearofstudy(mSharedPreferences.getString(CURRENT_YEAROFSTUDY_PREF_NAME, ""));
         scanClass.setRegno(mSharedPreferences.getString(STUDREG_PREF_NAME, ""));
         scanClass.setUnitcode(qrParser.getUnitcode());
         scanClass.setUnitname(qrParser.getUnitname());
@@ -745,15 +752,15 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     }
 
-    private boolean verifyCourseAndDetails(final SweetAlertDialog pDialog, final QRParser qrParser){
+    private boolean verifyCourseAndDetails(final SweetAlertDialog pDialog, final QRParser qrParser) {
 
         //check course
         boolean mycourse = false;
 
-        String course = mSharedPreferences.getString(COURSE_PREF_NAME,"");
-        String currentsemester = mSharedPreferences.getString(CURRENT_SEM_PREF_NAME,"");
-        String currentyear = mSharedPreferences.getString(CURRENT_YEAR_PREF_NAME,"");
-        String yearofstudy = mSharedPreferences.getString(CURRENT_ACAD_YEAR_PREF_NAME,"");
+        String course = mSharedPreferences.getString(COURSE_PREF_NAME, "");
+        String currentsemester = mSharedPreferences.getString(CURRENT_SEM_PREF_NAME, "");
+        String currentyear = mSharedPreferences.getString(CURRENT_YEAR_PREF_NAME, "");
+        String yearofstudy = mSharedPreferences.getString(CURRENT_YEAROFSTUDY_PREF_NAME, "");
 
         for (CourseYear cs : qrParser.getCourses()) {
             if (course.equals(cs.getCourse()) && yearofstudy.equals(String.valueOf(cs.getYearofstudy()))) {
@@ -763,7 +770,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
             }
         }
 
-        if (!mycourse) {
+        if (mycourse == false) {
             Log.d(TAG, "Not Allowed \n this unit is not \nregistered in your course");
             return false;
         }
@@ -783,7 +790,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         if (isRepeatScan(qrParser)) {
 
             failVerifyCourseAndDetails(pDialog, "Not Allowed \n this class session \n has already been scanned");
-            Log.d(TAG,"Not Allowed \n this class session \n has already been scanned" );
+            Log.d(TAG, "Not Allowed \n this class session \n has already been scanned");
             return false;
         }
 

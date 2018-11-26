@@ -173,7 +173,7 @@ public class AccountSetupActivity extends AppCompatActivity {
                                 public void onClick(SweetAlertDialog sDialog) {
                                     sDialog.dismissWithAnimation();
 
-                                    saveStudPref(course,fname,lname,regno.toUpperCase());
+                                    saveStudPref(fname,lname,course,regno.toUpperCase());
                                     sendToCurrentSetup();
 
                                 }
