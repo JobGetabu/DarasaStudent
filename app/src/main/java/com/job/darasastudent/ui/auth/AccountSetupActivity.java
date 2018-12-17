@@ -373,7 +373,8 @@ public class AccountSetupActivity extends AppCompatActivity {
     }
 
     private void subscribeNotification(String courseTopic){
-        FirebaseMessaging.getInstance().subscribeToTopic(courseTopic)
+        //remove white spaces
+        FirebaseMessaging.getInstance().subscribeToTopic(courseTopic.replace(" ",""))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
