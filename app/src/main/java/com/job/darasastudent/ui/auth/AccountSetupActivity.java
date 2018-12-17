@@ -266,7 +266,7 @@ public class AccountSetupActivity extends AppCompatActivity {
                     setupLastname.getEditText().setText(studUser.getLastname());
                     setupSchool.getEditText().setText(studUser.getSchool());
                     setupDepartment.getEditText().setText(studUser.getDepartment());
-                    setupRegno.getEditText().setText(studUser.getDepartment());
+                    setupRegno.getEditText().setText(studUser.getRegnumber());
 
                     if (studUser.getCourse() == null) {
                         setupCourse.setVisibility(View.GONE);
