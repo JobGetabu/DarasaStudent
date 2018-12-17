@@ -3,6 +3,7 @@ package com.job.darasastudent.services;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -12,6 +13,7 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.job.darasastudent.R;
+import com.job.darasastudent.ui.NotifActivity;
 
 import java.util.Map;
 
@@ -38,6 +40,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     //This method is only generating push notification
     private void sendNotification(String messageTitle, String messageBody, Map<String, String> row) {
+
+        Intent push = new Intent();
+        push.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        push.setClass(getApplicationContext(), NotifActivity.class);
+
+        PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
+                push, PendingIntent.FLAG_CANCEL_CURRENT);
+
+
         PendingIntent contentIntent = null;
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
@@ -47,7 +58,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentText(messageBody)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
-                .setContentIntent(contentIntent);
+                .setFullScreenIntent(fullScreenPendingIntent, true);
+
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(count, notificationBuilder.build());
