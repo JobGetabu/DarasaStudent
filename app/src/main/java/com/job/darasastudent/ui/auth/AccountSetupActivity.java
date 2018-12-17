@@ -51,8 +51,8 @@ import static com.job.darasastudent.util.Constants.STUDFNAME_PREF_NAME;
 import static com.job.darasastudent.util.Constants.STUDLNAME_PREF_NAME;
 import static com.job.darasastudent.util.Constants.STUDREG_PREF_NAME;
 
-//TODO: Check if document already exists,
-//Restrict manipulation of course and registration number.
+
+//TODO ver 3.0 :Restrict manipulation of course and registration number. ver: 3.0
 
 public class AccountSetupActivity extends AppCompatActivity {
 
