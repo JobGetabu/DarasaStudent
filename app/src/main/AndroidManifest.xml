@@ -104,6 +104,10 @@
             android:theme="@style/SplashScreenTheme">
         </activity>
         <activity android:name=".ui.AdvertClassActivity" />
+        <activity android:name=".ui.NotifActivity"
+            android:theme="@style/Theme.Transparent"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>

@@ -6,8 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
+
 import com.job.darasastudent.R;
 
 import butterknife.BindView;
@@ -18,10 +17,6 @@ public class NotifActivity extends AppCompatActivity {
 
     @BindView(R.id.ce_imgBtnClose)
     ImageButton ceImgBtnClose;
-    @BindView(R.id.textView3)
-    TextView textView3;
-    @BindView(R.id.ce_delete)
-    MaterialButton ceDelete;
     @BindView(R.id.ce_dismiss)
     MaterialButton ceDismiss;
 
@@ -39,18 +34,6 @@ public class NotifActivity extends AppCompatActivity {
     @OnClick(R.id.ce_imgBtnClose)
     public void onCeImgBtnCloseClicked() {
         finish();
-    }
-
-    @OnClick(R.id.ce_delete)
-    public void onCeDeleteClicked() {
-        //TODO: delete
-        //1. group photo
-        //2. set members as isMember = false
-        //3. undo PREFS
-        //4. show_notification to all possible members
-        //5. alert developer/support team via messaging
-
-        Toast.makeText(this, "Feature not implemented yet", Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.ce_dismiss)

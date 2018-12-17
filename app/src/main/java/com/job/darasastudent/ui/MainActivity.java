@@ -547,4 +547,9 @@ public class MainActivity extends AppCompatActivity {
             StrictMode.setThreadPolicy(threadPolicy);
         }
     }
+
+    @OnClick(R.id.user_info_img_notification)
+    public void notifClick(){
+        startActivity(new Intent(this,NotifActivity.class));
+    }
 }

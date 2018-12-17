@@ -40,7 +40,7 @@
     <string name="sign_out">Sign out</string>
     <string name="manage_your_classes">Manage your classes</string>
     <string name="semester_i_e_1">Semester e.g 1</string>
-    <string name="academy_year">Academic Year e.g 2018/19</string>
+    <string name="academy_year">Academic Year e.g 2019/20</string>
     <string name="save">Save</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
@@ -85,4 +85,6 @@
     <string name="this_scan_qr_txt">This will open camera to scan <b>QR CODE</b> if you\'re unable to detect lecturer\'s network</string>
     <string name="scan_qr">Scan QR code</string>
     <string name="dismiss">Dismiss</string>
+    <string name="academic_year_txt">Academic year e.g 2019</string>
+    <string name="no_notification">No notifications</string>
 </resources>
