@@ -3,7 +3,6 @@ package com.job.darasastudent.ui;
 import android.os.Bundle;
 import android.support.design.button.MaterialButton;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 
@@ -24,9 +23,9 @@ public class NotifActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // remove title
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         setContentView(R.layout.activity_notif);
         ButterKnife.bind(this);
     }
