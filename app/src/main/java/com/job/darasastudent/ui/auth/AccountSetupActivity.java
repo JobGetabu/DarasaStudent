@@ -27,6 +27,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Source;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.job.darasastudent.R;
 import com.job.darasastudent.model.StudentDetails;
 import com.job.darasastudent.ui.MainActivity;
@@ -151,6 +152,7 @@ public class AccountSetupActivity extends AppCompatActivity {
             studMap.put("department", dept);
             studMap.put("course", course);
             studMap.put("regnumber", regno.toUpperCase());
+            subscribeNotification(course);
 
 
             //TODO: Check duplication of field regnumber
@@ -368,5 +370,20 @@ public class AccountSetupActivity extends AppCompatActivity {
         sharedPreferencesEditor.putString(STUDREG_PREF_NAME, regno);
 
         sharedPreferencesEditor.apply();
+    }
+
+    private void subscribeNotification(String courseTopic){
+        FirebaseMessaging.getInstance().subscribeToTopic(courseTopic)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = getString(R.string.msg_subscribed);
+                        if (!task.isSuccessful()) {
+                            msg = getString(R.string.msg_subscribe_failed);
+                        }
+                        Log.d(TAG, msg);
+
+                    }
+                });
     }
 }

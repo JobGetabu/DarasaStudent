@@ -87,4 +87,6 @@
     <string name="dismiss">Dismiss</string>
     <string name="academic_year_txt">Academic year e.g 2019</string>
     <string name="no_notification">No notifications</string>
+    <string name="msg_subscribed">Message subscribed</string>
+    <string name="msg_subscribe_failed">Messages not subscribed</string>
 </resources>
