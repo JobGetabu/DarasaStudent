@@ -1,5 +1,6 @@
 package com.job.darasastudent.services;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -41,24 +42,30 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     //This method is only generating push notification
     private void sendNotification(String messageTitle, String messageBody, Map<String, String> row) {
 
-        Intent push = new Intent();
-        push.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        push.setClass(getApplicationContext(), NotifActivity.class);
+        //click intent action
+        Intent intent = new Intent(getApplicationContext(), NotifActivity.class);
 
-        PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
-                push, PendingIntent.FLAG_CANCEL_CURRENT);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, (int) (Math.random() * 100), intent, 0);
 
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion >= android.os.Build.VERSION_CODES.LOLLIPOP){
+            currentapiVersion = R.mipmap.ic_launcher;
+        } else{
+            currentapiVersion = R.mipmap.ic_launcher;
+        }
 
-        PendingIntent contentIntent = null;
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(currentapiVersion)
                 .setContentTitle(messageTitle)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody))
                 .setContentText(messageBody)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
-                .setFullScreenIntent(fullScreenPendingIntent, true);
+                .setDefaults(Notification.FLAG_AUTO_CANCEL | Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND)
+                .setContentIntent(contentIntent);
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
