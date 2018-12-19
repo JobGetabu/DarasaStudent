@@ -12,14 +12,18 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.job.darasastudent.R;
 import com.job.darasastudent.model.StudentDetails;
 import com.job.darasastudent.ui.MainActivity;
@@ -35,6 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.job.darasastudent.util.Constants.COURSE_PREF_NAME;
 import static com.job.darasastudent.util.Constants.CURRENT_SEM_PREF_NAME;
 import static com.job.darasastudent.util.Constants.CURRENT_YEAROFSTUDY_PREF_NAME;
 import static com.job.darasastudent.util.Constants.CURRENT_YEAR_PREF_NAME;
@@ -42,6 +47,8 @@ import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
 
 
 public class CurrentSetupActivity extends AppCompatActivity {
+
+    private static final String TAG = "setupscreen";
 
     @BindView(R.id.current_toolbar)
     Toolbar currentToolbar;
@@ -125,6 +132,9 @@ public class CurrentSetupActivity extends AppCompatActivity {
             studMap.put("currentyear", syr);
             studMap.put("yearofstudy", ayr);
 
+            saveToSharedPrefs(sem,syr,ayr);
+            subscribeNotification();
+
             // Set the value of 'Users'
             DocumentReference usersRef = mFirestore.collection(STUDENTDETAILSCOL).document(mAuth.getCurrentUser().getUid());
 
@@ -141,8 +151,6 @@ public class CurrentSetupActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(SweetAlertDialog sDialog) {
                                     sDialog.dismissWithAnimation();
-
-                                    saveToSharedPrefs(sem,syr,ayr);
 
                                     sendToMain();
 
@@ -218,5 +226,53 @@ public class CurrentSetupActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void subscribeNotification(){
+        //remove white spaces
+        SharedPreferences preferences = getSharedPreferences(getApplicationContext().getPackageName(),MODE_PRIVATE);
+
+
+        String topicname = preferences.getString(COURSE_PREF_NAME,"").replace(" ","")
+                + preferences.getString(CURRENT_YEAROFSTUDY_PREF_NAME,"");
+
+        FirebaseMessaging.getInstance().subscribeToTopic(topicname)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = getString(R.string.msg_subscribed);
+                        if (!task.isSuccessful()) {
+                            msg = getString(R.string.msg_subscribe_failed);
+                        }
+                        Log.d(TAG, msg);
+
+                    }
+                });
+
+        //check earlier subscriptions
+        int prevYear = 0;
+        try {
+            int ss = Integer.parseInt(preferences.getString(CURRENT_YEAROFSTUDY_PREF_NAME, ""));
+            prevYear = ss-1;
+
+        }catch (Exception e){ }
+
+        String yos = String.valueOf(prevYear);
+
+        String topicname2 = preferences.getString(COURSE_PREF_NAME,"").replace(" ","")
+                + yos;
+
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(topicname2)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = getString(R.string.msg_subscribed);
+                        if (!task.isSuccessful()) {
+                            msg = "No prev message subscriptions";
+                        }
+                        Log.d(TAG, msg);
+
+                    }
+                });
     }
 }

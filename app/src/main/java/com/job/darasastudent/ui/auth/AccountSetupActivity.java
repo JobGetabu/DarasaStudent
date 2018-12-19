@@ -27,7 +27,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Source;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.job.darasastudent.R;
 import com.job.darasastudent.model.StudentDetails;
 import com.job.darasastudent.ui.MainActivity;
@@ -45,7 +44,6 @@ import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.job.darasastudent.util.Constants.COURSE_PREF_NAME;
-import static com.job.darasastudent.util.Constants.CURRENT_YEAROFSTUDY_PREF_NAME;
 import static com.job.darasastudent.util.Constants.DKUTCOURSES;
 import static com.job.darasastudent.util.Constants.STUDENTDETAILSCOL;
 import static com.job.darasastudent.util.Constants.STUDFNAME_PREF_NAME;
@@ -155,7 +153,6 @@ public class AccountSetupActivity extends AppCompatActivity {
             studMap.put("regnumber", regno.toUpperCase());
 
             saveStudPref(fname,lname,course,regno.toUpperCase());
-            subscribeNotification(course);
 
 
             //TODO: Check duplication of field regnumber
@@ -375,51 +372,4 @@ public class AccountSetupActivity extends AppCompatActivity {
         sharedPreferencesEditor.apply();
     }
 
-    private void subscribeNotification(String courseTopic){
-        //remove white spaces
-        SharedPreferences preferences = getSharedPreferences(getApplicationContext().getPackageName(),MODE_PRIVATE);
-
-
-        String topicname = preferences.getString(COURSE_PREF_NAME,"").replace(" ","")
-                + preferences.getString(CURRENT_YEAROFSTUDY_PREF_NAME,"");
-
-        FirebaseMessaging.getInstance().subscribeToTopic(topicname)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        String msg = getString(R.string.msg_subscribed);
-                        if (!task.isSuccessful()) {
-                            msg = getString(R.string.msg_subscribe_failed);
-                        }
-                        Log.d(TAG, msg);
-
-                    }
-                });
-
-        //check earlier subscriptions
-        int prevYear = 0;
-        try {
-            int ss = Integer.parseInt(preferences.getString(CURRENT_YEAROFSTUDY_PREF_NAME, ""));
-            prevYear = ss-1;
-
-        }catch (Exception e){ }
-
-        String yos = String.valueOf(prevYear);
-
-        String topicname2 = preferences.getString(COURSE_PREF_NAME,"").replace(" ","")
-                + yos;
-
-        FirebaseMessaging.getInstance().unsubscribeFromTopic(topicname2)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        String msg = getString(R.string.msg_subscribed);
-                        if (!task.isSuccessful()) {
-                            msg = "No prev message subscriptions";
-                        }
-                        Log.d(TAG, msg);
-
-                    }
-                });
-    }
 }
