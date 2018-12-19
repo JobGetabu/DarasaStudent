@@ -107,7 +107,12 @@
         <activity android:name=".ui.NotifActivity"
             android:theme="@style/Theme.Transparent"
             android:screenOrientation="portrait"
-            />
+            >
+            <intent-filter>
+                <action android:name="com.job.darasastudent_TARGET_NOTIFICATION"></action>
+                <category android:name="android.intent.category.DEFAULT"></category>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

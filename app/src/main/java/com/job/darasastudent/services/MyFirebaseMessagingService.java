@@ -14,7 +14,6 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.job.darasastudent.R;
-import com.job.darasastudent.ui.NotifActivity;
 
 import java.util.Map;
 
@@ -34,16 +33,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "Notification Message BODY: " + remoteMessage.getNotification().getBody());
         Log.d(TAG, "Notification Message DATA: " + remoteMessage.getData().toString());
 
+        String clickaction = remoteMessage.getNotification().getClickAction();
+
         //Calling method to generate notification
         sendNotification(remoteMessage.getNotification().getTitle(),
-                remoteMessage.getNotification().getBody(), remoteMessage.getData());
+                remoteMessage.getNotification().getBody(), remoteMessage.getData(),clickaction);
     }
 
     //This method is only generating push notification
-    private void sendNotification(String messageTitle, String messageBody, Map<String, String> row) {
+    private void sendNotification(String messageTitle, String messageBody, Map<String, String> row, String clickaction ) {
 
         //click intent action
-        Intent intent = new Intent(getApplicationContext(), NotifActivity.class);
+        Intent intent = new Intent(clickaction);
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent contentIntent = PendingIntent.getActivity(this, (int) (Math.random() * 100), intent, 0);
