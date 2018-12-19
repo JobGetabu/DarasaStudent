@@ -76,9 +76,9 @@
             android:layout_marginTop="16dp"
             android:fontFamily="@font/nunito"
             android:text="8:00AM"
-            android:textAllCaps="true"
+            android:textAllCaps="false"
             android:textColor="@android:color/white"
-            android:textSize="14sp"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="8:00AM" />
