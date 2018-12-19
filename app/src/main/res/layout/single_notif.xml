@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
+    style="@style/Widget.MaterialComponents.CardView"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="24dp"
+    app:strokeColor="@color/white"
+    app:strokeWidth="2dp"
+    app:cardBackgroundColor="@color/bg_trans2"
+    tools:cardBackgroundColor="@color/bg_trans2"
+    >
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/ls_card"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <com.hbb20.GThumb
+            android:id="@+id/ce_gthumb"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            app:gtTextSize="24sp"
+            app:gtUseBoldText="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/ce_lecname"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/nunito"
+            android:singleLine="false"
+            android:text="TextView"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/ce_time"
+            app:layout_constraintStart_toEndOf="@+id/ce_gthumb"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/ce_message"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/nunito"
+            android:singleLine="false"
+            android:text="TextView"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ce_gthumb"
+            app:layout_constraintTop_toBottomOf="@+id/ce_lecname" />
+
+        <TextView
+            android:id="@+id/ce_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/nunito"
+            android:text="8:00AM"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="8:00AM" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.design.card.MaterialCardView>
