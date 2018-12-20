@@ -103,9 +103,6 @@ dependencies {
     //context menu
     implementation 'com.github.Yalantis:Context-Menu.Android:1.0.8'
 
-    //get time ago
-    implementation 'com.chootdev:timezago:1.1.8'
-
     //architecture components
 
     // Room components
