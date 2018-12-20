@@ -12,3 +12,4 @@ libs/
 /.idea/
 release/
 src/main/res/drawable-v24/
+debug/

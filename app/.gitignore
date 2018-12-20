@@ -10,3 +10,4 @@
 .externalNativeBuild
 libs/
 /release
+/keystore.properties
