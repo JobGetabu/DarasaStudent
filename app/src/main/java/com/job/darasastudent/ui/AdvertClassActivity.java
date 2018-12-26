@@ -91,7 +91,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     public static final String QRPARSEREXTRA = "QRPARSEREXTRA";
     public static final String VENUEEXTRA = "VENUEEXTRA";
     public static final String LECTEACHIDEXTRA = "LECTEACHIDEXTRA";
-    private static final int TTL_IN_SECONDS = 30 * 60; // Three minutes.
+    private static final int TTL_IN_SECONDS = 30 * 60; // thirty minutes.
 
     /**
      * Sets the time in seconds for a published message or a subscription to live. Set to 30 min
@@ -307,6 +307,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
         if (AppStatus.getInstance(this).isOnline()) {
             subscribe();
+            //increase chances of successful publishing message
+            publish();
 
 
         } else {
@@ -364,6 +366,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         if (AppStatus.getInstance(this).isOnline()) {
             initScanningUI();
             subscribe();
+            //increase chances of successful publishing message
+            publish();
 
         } else {
 
@@ -481,6 +485,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                             //this is is a Lec message
                             //try to confirm attendance
 
+                            Log.d(TAG, "onFound: "+lessonMessage.getQrParser());
                             if (model.getScanCount() == 1) {
 
                                 Log.d(TAG, "onFound: model.getScanCount()" + model.getScanCount());
@@ -536,7 +541,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                     @Override
                     public void onExpired() {
                         super.onExpired();
-                        Log.i(TAG, "No longer subscribing");
+                        Log.d(TAG, "No longer subscribing");
 
                     }
                 }).build();
@@ -546,7 +551,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                     @Override
                     public void onSuccess(Void aVoid) {
 
-                        Log.i(TAG, "Subscribed successfully.");
+                        Log.d(TAG, "Subscribed successfully.");
 
                     }
                 })
@@ -555,7 +560,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                     public void onCanceled() {
 
                         Log.w(TAG, "onCanceled: cancelled");
-                        Toast.makeText(AdvertClassActivity.this, "Cancelled", Toast.LENGTH_LONG).show();
+
+                        DoSnack.showShortSnackbar(AdvertClassActivity.this, "Cancelled");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -572,14 +578,14 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
      * TTLs.
      */
     private void publish() {
-        Log.i(TAG, "Publishing");
+        Log.d(TAG, "Publishing");
         PublishOptions options = new PublishOptions.Builder()
                 .setStrategy(PUB_SUB_STRATEGY)
                 .setCallback(new PublishCallback() {
                     @Override
                     public void onExpired() {
                         super.onExpired();
-                        Log.i(TAG, "No longer publishing");
+                        Log.d(TAG, "No longer publishing");
                         initUI();
                     }
                 }).build();
@@ -800,7 +806,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         }
 
         //publishing message only when student has successfully scanned class
-        publish();
+        //pretty infective cause lecturer does not get
+        //publish();
         saveThisInFirestore(qrParser, pDialog);
 
         return true;
