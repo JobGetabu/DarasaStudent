@@ -1,6 +1,8 @@
 package com.job.darasastudent.ui;
 
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -77,8 +79,15 @@ public class NotifActivity extends AppCompatActivity {
         // remove title
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         setContentView(R.layout.activity_notif);
+        // fixing portrait mode problem for SDK 26 if using windowIsTranslucent = true
+        if (Build.VERSION.SDK_INT == 26) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
         ButterKnife.bind(this);
 
         setUpList();
