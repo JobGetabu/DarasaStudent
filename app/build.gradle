@@ -3,7 +3,7 @@ apply plugin: 'io.fabric'
 
 ext.versionMajor = 2
 ext.versionMinor = 5
-ext.versionPatch = 0
+ext.versionPatch = 1
 ext.versionClassifier = null
 ext.isSnapshot = false  //only true while in development
 ext.minimumSdkVersion = 19
@@ -21,7 +21,7 @@ android {
         applicationId "com.job.darasastudent"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode generateVersionCode() // 190020500
+        versionCode generateVersionCode() // 190020501
         versionName generateVersionName() // 2.5.0
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
