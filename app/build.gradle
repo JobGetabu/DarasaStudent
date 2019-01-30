@@ -1,6 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
+ext.versionMajor = 2
+ext.versionMinor = 5
+ext.versionPatch = 0
+ext.versionClassifier = null
+ext.isSnapshot = false  //only true while in development
+ext.minimumSdkVersion = 19
+
 // Load keystore
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
@@ -14,13 +21,20 @@ android {
         applicationId "com.job.darasastudent"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 2
-        versionName "2.0"
+        versionCode generateVersionCode() // 190020500
+        versionName generateVersionName() // 2.5.0
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         //Enabling multidex support.
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
     }
 
     signingConfigs {
@@ -129,6 +143,22 @@ dependencies {
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
     annotationProcessor "android.arch.lifecycle:compiler:$lifecycle_version"
+}
+
+private Integer generateVersionCode() {
+    return ext.minimumSdkVersion * 10000000 + ext.versionMajor * 10000 + ext.versionMinor * 100 + ext.versionPatch
+}
+
+private String generateVersionName() {
+    String versionName = "${ext.versionMajor}.${ext.versionMinor}.${ext.versionPatch}"
+    if (ext.versionClassifier == null && ext.isSnapshot) {
+        ext.versionClassifier = "SNAPSHOT"
+    }
+
+    if (ext.versionClassifier != null) {
+        versionName += "-" + ext.versionClassifier
+    }
+    return versionName
 }
 
 apply plugin: 'com.google.gms.google-services'
